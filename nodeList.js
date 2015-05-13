@@ -1,7 +1,7 @@
 (function() {
 	NodeList.prototype[Symbol.iterator] = Array.prototype[Symbol.iterator];
 	HTMLCollection.prototype.__proto__ = NodeList.prototype;
-
+ 
 	for(var key in HTMLElement.prototype) {
 		try {
 			(function() {
@@ -36,13 +36,13 @@
 			})();
 		}
 	}
-
+ 
 	function toNodeList(elements) {
 		var fragment = document.createDocumentFragment();
 		for(var el of elements) fragment.appendChild(el.cloneNode(true));
 		return fragment.childNodes;
 	}
-
+ 
 	NodeList.prototype.__proto__ = {
 		get forEach() { return Array.prototype.forEach.bind(this); },
 		get entries() { return Array.prototype.entries.bind(this); },
