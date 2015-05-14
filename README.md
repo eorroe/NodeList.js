@@ -57,107 +57,85 @@ First let's consider that this line is being used in the following: `$ = documen
 
 ## Setting a class to #container children
 ```JS
+$('#container div').setAttribute('class', 'shape'); // Method 1 call setAttribute on NodeList
 
-$('#container div').setAttribute('class', 'shape'); //Method 1 (Querying the divs inside and calling setAttribute)
+$('#container div').className = 'shape'; // Method 2 set the className of the NodeList
 
-$('#container div').className = 'shape'; //Method 2 (Querying the divs inside and setting the className)
-
-$('#container').children //returns an array of HTMLCollection `[HTMLCollection[10]]`
+$('#container').children // returns an array of HTMLCollection `[HTMLCollection[10]]`
 
 //So select the first one
 
-$('#container').children[0].setAttribute('class', 'shape'); //Method 3 selecting children and doing same as Method 1
+$('#container').children[0].setAttribute('class', 'shape'); // Method 3 selecting children and doing same as Method 1
 
-$('#container').children[0].className = 'shape'; //Method 4 selecting children and doing same as Method 2
-
+$('#container').children[0].className = 'shape'; / /Method 4 selecting children and doing same as Method 2
 ```
 
 ## Removing/Emptying class attributes to #container children
 ```JS
-$('.shape').removeAttribute('class'); //Method 1 assuming it has the class 'shape'
+$('#container div').removeAttribute('class'); // Method 1 remove the entire attribute by calling removeAttribute on NodeList
 
-$('.shape').className = ""; // Method 2 empty the className assuming it has the class 'shape'
-
-$('#container div').removeAttribute('class'); //Method 3 remove the entire attribute
-
-$('#container div').className = ""; //Method 4 empty the className
+$('#container div').className = ''; // Method 2 empty the className by setting the className of NodeList
 ```
 
 ## Setting data-* attributes to #container children
 ```JS
-// Let's set a class first
+$('#container div').setAttribute('data-shape', 'square'); //Method 2 call setAttribute on NodeList
 
-$('#container div').className = 'shape'; //Method 1 set the className
-
-$('.shape').setAttribute('data-shape', 'square'); //Method 2 use setAttribute function
-
-for(var dataset of $('.shape').dataset) {
+for(var dataset of $('#container div').dataset) {
 	dataset.shape = 'square';
 } // Method 3 Loop through each dataset DOMStringMap object and manipulate it
 
-$('.shape').forEach(function(el) {
-	//This is manipulating each element so whichever way:
-
+$('#container div').forEach(function(el) {
+	// This is manipulating each element so the following both ways obviously work
 	el.dataset.shape = 'square';
 	el.setAttribute('data-shape', 'square');
-}); // Method 4 loop through each element using forEach
+}); // Method 4 call forEach on NodeList
 
-$('.shape').dataset.forEach(function(dataset) {
+$('#container div').dataset.forEach(function(dataset) {
 	dataset.shape = 'square';
-}); // Method 5 loop through each dataset of each element using forEach because dataset returns an array of datasets
+}); // Method 5 call forEach on array of dataset
 ```
 
 ## Setting textContent/innerText/innerHTML of #container children
 ```JS
-
-//Other ways to select the container
-
-$('body').firstElementChild // Returns a NodeList of firstElementChildren which would be the container
-
-$('body').querySelector('#container'); //I'll stop here there's so many ways
-
-$('#container div').textContent = "This is the text between each div"; // Method 1 for textContent
+$('#container div').textContent = "This is the text between each div"; // Method 1 set textContent of nodeList
 
 for(var div of $('#container div')) {
 	div.textContent = "This is the text between each div";
-} // Method 2 for textContent
+} // Method 2 for textContent loop through each element and manipulate the textContent
 
 $('#container div').forEach(function(div, index) {
 	div.textContent = "This is div number " + (index + 1);
-}); // Method 3 for textContent
+}); // Method 3 for textContent call forEach on NodeList and set textContent of each element
 
-$('#container div').innerHTML = "<div class="square">"; // Method 1 for innerHTML
+$('#container div').innerHTML = "<div class="square">"; // Method 1 for innerHTML set innerHTML of NodeList
 
 for(var div of $('#container div')) {
 	div.innerHTML = "<div class="square">";
-} // Method 2 for innerHTML
+} // Method 2 for innerHTML loop through NodeList and set innerHTML of each element
 
 $('#container div').forEach(function(div, index) {
 	div.innerHTML = "<div class="square">";
-}); // Method 3 for innerHTML
-
-
+}); // Method 3 for innerHTML call forEach on NodeList
 ```
 
 ## Styling #container children
 ```JS
-
 for(var div of $('#container div')) {
 	div.style.color = 'red';
 } // Method 1 loop through elements
 
 $('#container div').forEach(function(el) {
 	el.style.color = 'red';
-}); // Method 2 using forEach
+}); // Method 2 call forEach on NodeList
 
 for(var style of $('#container div').style) {
 	style.color = 'red'; // Using style object
-} // Method 3 loop through style objects
+} // Method 3 loop through array of style objects
 
 $('#container div').style.forEach(function(style) {
 	style.color = 'red';
-}); // Method 4 loop through style objects using forEach
-
+}); // Method 4 loop through style objects by calling forEach on array of style objects
 ```
 
 ## Adding Event listeners
@@ -165,60 +143,43 @@ $('#container div').style.forEach(function(style) {
 
 $('#container div').addEventListener('click', function(evt) {
 	alert(evt.target.textContent);
-}); // Method 1
+}); // Method 1 call addEventListener on NodeList
 
 $('#container div').onclick = function(evt) {
 	alert(evt.target.textContent);
-} // Method 2
+} // Method 2 set onclick on NodeList
 ```
 
 ## Mapping
 ```JS
+// Mapping is easy just get the property just like you would on a node
 
-//Mapping is easy just use the property
+$('#container div').id // Returns array of id for each element in NodeList
 
-$('#container div').id //Returns array of id
-
-//No need for:
+// No need for:
 $('#container div').map(function(div) {
 	return div.id;
 });
 
-//Let's add some textContent
-
-$('#container div').textContent // This returns textContent
-
-$('#container div').textContent = 'text inside'; // Sets textContent of each element
+$('#container div').map(function(div) {
+	return div.firstChild;
+}); // Returns a NodeList populated with firstChld nodes
 
 $('#container div').map(function(div) {
 	return div.firstChild;
-}); // This returns a NodeList because the array is full of only nodes when map is called on NodeList the array is checked if all are nodes, so I can chain
+}).remove(); // Map the firstChild node and remove it.
 
-$('#container div').map(function(div) {
-	return div.firstChild;
-}).remove(); // Remove the textContent or just use
-
-$('#container div').textContent = ""; //THERE ARE SO MANY WAYS!!!! it's so flexible
+$('#container div').textContent = ''; // Or map textContent by setting textContent of NodeList to an empty string
 ```
 
 ## Slicing
 ```JS
-
-$('#container div').slice(0, 1); //Returns NodeList with first element;
-
-$('#container div').slice(0, 1).textContent = 'Hi'; //Do whatever you want it's so awesome
+$('#container div').slice(0, 1); // Returns NodeList with first element;
 ```
 
 ## Filtering
 ```JS
-
 $('div').filter(function(el) {
 	return !el.matches('#container');
-}); //Oh wow look another way to get the children divs
-
-//This is not filtering but this is useless but look I can map out the parentElement
-
-$('div').filter(function(el) {
-	return !el.matches('#container');
-}).parentElement // Returns NodeList of which all nodes are the #container
+}); // Returns #container childElements NodeList
 ```
