@@ -111,14 +111,14 @@ $('#container div').forEach(function(div, index) {
 	div.textContent = "This is div number " + (index + 1);
 }); // Method 3 for textContent: call forEach on NodeList and set textContent of each element
 
-$('#container div').innerHTML = "<div class="square">"; // Method 1 for innerHTML: set innerHTML of NodeList
+$('#container div').innerHTML = <div class="square">'; // Method 1 for innerHTML: set innerHTML of NodeList
 
 for(var div of $('#container div')) {
-	div.innerHTML = "<div class="square">";
+	div.innerHTML = '<div class="square">';
 } // Method 2 for innerHTML: loop through NodeList and set innerHTML of each element
 
 $('#container div').forEach(function(div, index) {
-	div.innerHTML = "<div class="square">";
+	div.innerHTML = '<div class="square">';
 }); // Method 3 for innerHTML: call forEach on NodeList
 ```
 
