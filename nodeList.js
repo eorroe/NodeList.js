@@ -30,7 +30,7 @@
 						var arr = [], nodes = [];
 						for(var element of this) {
 							var prop = element[key1];
-							prop instanceof Node ? nodes.push(prop) : prop ? arr.push(prop) : null;
+							prop instanceof Node ? nodes.push(prop) : arr.push(prop);
 						}
 						if(nodes.length) {
 							nodes.__proto__ = NodeList.prototype;
