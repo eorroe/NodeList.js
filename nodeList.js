@@ -47,15 +47,15 @@
 	}
 
 	NodeList.prototype.__proto__ = {
-		get forEach() { return Array.prototype.forEach.bind(this); },
-		get entries() { return Array.prototype.entries.bind(this); },
-		get keys() { return Array.prototype.keys.bind(this); },
-		get indexOf() { return Array.prototype.indexOf.bind(this); },
-		get lastIndexOf() { return Array.prototype.lastIndexOf.bind(this); },
-		get every() { return Array.prototype.every.bind(this); },
-		get some() { return Array.prototype.some.bind(this); },
-		get reduce() { return Array.prototype.reduce.bind(this); },
-		get reduceRight() { return Array.prototype.reduceRight.bind(this); },
+		forEach: Array.prototype.forEach,
+		entries: Array.prototype.entries,
+		keys: Array.prototype.keys,
+		indexOf: Array.prototype.indexOf,
+		lastIndexOf: Array.prototype.lastIndexOf,
+		every: Array.prototype.every,
+		some: Array.prototype.some,
+		reduce: Array.prototype.reduce,
+		reduceRight: Array.prototype.reduceRight,
 		slice(begin, end) {
 			var nodes       = Array.prototype.slice.call(this, begin, end);
 			nodes.__proto__ = NodeList.prototype;
