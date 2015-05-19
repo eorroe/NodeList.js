@@ -111,7 +111,7 @@ $('#container div').forEach(function(div, index) {
 	div.textContent = "This is div number " + (index + 1);
 }); // Method 3 for textContent: call forEach on NodeList and set textContent of each element
 
-$('#container div').innerHTML = <div class="square">'; // Method 1 for innerHTML: set innerHTML of NodeList
+$('#container div').innerHTML = '<div class="square">'; // Method 1 for innerHTML: set innerHTML of NodeList
 
 for(var div of $('#container div')) {
 	div.innerHTML = '<div class="square">';
@@ -179,7 +179,7 @@ $('#container div').map(function(div) {
 // Or:
 $('#container div').firstChild.remove();
 
-$('#container div').textContent = ''; // Or map textContent by setting textContent of NodeList to an empty string
+$('#container div').textContent = ''; // Or remove by setting textContent of NodeList to an empty string
 ```
 
 ## Filtering
@@ -213,9 +213,9 @@ var divsAndBody = divs.concat($('body')); // Method 3 passing a NodeList
 
 var divsAndBody = divs.concat([$('body')]); // Method 4 passing an array of NodeList
 
-var divsAndBodyAndHTML = divs.concat(document.body, document.documentHTML); // Method 5 passing multiple arguments
+var divsAndBodyAndHTML = divs.concat(document.body, document.documentHTML); // Method 5 passing multiple Nodes as arguments
 
-var divsAndBodyAndHTML = divs.concat([document.body], [document.documentHTML]); // Method 6 passing arrays of nodes as are arguments
+var divsAndBodyAndHTML = divs.concat([document.body], [document.documentHTML]); // Method 6 passing arrays of Nodes as arguments
 
 var divsAndBodyAndHTML = divs.concat([$('body')], [$('html')]); // Method 7 passing arrays of NodeList as are arguments
 
