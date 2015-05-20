@@ -33,7 +33,7 @@ Anything you would do to a single `Node` you can do to a `NodeList` and some met
 
 # Examples Uses:
 
-**ATTENTION**: Use any browser with the all DOM properties on the prototype I'm using chrome 44.
+**ATTENTION**: Use any browser with the all DOM properties on the prototype I'm using chrome 43+.
 
 First let's consider that this line is being used in the following: `$ = document.querySelectorAll.bind(document);`.
 
