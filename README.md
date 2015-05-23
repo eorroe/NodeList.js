@@ -227,6 +227,31 @@ var divsAndBody = divs.concat([[document.body]]); // Error!! No array of arrays
 $('body').includes(document.body); // Returns true if Node is in NodeList
 ```
 
+Ok now how about dealing with elements that have unique properties. Like `HTMLAnchorElement(s)` they have the `href` property which is not inherited from `HTMLElement`. There are no `HTMLAnchorElements` in this example but here's how you'll deal with it.
+
+## Get
+```JS
+$('a').href // undefined because it's a unique property that every element does not inherit
+
+$('a').get('href'); // returns array of href values
+```
+
+## Set
+```JS
+$('a').set('href', 'https:www.example.com/');
+```
+
+You can also do that for any property that doesn't exist
+
+```JS
+$('div').set('thisIsAPropertyThatDoesntExistOnEachElement', 'whateverValue');
+
+$('div').set('className', 'these are the classes being set');
+
+// Would be the same as
+
+$('div').className = 'these are the classes being set';
+```
 # The future
 
 ## The current problem
