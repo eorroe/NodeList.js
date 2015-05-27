@@ -55,6 +55,8 @@ First let's consider that this line is being used in the following: `$ = documen
 </body>
 ```
 
+**Here's a [jsbin](http://jsbin.com/cehosinomu/edit?html,js,output) using some examples that I'll show in the following**
+
 ## Setting a class to #container children
 ```JS
 $('#container div').setAttribute('class', 'shape'); // Method 1 call setAttribute on NodeList
@@ -252,6 +254,8 @@ $('div').set('className', 'these are the classes being set');
 
 $('div').className = 'these are the classes being set';
 ```
+
+
 # The future
 
 ## The current problem
@@ -269,14 +273,6 @@ There's obviously more problems, the above is just one big feature that would be
 I believe the fix would be (ES6 Proxies) or a more complicated way of doing this I'd set the returned `array.__proto__` to an object with methods that would handle this situation.
 
 ## New Methods
-
-- Flatten:
-
-```JS
-//I'm not sure how to implement this
-
-$('body').querySelectorAll('#container'); // Returns an array of NodeList, flatten will flatten all these nodes to a single NodeList
-```
 
 Perhaps NodeList should be able to `push`, `pop` etc
 
