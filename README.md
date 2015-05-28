@@ -63,13 +63,13 @@ $('#container div').setAttribute('class', 'shape'); // Method 1 call setAttribut
 
 $('#container div').className = 'shape'; // Method 2 set the className of the NodeList
 
-$('#container').children // returns an array of HTMLCollection `[HTMLCollection[10]]`
+$('#container').children // returns all child elements of container
 
 //So select the first one
 
-$('#container').children[0].setAttribute('class', 'shape'); // Method 3 selecting children and doing same as Method 1
+$('#container').children.setAttribute('class', 'shape'); // Method 3 selecting children and doing same as Method 1
 
-$('#container').children[0].className = 'shape'; // Method 4 selecting children and doing same as Method 2
+$('#container').children.className = 'shape'; // Method 4 selecting children and doing same as Method 2
 ```
 
 ## Removing/Emptying class attributes to #container children
