@@ -1,6 +1,6 @@
 (function() {
 				NodeList.prototype[Symbol.iterator] = Array.prototype[Symbol.iterator];
-				HTMLCollection.prototype.__proto__ = NodeList.prototype;
+				HTMLCollection.prototype.__proto__  = NodeList.prototype;
 
 				for(var key in HTMLElement.prototype) {
 					try {
@@ -14,8 +14,7 @@
 										funcCall instanceof Node ? nodes.push(funcCall) : funcCall ? arr.push(funcCall) : null;
 									}
 									if(nodes.length) {
-										nodes.__proto__ = NodeList.prototype;
-										return nodes;
+										return Object.setPrototypeOf(nodes, NodeList.prototype);
 									} else if(arr.length) {
 										return arr;
 									}
@@ -32,11 +31,10 @@
 										var prop = element[key1];
 										prop instanceof Node ? nodes.push(prop) : arr.push(prop);
 									}
-									if(nodes.length) {
-										nodes.__proto__ = NodeList.prototype;
-										return nodes;
-									}
-									return arr;
+									return (nodes.length) ?
+									Object.setPrototypeOf(nodes, NodeList.prototype) :
+									(arr[0] instanceof NodeList || arr[0] instanceof HTMLCollection) ?
+									flatten(arr) : arr;
 								},
 								set(newVal) {
 									for(var element of this) element[key1] = newVal;
@@ -44,6 +42,18 @@
 							});
 						})();
 					}
+				}
+
+				function flatten(arr) {
+					var nodes = [];
+					for(var list of arr) {
+						if(list instanceof Array || list instanceof NodeList || list instanceof HTMLCollection) {
+							for(var element of list) nodes.push(element);
+						} else {
+							nodes.push(list);
+						}
+					}
+					return Object.setPrototypeOf(nodes, NodeList.prototype);
 				}
 
 				NodeList.prototype.__proto__ = {
@@ -57,9 +67,21 @@
 					reduce: Array.prototype.reduce,
 					reduceRight: Array.prototype.reduceRight,
 					slice(begin, end) {
-						var nodes       = Array.prototype.slice.call(this, begin, end);
-						nodes.__proto__ = NodeList.prototype;
-						return nodes;
+						return Object.setPrototypeOf(Array.prototype.slice.call(this, begin, end), NodeList.prototype);
+					},
+					filter(cb) {
+						return Object.setPrototypeOf(Array.prototype.filter.call(this, cb), NodeList.prototype);
+					},
+					includes(element) {
+						return Array.prototype.slice.call(this).indexOf(element) > -1;
+					},
+					get(prop) {
+						var arr = [];
+						for(var element of this) arr.push(element[prop]);
+						return arr;
+					},
+					set(prop, value) {
+						for(var element of this) element[prop] = value;
 					},
 					map(cb) {
 						var nodes    = Array.prototype.map.call(this, cb);
@@ -67,11 +89,6 @@
 							return el instanceof Node;
 						});
 						if(allNodes) nodes.__proto__ = NodeList.prototype;
-						return nodes;
-					},
-					filter(cb) {
-						var nodes       = Array.prototype.filter.call(this, cb);
-						nodes.__proto__ = NodeList.prototype;
 						return nodes;
 					},
 					concat() {
@@ -93,19 +110,12 @@
 								throw Error('Only Node, NodeList, HTMLCollection, or Array');
 							}
 						}
-						nodes.__proto__ = NodeList.prototype;
-						return nodes;
-					},
-					includes(element) {
-						return Array.prototype.slice.call(this).indexOf(element) > -1;
-					},
-					get(prop) {
-						var arr = [];
-						for(var element of this) arr.push(element[prop]);
-						return arr;
-					},
-					set(prop, value) {
-						for(var element of this) element[prop] = value;
+						return Object.setPrototypeOf(nodes, NodeList.prototype);
 					}
+				}
+				NodeList.prototype.querySelectorAll = function(selector) {
+					var nodes = Array.prototype.slice.call(this), newNodes = [];
+					for(var node of nodes) newNodes.push(node.querySelectorAll(selector));
+					return flatten(newNodes);
 				}
 			})();
