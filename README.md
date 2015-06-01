@@ -65,8 +65,6 @@ $('#container div').className = 'shape'; // Method 2 set the className of the No
 
 $('#container').children // returns all child elements of container
 
-//So select the first one
-
 $('#container').children.setAttribute('class', 'shape'); // Method 3 selecting children and doing same as Method 1
 
 $('#container').children.className = 'shape'; // Method 4 selecting children and doing same as Method 2
