@@ -8,9 +8,9 @@
 				if(HTMLElement.prototype[key].constructor == Function) {
 					var key1 = key;
 					NodeList.prototype[key] = function() {
-						var nodes = Array.prototype.slice.call(this);
+						if(key1 == 'remove') var nodes = Array.prototype.slice.call(this);
 						var arr = [], newNodes = [];
-						for(var element of nodes) {
+						for(var element of (nodes || this)) {
 							var funcCall = element[key1].apply(element, arguments);
 							funcCall instanceof Node ? newNodes.push(funcCall) : funcCall !== undefined ? arr.push(funcCall) : null;
 						}
