@@ -8,13 +8,14 @@
 				if(HTMLElement.prototype[key].constructor == Function) {
 					var key1 = key;
 					NodeList.prototype[key] = function() {
-						var arr = [], nodes = [];
-						for(var element of this) {
+						var nodes = Array.prototype.slice.call(this);
+						var arr = [], newNodes = [];
+						for(var element of nodes) {
 							var funcCall = element[key1].apply(element, arguments);
-							funcCall instanceof Node ? nodes.push(funcCall) : funcCall !== undefined ? arr.push(funcCall) : null;
+							funcCall instanceof Node ? newNodes.push(funcCall) : funcCall !== undefined ? arr.push(funcCall) : null;
 						}
-						if(nodes.length) {
-							return Object.setPrototypeOf(nodes, NodeList.prototype);
+						if(newNodes.length) {
+							return Object.setPrototypeOf(newNodes, NodeList.prototype);
 						} else if(arr.length) {
 							return arr;
 						}
@@ -120,3 +121,4 @@
 		}
 	}
 })();
+$ = document.querySelectorAll.bind(document);
