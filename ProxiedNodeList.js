@@ -62,23 +62,23 @@
 		nodes.__proto__ = NL;
 		nodes[Symbol.iterator] = NodeList.prototype[Symbol.iterator];
 		return new Proxy(nodes, {
-			get(target, property, value) {
+			get(target, property) {
 				if(target[property]) return target[property];
 				if(property in HTMLElement.prototype) {
 					debugger;
 					var arr = [], newNodes = new Set();
-					for(var element of nodes) {
+					for(var element of target) {
 						var prop = element[property];
 						prop instanceof Node ? newNodes.add(prop) : arr.push(prop);
 					}
-					return (nodes.size) ?
-					Object.setPrototypeOf([...nodes], NL) :
+					return (target.size) ?
+					Object.setPrototypeOf([...target], NL) :
 					(arr[0] instanceof NodeList || arr[0] instanceof HTMLCollection) ?
 					flatten(arr) : arr;
 				}
 			},
 			set(target, prop, value) {
-				for(var element of nodes) {
+				for(var element of target) {
 					if(prop in element) element[prop] = value;
 				}
 			}
