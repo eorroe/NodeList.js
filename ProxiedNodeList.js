@@ -60,8 +60,7 @@
 	document.querySelectorAll = function(selector) {
 		var nodes = Document.prototype.querySelectorAll.call(document, selector);
 		nodes.__proto__ = NL;
-		nodes[Symbol.iterator] = NodeList.prototype[Symbol.iterator];
-		return new Proxy(nodes, {
+		var proxiedNodes = new Proxy(nodes, {
 			get(target, property, value) {
 				if(target[property]) return target[property];
 				if(property in HTMLElement.prototype) {
@@ -83,5 +82,10 @@
 				}
 			}
 		});
+		proxiedNodes[Symbol.iterator] = Array.prototype[Symbol.iterator];
+		return proxiedNodes;
 	}
 })();
+
+divs = document.querySelectorAll('div');
+console.log(divs.textContent);
