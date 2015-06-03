@@ -121,4 +121,3 @@
 		}
 	}
 })();
-$ = document.querySelectorAll.bind(document);
