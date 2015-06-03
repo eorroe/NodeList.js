@@ -53,18 +53,14 @@
 					throw Error('Only Node, NodeList, HTMLCollection, or Array');
 				}
 			}
-			var newNodes = [];
-			for(var el of nodes) newNodes.push(el);
-			return Object.setPrototypeOf(newNodes, this);
-			// ES6 spread
-			// return Object.setPrototypeOf([...nodes], this);
+			return Object.setPrototypeOf([...nodes], this);
 		}
 	}
 
 	document.querySelectorAll = function(selector) {
 		var nodes = Document.prototype.querySelectorAll.call(document, selector);
 		nodes.__proto__ = NL;
-		nodes[Symbol.iterator] = Array.prototype[Symbol.iterator];
+		nodes[Symbol.iterator] = NodeList.prototype[Symbol.iterator];
 		return new Proxy(nodes, {
 			get(target, property, value) {
 				if(target[property]) return target[property];
