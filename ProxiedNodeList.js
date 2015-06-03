@@ -59,13 +59,13 @@
 
 	document.querySelectorAll = function(selector) {
 		var nodes = Document.prototype.querySelectorAll.call(document, selector);
+		nodes = Array.prototype.slice.call(nodes); // done because once I set __proto__ on next line adding Symbol.iterator doesn't work in FireFox
 		nodes.__proto__ = NL;
-		nodes[Symbol.iterator] = NodeList.prototype[Symbol.iterator];
+		nodes[Symbol.iterator] = Array.prototype[Symbol.iterator];
 		return new Proxy(nodes, {
 			get(target, property) {
 				if(target[property]) return target[property];
 				if(property in HTMLElement.prototype) {
-					debugger;
 					var arr = [], newNodes = new Set();
 					for(var element of target) {
 						var prop = element[property];
