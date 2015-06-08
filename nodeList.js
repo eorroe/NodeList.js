@@ -8,17 +8,13 @@
 				if(HTMLElement.prototype[key].constructor == Function) {
 					var key1 = key;
 					NodeList.prototype[key] = function() {
-						if(key1 == 'remove') var nodes = Array.prototype.slice.call(this);
-						var arr = [], newNodes = [];
+						if(key1 == 'remove') var nodes = Array.from(this);
+						var arr = [], newNodes = new Set();
 						for(var element of (nodes || this)) {
 							var funcCall = element[key1].apply(element, arguments);
-							funcCall instanceof Node ? newNodes.push(funcCall) : funcCall !== undefined ? arr.push(funcCall) : null;
+							funcCall instanceof Node ? newNodes.add(funcCall) : funcCall !== undefined ? arr.push(funcCall) : null;
 						}
-						if(newNodes.length) {
-							return Object.setPrototypeOf(newNodes, NodeList.prototype);
-						} else if(arr.length) {
-							return arr;
-						}
+						return (newNodes.size) ? Object.setPrototypeOf([...newNodes], NodeList.prototype) : (arr.length) ? arr : undefined;
 					}
 				}
 			})();
@@ -27,13 +23,13 @@
 				var key1 = key;
 				Object.defineProperty(NodeList.prototype, key, {
 					get() {
-						var arr = [], nodes = [];
+						var arr = [], nodes = new Set();
 						for(var element of this) {
 							var prop = element[key1];
-							prop instanceof Node ? nodes.push(prop) : arr.push(prop);
+							prop instanceof Node ? nodes.add(prop) : arr.push(prop);
 						}
-						return (nodes.length) ?
-						Object.setPrototypeOf(nodes, NodeList.prototype) :
+						return (nodes.size) ?
+						Object.setPrototypeOf([...nodes], NodeList.prototype) :
 						(arr[0] instanceof NodeList || arr[0] instanceof HTMLCollection) ?
 						flatten(arr) : arr;
 					},
@@ -46,7 +42,7 @@
 	}
 
 	NodeList.prototype.querySelectorAll = function(selector) {
-		var nodes = Array.prototype.slice.call(this), newNodes = [];
+		var nodes = Array.from(this), newNodes = [];
 		for(var node of nodes) newNodes.push(node.querySelectorAll(selector));
 		return flatten(newNodes);
 	}
@@ -74,17 +70,17 @@
 		reduce: Array.prototype.reduce,
 		reduceRight: Array.prototype.reduceRight,
 		slice(begin, end) {
-			return Object.setPrototypeOf(Array.prototype.slice.call(this, begin, end), NodeList.prototype);
+			return Object.setPrototypeOf(Array.from(this, begin, end), NodeList.prototype);
 		},
 		filter(cb) {
 			return Object.setPrototypeOf(Array.prototype.filter.call(this, cb), NodeList.prototype);
 		},
 		includes(element) {
-			return Array.prototype.slice.call(this).indexOf(element) > -1;
+			return Array.from(this).indexOf(element) > -1;
 		},
 		get(prop) {
 			var arr = [];
-			for(var element of this) arr.push(element[prop]);
+			for(var element of this) arr.push(element[prop] || null);
 			return arr;
 		},
 		set(prop, value) {
@@ -99,16 +95,16 @@
 			return nodes;
 		},
 		concat() {
-			var nodes = Array.prototype.slice.call(this);
+			var nodes = new Set(Array.from(this));
 			for(var arg of arguments) {
 				if(arg instanceof Node) {
-					nodes.push(arg);
+					nodes.add(arg);
 				} else if(arg instanceof NodeList || arg instanceof HTMLCollection || arg instanceof Array) {
 					for(var el of arg) {
 						if(el instanceof Node) {
-							nodes.push(el);
+							nodes.add(el);
 						} else if(el instanceof NodeList) {
-							for(var a of el) nodes.push(a);
+							for(var a of el) nodes.add(a);
 						} else {
 							throw Error(`${el.constructor.name}: ${el} is not a Node`);
 						}
@@ -117,7 +113,7 @@
 					throw Error('Only Node, NodeList, HTMLCollection, or Array');
 				}
 			}
-			return Object.setPrototypeOf(nodes, NodeList.prototype);
+			return Object.setPrototypeOf([...nodes], this);
 		}
 	}
 })();
