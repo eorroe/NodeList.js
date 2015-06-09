@@ -70,7 +70,7 @@
 		reduce: Array.prototype.reduce,
 		reduceRight: Array.prototype.reduceRight,
 		slice(begin, end) {
-			return Object.setPrototypeOf(Array.from(this, begin, end), NodeList.prototype);
+			return Object.setPrototypeOf(Array.prototype.slice.call(this, begin, end), NodeList.prototype);
 		},
 		filter(cb) {
 			return Object.setPrototypeOf(Array.prototype.filter.call(this, cb), NodeList.prototype);
