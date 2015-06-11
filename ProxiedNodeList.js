@@ -112,6 +112,3 @@
 		});
 	}
 })();
-
-var $ = document.querySelectorAll.bind(document);
-console.log($('div').textContent);
