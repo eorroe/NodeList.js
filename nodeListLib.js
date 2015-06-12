@@ -93,7 +93,7 @@
 			for(var arg of arguments) {
 				if(arg instanceof Node) {
 					nodes.add(arg);
-				} else if(arg instanceof NodeList || arg instanceof HTMLCollection || arg instanceof Array) {
+				} else if(arg instanceof NodeList || arg instanceof HTMLCollection || arg instanceof Array || arg.__proto__ === NL) {
 					for(var el of arg) {
 						if(el instanceof Node) {
 							nodes.add(el);
