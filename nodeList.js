@@ -80,7 +80,7 @@
 		},
 		get(prop) {
 			var arr = [];
-			for(var element of this) arr.push(element[prop] || null);
+			for(var element of this) arr.push(element[prop]);
 			return arr;
 		},
 		set(prop, value) {
@@ -117,3 +117,4 @@
 		}
 	}
 })();
+$ = document.querySelectorAll.bind(document);
