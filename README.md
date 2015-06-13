@@ -298,13 +298,11 @@ divs.splice(0, 1, document.body); // Returns the same NodeList with the first el
 ```JS
 var divs = $('#container div');
 
-divs.forEach(function(div, index) {
-	div.dataset.index = index;
-}); // Let's give each div a data-index attribute
+// Let's give each div a data-index attribute
+divs.forEach( (div, index) => div.dataset.index = index);
 
-divs.sort(function(div1, div2) {
-	return div2.dataset.index - div1.dataset.index;
-}); // Which basically reverses the nodeList pretty useless example again I'm not sure why you would want to sort a NodeList
+// Reverse the NodeList (pretty useless example again I'm not sure why you would want to sort a NodeList)
+divs.sort( (div1, div2) => div2.dataset.index - div1.dataset.index);
 ```
 
 - Reverse
