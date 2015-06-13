@@ -4,9 +4,9 @@
 
 There are 3 scripts in this repository
 
-1. [`nodeList.js`](https://github.com/eorroe/NodeList-Prototype-Extension/blob/master/nodeList.js) (the one that extends the NodeList.prototype and HTMLCollections.prototype)
-2. [`nodelistLib.js`](https://github.com/eorroe/NodeList-Prototype-Extension/blob/master/nodeListLib.js) (the library one)
-3. [`ProxiedNodeList.js`](https://github.com/eorroe/NodeList-Prototype-Extension/blob/master/ProxiedNodeList.js) (a work in progress)
+1. [`nodeList.js`](https://github.com/eorroe/NodeList-Prototype-Extension/blob/master/nodeList.js) (the one that extends the `NodeList.prototype` and `HTMLCollections.prototype`)
+2. [`nodelistLib.js`](https://github.com/eorroe/NodeList-Prototype-Extension/blob/master/nodeListLib.js) (the **library** one)
+3. [`ProxiedNodeList.js`](https://github.com/eorroe/NodeList-Prototype-Extension/blob/master/ProxiedNodeList.js) (a work in progress **prollyfill** for `document.querySelectorAll`)
 
 These scripts allow you to manipulate a `NodeList` the same way you would with any `Node` plus more.
 
