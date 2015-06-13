@@ -272,10 +272,11 @@ I believe the fix would be (ES6 Proxies) or a more complicated way of doing this
 
 # The Library (Has the following methods)
 
-When I extend the NodeList.prototype and HTMLCollection.prototype these methods don't work because of how NodeList work internally.
+When I extend the `NodeList.prototype` and `HTMLCollection.prototype` these methods don't work because of how NodeList work internally.
 
-In the library I'm using Arrays.
+In the library I'm using `Arrays` therefore these methods can be used.
 
+If this becomes a **native implementation** `NodeList` internally would be changed to be able to use these methods on them.
 ## Methods
 
 - Push
