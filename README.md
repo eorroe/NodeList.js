@@ -2,20 +2,13 @@
 
 ## What this is?
 
-This is not a library, this is just a JS file that dynamically extends the `NodeList.prototype` and `HTMLCollections`
-inherits from `NodeList.prototype`.
+There are 3 scripts in this repository
 
-## How it's done?
+1. nodeList.js (the one that extends the NodeList.prototype and HTMLCollections.prototype)
+2. nodelistLib.js (the library one)
+3. proxiedNodeList.js (a work in progress)
 
-The script loops through `HTMLElement.prototype` properties (inherited properties included).
-
-When the property is a function `NodeList.prototype` gets set the same function name. When that function is called on the `NodeList` it loops through every element in the `NodeList` and calls the same function on each element. If the function call on each element returns a node then the initial function call on the `NodeList` will return a new `NodeList`. Or if the function call returns a value like the `getAttribute` method then it returns an array with each element's value of that returned value from `getAttribute`.
-
-When the property is a readable/writable property then `NodeList.prototype` gets a `getter` and `setter` function for each property.
-
-When readable/writable property is read on the `NodeList` the `getter` function is called on the `NodeList` which returns a new `NodeList` if that property returns a `Node` on each element, or it'll return an array populated with the values of the property from each element. (Simply the same as with the function calls, it's just not a function call).
-
-When readable/writable property is set on the `NodeList` the `setter` function is called on the `NodeList` which loops through each element and sets the same property and value on each element.
+These scripts allow you to manipulate a `NodeList` the same way you would with any `Node` plus more.
 
 ## Inheriting from Array.prototype
 
@@ -25,11 +18,7 @@ When readable/writable property is set on the `NodeList` the `setter` function i
 
 The `join` method would be completely useless.
 
-I'm not sure pushing, popping, shifting, unshifting, splicing, sorting, reversing the `NodeList` would be a good thing or necessary.
-
-## The beauty of this script
-
-Anything you would do to a single `Node` you can do to a `NodeList` and some methods you would call on an `Array` (mentioned above)
+I'm not sure `pushing`, `popping`, `shifting`, `unshifting`, `splicing`, `sorting`, `reversing` the `NodeList` would be a good thing or necessary. Also the way `NodeList` and `HTMLCollections` work internally don't allow me to extend these methods to work properly.
 
 # Examples Uses:
 
@@ -201,7 +190,6 @@ var unique = $('div').reduce(function(set, div) {
 ```
 
 ## Concatenating
-
 ```JS
 var divs = $('div');
 
@@ -241,10 +229,12 @@ $('a').get('href'); // returns array of href values
 $('a').set('href', 'https:www.example.com/');
 ```
 
-You can also do that for any property that doesn't exist
+You can also call `set` for any property that **DOES NOT** exist on the actual elements.
 
 ```JS
 $('div').set('thisIsAPropertyThatDoesntExistOnEachElement', 'whateverValue');
+
+$('div').get('thisIsAPropertyThatDoesntExistOnEachElement'); // ['whateverValue', 'whateverValue', 'whateverValue', ...]
 
 $('div').set('className', 'these are the classes being set');
 
@@ -252,7 +242,6 @@ $('div').set('className', 'these are the classes being set');
 
 $('div').className = 'these are the classes being set';
 ```
-
 
 # The future
 
@@ -266,15 +255,13 @@ $('#container div').style.background = 'red'; // Not possible
 
 There's obviously more problems, the above is just one big feature that would be totally awesome.
 
-## The future fix
-
-I believe the fix would be (ES6 Proxies) or a more complicated way of doing this I'd set the returned `array.__proto__` to an object with methods that would handle this situation.
+The solution would be (ES6 Proxies) which will allow the above to be possible.
 
 # The Library (Has the following methods)
 
 When I extend the `NodeList.prototype` and `HTMLCollection.prototype` these methods don't work because of how `NodeList` work internally.
 
-In the library I'm using `Arrays` therefore these methods can be used.
+In the library I'm using `Arrays` therefore these methods can be used, where when I extend `NodeList` and `HTMLCollections`'s prototypes `document.querySelectorAll` is still returning a `NodeList` instead of `Arrays` like the library edition does.
 
 If this becomes a **native implementation** `NodeList` internally would be changed to be able to use these methods on them.
 ## Library Additional Methods
