@@ -10,9 +10,9 @@ There are 3 scripts in this repository
 
 These scripts allow you to manipulate a `NodeList` the same way you would with any `Node` plus more.
 
-## Inheriting from Array.prototype
+## Inheriting from `Array.prototype`
 
-`NodeList.prototype` has the Array methods: `forEach`, `entries`, `keys`, `indexOf`, `lastIndexOf`, `every`, `some`, `reduce`,
+`NodeList.prototype` has the `Array` methods: `forEach`, `entries`, `keys`, `indexOf`, `lastIndexOf`, `every`, `some`, `reduce`,
 `reduceRight`, `slice`, `map`, `filter`, and `concat`. Notice all those methods work just how they would on an `Array` by not changing the actual
 `NodeList`. Therefore `NodeList.prototype` does not have the methods: `push`, `pop`, `shift`, `unshift`, `splice`, `sort`, and `reverse`.
 
@@ -26,7 +26,7 @@ I'm not sure `pushing`, `popping`, `shifting`, `unshifting`, `splicing`, `sortin
 
 First let's consider that this line is being used in the following: `$ = document.querySelectorAll.bind(document);`.
 
-## The HTML we'll manipulate
+## The `HTML` we'll manipulate
 ```HTML
 <body>
 	<div id="container">
@@ -46,7 +46,7 @@ First let's consider that this line is being used in the following: `$ = documen
 
 **Here's a [jsbin](http://jsbin.com/cehosinomu/edit?html,js,output) using some examples that I'll show in the following**
 
-## Setting a class to #container children
+## Setting a `class` to `#container` children
 ```JS
 $('#container div').setAttribute('class', 'shape'); // Method 1 call setAttribute on NodeList
 
@@ -59,14 +59,14 @@ $('#container').children.setAttribute('class', 'shape'); // Method 3 selecting c
 $('#container').children.className = 'shape'; // Method 4 selecting children and doing same as Method 2
 ```
 
-## Removing/Emptying class attributes to #container children
+## Removing/Emptying `class` attributes to `#container` children
 ```JS
 $('#container div').removeAttribute('class'); // Method 1 remove the entire attribute by calling removeAttribute on NodeList
 
 $('#container div').className = ''; // Method 2 empty the className by setting the className of NodeList
 ```
 
-## Setting data-* attributes to #container children
+## Setting `data-*` attributes to `#container` children
 ```JS
 $('#container div').setAttribute('data-shape', 'square'); // Method 1 call setAttribute on NodeList
 
@@ -88,7 +88,7 @@ $('#container div').dataset.forEach(function(dataset) {
 }); // Method 5 call forEach on array of dataset DOMStringMap
 ```
 
-## Setting textContent/innerText/innerHTML of #container children
+## Setting `textContent/innerText/innerHTML` of `#container` children
 ```JS
 $('#container div').textContent = "This is the text between each div"; // Method 1 for textContent: set textContent of nodeList
 
@@ -111,7 +111,7 @@ $('#container div').forEach(function(div, index) {
 }); // Method 3 for innerHTML: call forEach on NodeList
 ```
 
-## Styling #container children
+## Styling `#container` children
 ```JS
 for(var div of $('#container div')) {
 	div.style.color = 'red';
