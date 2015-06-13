@@ -270,9 +270,13 @@ There's obviously more problems, the above is just one big feature that would be
 
 I believe the fix would be (ES6 Proxies) or a more complicated way of doing this I'd set the returned `array.__proto__` to an object with methods that would handle this situation.
 
-## New Methods
+# The Library (Has the following methods)
 
-Perhaps NodeList should be able to `push`, `pop` etc
+When I extend the NodeList.prototype and HTMLCollection.prototype these methods don't work because of how NodeList work internally.
+
+In the library I'm using Arrays.
+
+## Methods
 
 - Push
 
@@ -336,7 +340,9 @@ $('div').reverse(); // Simply returns a reversed NodeList (USELESS!! IMO)
 
 **NO JOIN METHOD** Completely useless!!
 
-**There's most likely other methods that I can't think of right now feedback please!**
+## New Methods
+
+**There's most likely other methods that should exist that I can't think of right now feedback please!**
 
 # My wish
 
