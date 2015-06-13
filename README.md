@@ -353,7 +353,7 @@ My wish would be to have all modern browsers implement `NodeList` like how this 
 
 This should probably be on top but I feel the ending is better, but again my wish is to change how `NodeList` works in Web Browsers. I mean I don't see why this would hurt if it grows with help/feedback. As of right now `NodeList` don't do anything but store `nodes`.
 
-So the library edition IMO would be for Web Developers who don't use `jQuery` and like using native API's like myself or who use `jQuery` but only for the DOM, this is much smaller and very powerful.
+So the library edition IMO would be for Web Developers who don't use `jQuery` and like using native API's like myself or who use `jQuery` but only for DOM manipulation, this is a much smaller and very powerful alternative.
 
 Getting this natively, I would need tons of help. I don't know anything about writing specs and getting things standardized. Those of you who somewhat know me, I only throw out "good" Ideas (you know "good" IMO duh).
 
