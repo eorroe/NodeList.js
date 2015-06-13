@@ -63,6 +63,13 @@
 		some: Array.prototype.some,
 		reduce: Array.prototype.reduce,
 		reduceRight: Array.prototype.reduceRight,
+		push: Array.prototype.push,
+		pop: Array.prototype.pop,
+		shift: Array.prototype.shift,
+		unshift: Array.prototype.unshift,
+		splice: Array.prototype.splice,
+		sort: Array.prototype.sort,
+		reverse: Array.prototype.reverse,
 		slice(begin, end) {
 			return Object.setPrototypeOf(Array.prototype.slice.call(this, begin, end), NL);
 		},
@@ -74,7 +81,7 @@
 		},
 		get(prop) {
 			var arr = [];
-			for(var element of this) arr.push(element[prop] || null);
+			for(var element of this) arr.push(element[prop]);
 			return arr;
 		},
 		set(prop, value) {
