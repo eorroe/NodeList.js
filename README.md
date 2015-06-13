@@ -347,17 +347,15 @@ $('div').reverse(); // Simply returns a reversed NodeList (USELESS!! IMO)
 
 # My wish
 
-My wish would be to have all modern browsers implement `NodeList` like how this script does. Obviously in a much better way (because this is technically a hack IMO). Now if this is a definite NO depending on feedback from Web Devs I may refactor this code into a Library.
+My wish would be to have all modern browsers implement `NodeList` like how this script does. Obviously in a much better way (because this is technically a hack IMO).
 
 # Who/What is this for?
 
-This should probably be on top but I feel the ending is better, but again my wish is to change how `NodeList` works in Web Browsers. I mean I don't see why this would hurt if it grows with help/feedback. As of right now `NodeList` don't do anything but store nodes.
+This should probably be on top but I feel the ending is better, but again my wish is to change how `NodeList` works in Web Browsers. I mean I don't see why this would hurt if it grows with help/feedback. As of right now `NodeList` don't do anything but store `nodes`.
 
-So ok if this were a library IMO it'd be for Web Developers who don't use `jQuery` and like using native API's like myself or I'm pretty sure both can be benefited from (Not that jQuery is bad, it's just I've learned more from not using it I prefer to do things natively). P.S `jQuery` does a whole lot more, perhaps `jQuery` can implement something like this in their library, IDK I don't really use it. So if this were a library this would be the first library I'd use.
+So the library edition IMO would be for Web Developers who don't use `jQuery` and like using native API's like myself or who use `jQuery` but only for the DOM, this is much smaller and very powerful.
 
 Getting this natively, I would need tons of help. I don't know anything about writing specs and getting things standardized. Those of you who somewhat know me, I only throw out "good" Ideas (you know "good" IMO duh).
-
-Um that's it I think that's all I have to say.
 
 I tweeted at [@paul_irish][1], [@addyosmani][2], [@jeresig][3], [@simevidas][4], [@BrendanEich][5] about this because those are people I admire in the Web Development Community. So Thank You Guys.
 
