@@ -20,8 +20,9 @@
 		try {
 			if(HTMLElement.prototype[key].constructor === Function) {
 				NodeList.prototype[key] = function() {
+					let nodes = (key === 'remove') ? Array.from(this) : undefined;
 					let arr = [], newNodes = new Set();
-					for(let element of this) {
+					for(let element of (nodes || this)) {
 						let funcCall = element[key].apply(element, arguments);
 						funcCall instanceof Node ? newNodes.add(funcCall) : funcCall !== undefined ? arr.push(funcCall) : null;
 					}
@@ -125,3 +126,4 @@
 		}
 	}
 })();
+$ = document.querySelectorAll.bind(document);
