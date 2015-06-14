@@ -48,7 +48,7 @@
 		}
 	}
 
-	NodeList.prototype.__proto__ = {
+	Object.assign(NodeList.prototype, {
 		[Symbol.iterator]: Array.prototype[Symbol.iterator],
 		entries     : Array.prototype.entries,
 		keys        : Array.prototype.keys,
@@ -124,6 +124,6 @@
 			// ES7 Array Comprehensions
 			// return flatten([for(let node of this) node.querySelectorAll(selector)]);
 		}
-	}
+	});
 })();
 $ = document.querySelectorAll.bind(document);
