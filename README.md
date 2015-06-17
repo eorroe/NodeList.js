@@ -239,7 +239,19 @@ $('#container div').style.background = 'red'; // Not possible
 
 `$('#container div').style` returns an array of `CSSStyleDeclaration` objects so I can't set background on it
 
-There's obviously more problems, the above is just one big feature that would be totally awesome.
+Also calling methods that are not are not inherited from `HTMLElement.prototype`:
+
+```JS
+// Not currently possible
+$('video').pause();
+
+// You have loop through it yourself
+for(var video of $('video')) video.pause();
+
+//or
+$('video').forEach(video => video.pause());
+```
+There's obviously more problems.
 
 The solution would be (ES6 Proxies) which will allow the above to be possible.
 
