@@ -1,82 +1,97 @@
 (function() {
+	'use strict';
 	function flatten(arr) {
-		var nodes = [];
-		for(var list of arr) {
+		let nodes = [];
+		for(let list of arr) {
 			if(list instanceof Array || list instanceof NodeList || list instanceof HTMLCollection) {
-				for(var element of list) nodes.push(element);
+				for(let element of Array.from(list)) nodes.push(element);
 			} else {
 				nodes.push(list);
 			}
 		}
-		return Object.setPrototypeOf(nodes, NodeList.prototype);
+		return Object.setPrototypeOf(nodes, NL);
 	}
 
 	var NL = {
-		forEach: Array.prototype.forEach,
-		entries: Array.prototype.entries,
-		keys: Array.prototype.keys,
-		indexOf: Array.prototype.indexOf,
-		lastIndexOf: Array.prototype.lastIndexOf,
-		every: Array.prototype.every,
-		some: Array.prototype.some,
-		reduce: Array.prototype.reduce,
-		reduceRight: Array.prototype.reduceRight,
+		[Symbol.iterator]: Array.prototype[Symbol.iterator],
+		entries     : Array.prototype.entries,
+		keys        : Array.prototype.keys,
+		values      : Array.prototype.values,
+		forEach     : Array.prototype.forEach,
+		indexOf     : Array.prototype.indexOf,
+		lastIndexOf : Array.prototype.lastIndexOf,
+		every       : Array.prototype.every,
+		some        : Array.prototype.some,
+		reduce      : Array.prototype.reduce,
+		reduceRight : Array.prototype.reduceRight,
+		push        : Array.prototype.push,
+		pop         : Array.prototype.pop,
+		shift       : Array.prototype.shift,
+		unshift     : Array.prototype.unshift,
+		splice      : Array.prototype.splice,
+		sort        : Array.prototype.sort,
+		reverse     : Array.prototype.reverse,
+		find        : Array.prototype.find,
+		findIndex   : Array.prototype.findIndex,
+		copyWithin  : Array.prototype.copyWithin,
+		includes    : Array.prototype.includes,
 		slice(begin, end) {
-			return Object.setPrototypeOf(Array.prototype.slice.call(this, begin, end), this);
+			return Object.setPrototypeOf(Array.prototype.slice.call(this, begin, end), NL);
 		},
 		filter(cb) {
-			return Object.setPrototypeOf(Array.prototype.filter.call(this, cb), this);
-		},
-		includes(element) {
-			return Array.from(this).indexOf(element) > -1;
-		},
-		get(prop) {
-			var arr = [];
-			for(var element of this) arr.push(element[prop]);
-			return arr;
-		},
-		set(prop, value) {
-			for(var element of this) element[prop] = value;
+			return Object.setPrototypeOf(Array.prototype.filter.call(this, cb), NL);
 		},
 		map(cb) {
-			var nodes    = Array.prototype.map.call(this, cb);
-			var allNodes = nodes.every(function(el) {
-				return el instanceof Node;
-			});
-			if(allNodes) nodes.__proto__ = this;
+			let nodes = Array.prototype.map.call(this, cb);
+			if(nodes.every(el => el instanceof Node)) Object.setPrototypeOf(nodes, NL);
 			return nodes;
 		},
 		concat() {
-			var nodes = new Set(Array.from(this));
-			for(var arg of arguments) {
+			let nodes = new Set(this);
+			for(let arg of arguments) {
 				if(arg instanceof Node) {
 					nodes.add(arg);
-				} else if(arg instanceof NodeList || arg instanceof HTMLCollection || arg instanceof Array) {
-					for(var el of arg) {
+				} else if(arg instanceof NodeList || arg instanceof HTMLCollection || arg instanceof Array || arg.__proto__ === NL) {
+					for(let el of arg) {
 						if(el instanceof Node) {
 							nodes.add(el);
 						} else if(el instanceof NodeList) {
-							for(var a of el) nodes.add(a);
+							for(let a of el) nodes.add(a);
 						} else {
 							throw Error(`${el.constructor.name}: ${el} is not a Node`);
 						}
 					}
 				} else {
-					throw Error('Only Node, NodeList, HTMLCollection, or Array');
+					throw Error('Only Node, NodeList, HTMLCollection, or Array of (Node, NodeList, HTMLCollection)');
 				}
 			}
 			return Object.setPrototypeOf([...nodes], this);
 		},
+		// Delete once native Array.protototype.includes exist
+		includes(element) {
+			return this.indexOf(element) > -1;
+		},
+		get(prop) {
+			let arr = [];
+			for(let element of this) arr.push(element[prop]);
+			return arr;
+			// ES7 Array Comprehensions
+			// return [for(let element of this) element[prop]];
+		},
+		set(prop, value) {
+			for(let element of this) element[prop] = value;
+		},
 		querySelectorAll(selector) {
-			var nodes = Array.from(this), newNodes = [];
-			for(var node of nodes) newNodes.push(node.querySelectorAll(selector));
+			let newNodes = [];
+			for(let node of this) newNodes.push(node.querySelectorAll(selector));
 			return flatten(newNodes);
+			// ES7 Array Comprehensions
+			// return flatten([for(let node of this) node.querySelectorAll(selector)]);
 		}
 	}
 
 	document.querySelectorAll = function(selector) {
 		var nodes = Object.setPrototypeOf(Array.from(Document.prototype.querySelectorAll.call(document, selector)), NL);
-		nodes[Symbol.iterator] = Array.prototype[Symbol.iterator];
 		return new Proxy(nodes, {
 			get(target, property) {
 				if(target[property] !== undefined) return target[property];
