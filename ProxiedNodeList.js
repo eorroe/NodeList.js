@@ -9,7 +9,7 @@
 				nodes.push(list);
 			}
 		}
-		return Object.setPrototypeOf(nodes, NL);
+		return proxyNodeList(Object.setPrototypeOf(nodes, NL));
 	}
 
 	var NL = {
@@ -72,39 +72,31 @@
 			return this.indexOf(element) > -1;
 		},
 		get(prop) {
-			let arr = [];
-			for(let element of this) arr.push(element[prop]);
-			return arr;
-			// ES7 Array Comprehensions
-			// return [for(let element of this) element[prop]];
+			return [for(element of this) element[prop]];
 		},
 		set(prop, value) {
 			for(let element of this) element[prop] = value;
 		},
 		querySelectorAll(selector) {
-			let newNodes = [];
-			for(let node of this) newNodes.push(node.querySelectorAll(selector));
-			return flatten(newNodes);
-			// ES7 Array Comprehensions
-			// return flatten([for(let node of this) node.querySelectorAll(selector)]);
+			return flatten([for(node of this) node.querySelectorAll(selector)]);
 		}
 	}
 
-	document.querySelectorAll = function(selector) {
-		var nodes = Object.setPrototypeOf(Array.from(Document.prototype.querySelectorAll.call(document, selector)), NL);
-		return new Proxy(nodes, {
+
+	function proxyNodeList(nodeList) {
+		return new Proxy(nodeList, {
 			get(target, property) {
 				if(target[property] !== undefined) return target[property];
 				try {
 					if(HTMLElement.prototype[property].constructor == Function) {
 						return function() {
-							if(property == 'remove') var nodes = Array.from(target);
+							if(property == 'remove') var nodeList = Array.from(target);
 							var arr = [], newNodes = new Set();
-							for(var element of (nodes || target)) {
+							for(var element of (nodeList || target)) {
 								var funcCall = element[property].apply(element, arguments);
 								funcCall instanceof Node ? newNodes.add(funcCall) : funcCall !== undefined ? arr.push(funcCall) : null;
 							}
-							return (newNodes.size) ? Object.setPrototypeOf([...newNodes], NL) : (arr.length) ? arr : undefined;
+							return (newNodes.size) ? proxyNodeList(Object.setPrototypeOf([...newNodes], NL)) : (arr.length) ? arr : undefined;
 						}
 					}
 				} catch(e) {
@@ -114,7 +106,7 @@
 						prop instanceof Node ? newNodes.add(prop) : (prop !== undefined) ? arr.push(prop) : null;
 					}
 					return (newNodes.size) ?
-					Object.setPrototypeOf([...newNodes], NL) :
+					proxyNodeList(Object.setPrototypeOf([...newNodes], NL)) :
 					(arr[0] instanceof NodeList || arr[0] instanceof HTMLCollection) ?
 					flatten(arr) : (arr.length) ? arr : undefined;
 				}
@@ -125,5 +117,11 @@
 				}
 			}
 		});
+	}
+
+	document.querySelectorAll = function(selector) {
+		var nodes = Array.from(Document.prototype.querySelectorAll.call(document, selector));
+		Object.setPrototypeOf(nodes, NL);
+		return proxyNodeList(nodes);
 	}
 })();
