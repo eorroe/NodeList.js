@@ -46,9 +46,9 @@
 			if(nodes.every(el => el instanceof Node)) Object.setPrototypeOf(nodes, NL);
 			return nodes;
 		},
-		concat() {
+		concat(...args) {
 			let nodes = new Set(this);
-			for(let arg of arguments) {
+			for(let arg of args) {
 				if(arg instanceof Node) {
 					nodes.add(arg);
 				} else if(arg instanceof NodeList || arg instanceof HTMLCollection || arg instanceof Array || arg.__proto__ === NL) {
@@ -82,27 +82,26 @@
 		}
 	}
 
-
 	function proxyNodeList(nodeList) {
 		return new Proxy(nodeList, {
 			get(target, property) {
 				if(target[property] !== undefined) return target[property];
 				try {
 					if(HTMLElement.prototype[property].constructor == Function) {
-						return function() {
-							if(property == 'remove') var nodeList = Array.from(target);
-							var arr = [], newNodes = new Set();
-							for(var element of (nodeList || target)) {
-								var funcCall = element[property].apply(element, arguments);
+						return function(...args) {
+							let nodeList = (property === 'remove') ? Array.from(target) : undefined; // done because of NodeList being live
+							let arr = [], newNodes = new Set();
+							for(let element of (nodeList || target)) {
+								let funcCall = element[property](...args);
 								funcCall instanceof Node ? newNodes.add(funcCall) : funcCall !== undefined ? arr.push(funcCall) : null;
 							}
 							return (newNodes.size) ? proxyNodeList(Object.setPrototypeOf([...newNodes], NL)) : (arr.length) ? arr : undefined;
 						}
 					}
 				} catch(e) {
-					var arr = [], newNodes = new Set();
-					for(var element of target) {
-						var prop = element[property];
+					let arr = [], newNodes = new Set();
+					for(let element of target) {
+						let prop = element[property];
 						prop instanceof Node ? newNodes.add(prop) : (prop !== undefined) ? arr.push(prop) : null;
 					}
 					return (newNodes.size) ?
@@ -112,15 +111,15 @@
 				}
 			},
 			set(target, prop, value) {
-				for(var element of target) {
-					if(prop in element) element[prop] = value;
+				for(let element of target) {
+					if(prop in element) if(element[prop] !== undefined) element[prop] = value;
 				}
 			}
 		});
 	}
 
 	document.querySelectorAll = function(selector) {
-		var nodes = Array.from(Document.prototype.querySelectorAll.call(document, selector));
+		let nodes = Array.from(Document.prototype.querySelectorAll.call(document, selector));
 		Object.setPrototypeOf(nodes, NL);
 		return proxyNodeList(nodes);
 	}
