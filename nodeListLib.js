@@ -3,8 +3,8 @@
 	function flatten(arr) {
 		let nodes = [];
 		for(let list of arr) {
-			if(list instanceof Array || list instanceof NodeList || list instanceof HTMLCollection) {
-				for(let element of Array.from(list)) nodes.push(element);
+			if(list instanceof NodeList || list instanceof HTMLCollection) {
+				for(let element of list) nodes.push(element);
 			} else {
 				nodes.push(list);
 			}
@@ -17,10 +17,10 @@
 	for(let key in HTMLElement.prototype) {
 		try {
 			if(HTMLElement.prototype[key].constructor === Function) {
-				NL[key] = function() {
+				NL[key] = function(...args) {
 					let arr = [], newNodes = new Set();
 					for(let element of this) {
-						let funcCall = element[key].apply(element, arguments);
+						let funcCall = element[key](...args);
 						funcCall instanceof Node ? newNodes.add(funcCall) : funcCall !== undefined ? arr.push(funcCall) : null;
 					}
 					return (newNodes.size) ? Object.setPrototypeOf([...newNodes], NL) : (arr.length) ? arr : undefined;
@@ -79,9 +79,9 @@
 			if(nodes.every(el => el instanceof Node)) Object.setPrototypeOf(nodes, NL);
 			return nodes;
 		},
-		concat() {
+		concat(...args) {
 			let nodes = new Set(this);
-			for(let arg of arguments) {
+			for(let arg of args) {
 				if(arg instanceof Node) {
 					nodes.add(arg);
 				} else if(arg instanceof NodeList || arg instanceof HTMLCollection || arg instanceof Array || arg.__proto__ === NL) {
@@ -116,10 +116,10 @@
 		},
 		querySelectorAll(selector) {
 			let newNodes = [];
-			for(let node of this) newNodes.push(node.querySelectorAll(selector));
+			for(let node of this) newNodes.push(Array.from(node.querySelectorAll(selector)));
 			return flatten(newNodes);
 			// ES7 Array Comprehensions
-			// return flatten([for(let node of this) node.querySelectorAll(selector)]);
+			// return flatten([for(let node of this) Array.from(node.querySelectorAll(selector))]);
 		}
 	});
 	window.$ = selector => Object.setPrototypeOf(Array.from(document.querySelectorAll(selector)), NL);
