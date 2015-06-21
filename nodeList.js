@@ -19,11 +19,11 @@
 	for(let key in HTMLElement.prototype) {
 		try {
 			if(HTMLElement.prototype[key].constructor === Function) {
-				NodeList.prototype[key] = function() {
+				NodeList.prototype[key] = function(...args) {
 					let nodes = (key === 'remove') ? Array.from(this) : undefined;
 					let arr = [], newNodes = new Set();
 					for(let element of (nodes || this)) {
-						let funcCall = element[key].apply(element, arguments);
+						let funcCall = element[key](...args);
 						funcCall instanceof Node ? newNodes.add(funcCall) : funcCall !== undefined ? arr.push(funcCall) : null;
 					}
 					return (newNodes.size) ? Object.setPrototypeOf([...newNodes], NodeList.prototype) : (arr.length) ? arr : undefined;
@@ -60,11 +60,6 @@
 		some        : Array.prototype.some,
 		reduce      : Array.prototype.reduce,
 		reduceRight : Array.prototype.reduceRight,
-		push        : Array.prototype.push,
-		pop         : Array.prototype.pop,
-		shift       : Array.prototype.shift,
-		unshift     : Array.prototype.unshift,
-		splice      : Array.prototype.splice,
 		sort        : Array.prototype.sort,
 		reverse     : Array.prototype.reverse,
 		find        : Array.prototype.find,
@@ -82,9 +77,9 @@
 			if(nodes.every(el => el instanceof Node)) Object.setPrototypeOf(nodes, NodeList.prototype);
 			return nodes;
 		},
-		concat() {
+		concat(...args) {
 			let nodes = new Set(this);
-			for(let arg of arguments) {
+			for(let arg of args) {
 				if(arg instanceof Node) {
 					nodes.add(arg);
 				} else if(arg instanceof NodeList || arg instanceof HTMLCollection || arg instanceof Array || arg.__proto__ === NodeList.prototype) {
@@ -119,11 +114,10 @@
 		},
 		querySelectorAll(selector) {
 			let newNodes = [];
-			for(let node of this) newNodes.push(node.querySelectorAll(selector));
+			for(let node of this) newNodes.push(Array.from(node.querySelectorAll(selector)));
 			return flatten(newNodes);
 			// ES7 Array Comprehensions
-			// return flatten([for(let node of this) node.querySelectorAll(selector)]);
+			// return flatten([for(let node of this) Array.from(node.querySelectorAll(selector))]);
 		}
 	});
 })();
-$ = document.querySelectorAll.bind(document);
