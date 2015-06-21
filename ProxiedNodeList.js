@@ -4,7 +4,7 @@
 		let nodes = [];
 		for(let list of arr) {
 			if(list instanceof Array || list instanceof NodeList || list instanceof HTMLCollection) {
-				for(let element of Array.from(list)) nodes.push(element);
+				for(let element of list) nodes.push(element);
 			} else {
 				nodes.push(list);
 			}
@@ -12,7 +12,7 @@
 		return proxyNodeList(Object.setPrototypeOf(nodes, NL));
 	}
 
-	var NL = {
+	let NL = {
 		[Symbol.iterator]: Array.prototype[Symbol.iterator],
 		entries     : Array.prototype.entries,
 		keys        : Array.prototype.keys,
@@ -36,14 +36,18 @@
 		copyWithin  : Array.prototype.copyWithin,
 		includes    : Array.prototype.includes,
 		slice(begin, end) {
-			return Object.setPrototypeOf(Array.prototype.slice.call(this, begin, end), NL);
+			let nodes = Array.prototype.slice.call(this, begin, end);
+			return Object.setPrototypeOf(proxyNodeList(nodes), NL);
 		},
 		filter(cb) {
-			return Object.setPrototypeOf(Array.prototype.filter.call(this, cb), NL);
+			let nodes = Array.prototype.filter.call(this, cb);
+			return Object.setPrototypeOf(proxyNodeList(nodes), NL);
 		},
 		map(cb) {
 			let nodes = Array.prototype.map.call(this, cb);
-			if(nodes.every(el => el instanceof Node)) Object.setPrototypeOf(nodes, NL);
+			if(nodes.every(el => el instanceof Node)) {
+				nodes = Object.setPrototypeOf(proxyNodeList(nodes), NL);
+			}
 			return nodes;
 		},
 		concat(...args) {
@@ -65,7 +69,7 @@
 					throw Error('Only Node, NodeList, HTMLCollection, or Array of (Node, NodeList, HTMLCollection)');
 				}
 			}
-			return Object.setPrototypeOf([...nodes], this);
+			return Object.setPrototypeOf(proxyNodeList([...nodes]), this);
 		},
 		// Delete once native Array.protototype.includes exist
 		includes(element) {
@@ -78,7 +82,8 @@
 			for(let element of this) element[prop] = value;
 		},
 		querySelectorAll(selector) {
-			return flatten([for(node of this) node.querySelectorAll(selector)]);
+			let nodes = [for(node of this) Array.from(node.querySelectorAll(selector))];
+			return flatten(nodes);
 		}
 	}
 
@@ -120,7 +125,6 @@
 
 	document.querySelectorAll = function(selector) {
 		let nodes = Array.from(Document.prototype.querySelectorAll.call(document, selector));
-		Object.setPrototypeOf(nodes, NL);
-		return proxyNodeList(nodes);
+		return Object.setPrototypeOf(proxyNodeList(nodes), NL);
 	}
 })();
