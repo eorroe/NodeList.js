@@ -352,4 +352,4 @@ I tweeted at [@paul_irish][1], [@addyosmani][2], [@jeresig][3], [@simevidas][4],
 
 This is the first repository I've ever written for others to use. So bare with me, this is not professionally done. As well as I'm not that good at writing, I'm much better at speaking/talks.
 
-I would like some feedback on editing this repository as well, like the name it's pretty bad. Perhaps **NodeList.js**?
+I would like some feedback on editing this repository as well.
