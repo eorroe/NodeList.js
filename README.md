@@ -105,7 +105,7 @@ $('#container div').innerHTML = '<div class="square">';
 for(var div of $('#container div')) div.innerHTML = '<div class="square">';
 
 // Method 3 for innerHTML: call forEach on NodeList
-$('#container div').forEach( (div, index) => div.innerHTML = '<div class="square">');
+$('#container div').forEach( div => div.innerHTML = '<div class="square">');
 ```
 
 ## Styling `#container` children
