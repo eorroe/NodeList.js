@@ -338,7 +338,7 @@ This should probably be on top but I feel the ending is better, but again my wis
 
 So the library edition IMO would be for Web Developers who don't use `jQuery` and like using native API's like myself or who use `jQuery` but only for DOM manipulation, this is a much smaller and very powerful alternative.
 
-Getting this natively, I would need tons of help. I don't know anything about writing specs and getting things standardized. Those of you who somewhat know me, I only throw out "good" Ideas (you know "good" IMO duh).
+Getting this natively, I would need tons of help. I don't know anything about writing specs and getting things standardized.
 
 I tweeted at [@paul_irish][1], [@addyosmani][2], [@jeresig][3], [@simevidas][4], [@BrendanEich][5] about this because those are people I admire in the Web Development Community. So Thank You Guys.
 
