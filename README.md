@@ -10,6 +10,20 @@ There are 3 **(ES6 only Environments)** scripts in this repository
 
 These scripts allow you to manipulate a `NodeList` the same way you would with any `Node` plus more.
 
+## ES6 Features Being Used:
+- let binding
+- for-of
+- Symbol.iterator
+- Sets
+- Spread operator
+- Rest parameters
+- Array.from
+- Object.assign
+- Object.setPrototypeOf
+- Object#__proto__
+- Short Hand Methods
+- Short Hand Properties
+
 ## Inheriting from `Array.prototype`
 
 `NodeList.prototype` has the `Array` methods: `forEach`, `entries`, `keys`, `indexOf`, `lastIndexOf`, `every`, `some`, `reduce`,
