@@ -15,14 +15,8 @@ These scripts allow you to manipulate a `NodeList` the same way you would with a
 - for-of
 - Symbol.iterator
 - Sets
-- Spread operator
-- Rest parameters
-- Array.from
-- Object.assign
 - Object.setPrototypeOf
 - Object#\__proto\__
-- Short Hand Methods
-- Short Hand Properties
 
 ## Inheriting from `Array.prototype`
 
