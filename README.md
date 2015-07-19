@@ -20,7 +20,7 @@ These scripts allow you to manipulate a `NodeList` the same way you would with a
 - Array.from
 - Object.assign
 - Object.setPrototypeOf
-- Object#__proto__
+- Object#\__proto\__
 - Short Hand Methods
 - Short Hand Properties
 
