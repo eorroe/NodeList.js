@@ -236,6 +236,11 @@ $('div').set('className', 'these are the classes being set');
 
 $('div').className = 'these are the classes being set';
 ```
+`set()` has a third parameter `Boolean` which determines whether to check if node has the property before setting it:
+```JS
+$('div, a').set('href', 'https://www.example.com'); // would set `href` on both divs and anchor tags
+$('div, a').set('href', 'https://www.example.com', true); // only sets `href` on anchor tags because it checks if that property is not undefined
+```
 
 # The future
 
