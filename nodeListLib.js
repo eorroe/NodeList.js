@@ -31,6 +31,7 @@
 					} else if(arr.length) {
 						return arr;
 					}
+					return this;
 				}
 			}
 		} catch(e) {
@@ -69,20 +70,38 @@
 	NL.some             = Array.prototype.some;
 	NL.reduce           = Array.prototype.reduce;
 	NL.reduceRight      = Array.prototype.reduceRight;
-	NL.push             = Array.prototype.push;
 	NL.pop              = Array.prototype.pop;
 	NL.shift            = Array.prototype.shift;
-	NL.unshift          = Array.prototype.unshift;
-	NL.splice           = Array.prototype.splice;
 	NL.sort             = Array.prototype.sort;
 	NL.reverse          = Array.prototype.reverse;
 	NL.includes         = Array.prototype.includes || function includes(element) {
 		return this.indexOf(element) > -1;
 	}
 
-	if(Array.prototype.find)       NL.find       = Array.prototype.find
-	if(Array.prototype.findIndex)  NL.findIndex  = Array.prototype.findIndex
-	if(Array.prototype.copyWithin) NL.copyWithin = Array.prototype.copyWithin
+	if(Array.prototype.find)       NL.find       = Array.prototype.find;
+	if(Array.prototype.findIndex)  NL.findIndex  = Array.prototype.findIndex;
+	if(Array.prototype.copyWithin) NL.copyWithin = Array.prototype.copyWithin;
+
+	NL.push = function() {
+		for(let i = 0, l = arguments.length; i < l; i++) {
+			if(!(arguments[i] instanceof Node)) throw Error('Passed arguments must be a Node');
+		}
+		Array.prototype.push.apply(this, arguments);
+	}
+
+	NL.unshift = function() {
+		for(let i = 0, l = arguments.length; i < l; i++) {
+			if(!(arguments[i] instanceof Node)) throw Error('Passed arguments must be a Node');
+		}
+		Array.prototype.unshift.apply(this, arguments);
+	}
+
+	NL.splice = function() {
+		for(let i = 2, l = arguments.length; i < l; i++) {
+			if(!(arguments[i] instanceof Node)) throw Error('Passed arguments must be a Node');
+		}
+		Array.prototype.splice.apply(this, arguments);
+	}
 
 	NL.slice = function slice(begin, end) {
 		return Object.setPrototypeOf(Array.prototype.slice.call(this, begin, end), NL);
@@ -144,8 +163,14 @@
 		return arr;
 	}
 
-	NL.set = function set(prop, value) {
-		for(let element of this) element[prop] = value;
+	NL.set = function set(prop, value, checkIfExist) {
+		if(checkIfExist) {
+			for(let element of this) {
+				if(element[prop] !== undefined) element[prop] = vlue;
+			}
+		} else {
+			for(let element of this) element[prop] = value;
+		}
 	}
 
 	window.$ = function(selector) {
