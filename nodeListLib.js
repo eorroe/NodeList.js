@@ -65,7 +65,6 @@
 	NL.entries          = Array.prototype.entries;
 	NL.indexOf          = Array.prototype.indexOf;
 	NL.lastIndexOf      = Array.prototype.lastIndexOf;
-	NL.forEach          = Array.prototype.forEach;
 	NL.every            = Array.prototype.every;
 	NL.some             = Array.prototype.some;
 	NL.reduce           = Array.prototype.reduce;
@@ -82,25 +81,30 @@
 	if(Array.prototype.findIndex)  NL.findIndex  = Array.prototype.findIndex;
 	if(Array.prototype.copyWithin) NL.copyWithin = Array.prototype.copyWithin;
 
+	NL.forEach = function() {
+		Array.prototype.forEach.apply(this, arguments);
+		return this;
+	}
+
 	NL.push = function() {
 		for(let i = 0, l = arguments.length; i < l; i++) {
 			if(!(arguments[i] instanceof Node)) throw Error('Passed arguments must be a Node');
 		}
-		Array.prototype.push.apply(this, arguments);
+		return Array.prototype.push.apply(this, arguments);
 	}
 
 	NL.unshift = function() {
 		for(let i = 0, l = arguments.length; i < l; i++) {
 			if(!(arguments[i] instanceof Node)) throw Error('Passed arguments must be a Node');
 		}
-		Array.prototype.unshift.apply(this, arguments);
+		return Array.prototype.unshift.apply(this, arguments);
 	}
 
 	NL.splice = function() {
 		for(let i = 2, l = arguments.length; i < l; i++) {
 			if(!(arguments[i] instanceof Node)) throw Error('Passed arguments must be a Node');
 		}
-		Array.prototype.splice.apply(this, arguments);
+		return Array.prototype.splice.apply(this, arguments);
 	}
 
 	NL.slice = function slice(begin, end) {
@@ -171,6 +175,7 @@
 		} else {
 			for(let element of this) element[prop] = value;
 		}
+		return this;
 	}
 
 	window.$ = function(selector) {
