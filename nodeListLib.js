@@ -1,9 +1,10 @@
 (function() {
 	'use strict';
+	NodeList.prototype[Symbol.iterator] = HTMLCollection.prototype[Symbol.iterator] = Array.prototype[Symbol.iterator];
 	function flatten(arr) {
 		let nodes = [];
 		for(let list of arr) {
-			if(list instanceof NodeList || list instanceof HTMLCollection) {
+			if(list instanceof Array || list instanceof NodeList || list instanceof HTMLCollection) {
 				for(let element of list) nodes.push(element);
 			} else {
 				nodes.push(list);
@@ -17,111 +18,141 @@
 	for(let key in HTMLElement.prototype) {
 		try {
 			if(HTMLElement.prototype[key].constructor === Function) {
-				NL[key] = function(...args) {
+				NL[key] = function() {
 					let arr = [], newNodes = new Set();
 					for(let element of this) {
-						let funcCall = element[key](...args);
+						let funcCall = element[key].apply(element, arguments);
 						funcCall instanceof Node ? newNodes.add(funcCall) : funcCall !== undefined ? arr.push(funcCall) : null;
 					}
-					return (newNodes.size) ? Object.setPrototypeOf([...newNodes], NL) : (arr.length) ? arr : undefined;
+					if(newNodes.size) {
+						let nodes = [];
+						for(let node of newNodes) nodes.push(node);
+						return Object.setPrototypeOf(nodes, NL);
+					} else if(arr.length) {
+						return arr;
+					}
 				}
 			}
 		} catch(e) {
 			Object.defineProperty(NL, key, {
-				get() {
+				get: function() {
 					let arr = [], nodes = new Set();
 					for(let element of this) {
 						let prop = element[key];
 						prop instanceof Node ? nodes.add(prop) : arr.push(prop);
 					}
-					return (nodes.size) ? Object.setPrototypeOf([...nodes], NL) :
-					(arr[0] instanceof NodeList || arr[0] instanceof HTMLCollection) ?
-					flatten(arr) : arr;
+					if(nodes.size) {
+						let newNodes = [];
+						for(let node of nodes) newNodes.push(node);
+						return Object.setPrototypeOf(newNodes, NL);
+					} else if(arr[0] instanceof NodeList || arr[0] instanceof HTMLCollection) {
+						return flatten(arr);
+					} else {
+						return arr;
+					}
 				},
-				set(newVal) {
+				set: function(newVal) {
 					for(let element of this) element[key] = newVal;
 				}
 			});
 		}
 	}
 
-	Object.assign(NL, {
-		[Symbol.iterator]: Array.prototype[Symbol.iterator],
-		entries     : Array.prototype.entries,
-		keys        : Array.prototype.keys,
-		values      : Array.prototype.values,
-		forEach     : Array.prototype.forEach,
-		indexOf     : Array.prototype.indexOf,
-		lastIndexOf : Array.prototype.lastIndexOf,
-		every       : Array.prototype.every,
-		some        : Array.prototype.some,
-		reduce      : Array.prototype.reduce,
-		reduceRight : Array.prototype.reduceRight,
-		push        : Array.prototype.push,
-		pop         : Array.prototype.pop,
-		shift       : Array.prototype.shift,
-		unshift     : Array.prototype.unshift,
-		splice      : Array.prototype.splice,
-		sort        : Array.prototype.sort,
-		reverse     : Array.prototype.reverse,
-		find        : Array.prototype.find,
-		findIndex   : Array.prototype.findIndex,
-		copyWithin  : Array.prototype.copyWithin,
-		includes    : Array.prototype.includes,
-		slice(begin, end) {
-			return Object.setPrototypeOf(Array.prototype.slice.call(this, begin, end), NL);
-		},
-		filter(cb) {
-			return Object.setPrototypeOf(Array.prototype.filter.call(this, cb), NL);
-		},
-		map(cb) {
-			let nodes = Array.prototype.map.call(this, cb);
-			if(nodes.every(el => el instanceof Node)) Object.setPrototypeOf(nodes, NL);
-			return nodes;
-		},
-		concat(...args) {
-			let nodes = new Set(this);
-			for(let arg of args) {
-				if(arg instanceof Node) {
-					nodes.add(arg);
-				} else if(arg instanceof NodeList || arg instanceof HTMLCollection || arg instanceof Array || arg.__proto__ === NL) {
-					for(let el of arg) {
-						if(el instanceof Node) {
-							nodes.add(el);
-						} else if(el instanceof NodeList) {
-							for(let a of el) nodes.add(a);
-						} else {
-							throw Error(`${el.constructor.name}: ${el} is not a Node`);
-						}
+	NL[Symbol.iterator] = Array.prototype[Symbol.iterator];
+	NL.keys             = Array.prototype.keys;
+	NL.values           = Array.prototype.values;
+	NL.entries          = Array.prototype.entries;
+	NL.indexOf          = Array.prototype.indexOf;
+	NL.lastIndexOf      = Array.prototype.lastIndexOf;
+	NL.forEach          = Array.prototype.forEach;
+	NL.every            = Array.prototype.every;
+	NL.some             = Array.prototype.some;
+	NL.reduce           = Array.prototype.reduce;
+	NL.reduceRight      = Array.prototype.reduceRight;
+	NL.push             = Array.prototype.push;
+	NL.pop              = Array.prototype.pop;
+	NL.shift            = Array.prototype.shift;
+	NL.unshift          = Array.prototype.unshift;
+	NL.splice           = Array.prototype.splice;
+	NL.sort             = Array.prototype.sort;
+	NL.reverse          = Array.prototype.reverse;
+	NL.includes         = Array.prototype.includes || function includes(element) {
+		return this.indexOf(element) > -1;
+	}
+
+	if(Array.prototype.find)       NL.find       = Array.prototype.find
+	if(Array.prototype.findIndex)  NL.findIndex  = Array.prototype.findIndex
+	if(Array.prototype.copyWithin) NL.copyWithin = Array.prototype.copyWithin
+
+	NL.slice = function slice(begin, end) {
+		return Object.setPrototypeOf(Array.prototype.slice.call(this, begin, end), NL);
+	}
+
+	NL.filter = function filter(cb) {
+		return Object.setPrototypeOf(Array.prototype.filter.call(this, cb), NL);
+	}
+
+	NL.map = function map(cb) {
+		let nodes = Array.prototype.map.call(this, cb),
+
+		areAllNodes = nodes.every(function(el) {
+			return el instanceof Node;
+		});
+
+		if(areAllNodes) Object.setPrototypeOf(nodes, NL);
+		return nodes;
+	}
+
+	NL.concat = function concat() {
+		let nodes = new Set(this);
+		for(let i = 0, l = arguments.length; i < l; i++) {
+			let arg = arguments[i];
+			if(arg instanceof Node) {
+				nodes.add(arg);
+			} else if(arg instanceof NodeList || arg instanceof HTMLCollection || arg instanceof Array || arg.__proto__ === NL) {
+				for(let el of arg) {
+					if(el instanceof Node) {
+						nodes.add(el);
+					} else if(el instanceof NodeList) {
+						for(let a of el) nodes.add(a);
+					} else {
+						throw Error(el.constructor.name + ': ' + el + ' is not a Node');
 					}
-				} else {
-					throw Error('Only Node, NodeList, HTMLCollection, or Array of (Node, NodeList, HTMLCollection)');
 				}
+			} else {
+				throw Error('Only Node, NodeList, HTMLCollection, or Array of (Node, NodeList, HTMLCollection)');
 			}
-			return Object.setPrototypeOf([...nodes], this);
-		},
-		// Delete once native Array.protototype.includes exist
-		includes(element) {
-			return this.indexOf(element) > -1;
-		},
-		get(prop) {
-			let arr = [];
-			for(let element of this) arr.push(element[prop]);
-			return arr;
-			// ES7 Array Comprehensions
-			// return [for(let element of this) element[prop]];
-		},
-		set(prop, value) {
-			for(let element of this) element[prop] = value;
-		},
-		querySelectorAll(selector) {
-			let newNodes = [];
-			for(let node of this) newNodes.push(Array.from(node.querySelectorAll(selector)));
-			return flatten(newNodes);
-			// ES7 Array Comprehensions
-			// return flatten([for(let node of this) Array.from(node.querySelectorAll(selector))]);
 		}
-	});
-	window.$ = selector => Object.setPrototypeOf(Array.from(document.querySelectorAll(selector)), NL);
+		let newNodes = [];
+		for(let node of nodes) newNodes.push(node);
+		return Object.setPrototypeOf(newNodes, this);
+	}
+
+	NL.querySelectorAll = function querySelectorAll(selector) {
+		let newNodes = [];
+		for(let node of this) {
+			let nodes = [];
+			for(let n of node.querySelectorAll(selector)) nodes.push(n);
+			newNodes.push(nodes);
+		}
+		return flatten(newNodes);
+	}
+
+	NL.get = function get(prop) {
+		let arr = [];
+		for(let element of this) arr.push(element[prop]);
+		return arr;
+	}
+
+	NL.set = function set(prop, value) {
+		for(let element of this) element[prop] = value;
+	}
+
+	window.$ = function(selector) {
+		let nodes = [];
+		for(let node of document.querySelectorAll(selector)) nodes.push(node);
+		return Object.setPrototypeOf(nodes, NL);
+	}
+
 	window.$.NL = NL;
 })();
