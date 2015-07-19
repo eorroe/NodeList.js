@@ -142,6 +142,13 @@ $('#container div').onclick = function(evt) {
 }
 ```
 
+**All DOM Methods that return undefined when called on a single Node will return the Array of Nodes to allow Method Chaining**
+
+## ForEach
+```JS
+$('div').forEach(el => el.remove()); // returns same Array of Nodes to allow method chaining.
+```
+
 ## Slicing
 ```JS
 $('#container div').slice(0, 1); // Returns NodeList with first element;
