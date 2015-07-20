@@ -11,22 +11,9 @@ There are 3 **(ES6 only Environments)** scripts in this repository
 These scripts allow you to manipulate a `NodeList` the same way you would with any `Node` plus more.
 
 ## ES6 Features Being Used:
-- let binding
-- for-of
-- Symbol.iterator
 - Sets
 - Object.setPrototypeOf
 - Object#\__proto\__
-
-## Inheriting from `Array.prototype`
-
-`NodeList.prototype` has the `Array` methods: `forEach`, `entries`, `keys`, `indexOf`, `lastIndexOf`, `every`, `some`, `reduce`,
-`reduceRight`, `slice`, `map`, `filter`, and `concat`. Notice all those methods work just how they would on an `Array` by not changing the actual
-`NodeList`. Therefore `NodeList.prototype` does not have the methods: `push`, `pop`, `shift`, `unshift`, `splice`, `sort`, and `reverse`.
-
-The `join` method would be completely useless.
-
-I'm not sure `pushing`, `popping`, `shifting`, `unshifting`, `splicing`, `sorting`, `reversing` the `NodeList` would be a good thing or necessary. Also the way `NodeList` and `HTMLCollections` work internally don't allow me to extend these methods to work properly.
 
 # Examples Uses:
 
