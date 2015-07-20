@@ -10,7 +10,7 @@ There are 3 **(ES6 only Environments)** scripts in this repository
 
 These scripts allow you to manipulate a `NodeList` the same way you would with any `Node` plus more.
 
-## ES6 Features Being Used:
+**ES6 Features Being Used In The Library :**
 - Sets
 - Object.setPrototypeOf
 - Object#\__proto\__
