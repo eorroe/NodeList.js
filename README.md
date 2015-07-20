@@ -17,7 +17,7 @@ These scripts allow you to manipulate a `NodeList` the same way you would with a
 
 # Examples Uses:
 
-**ATTENTION**: Use any browser with the all DOM properties on the prototype I'm using chrome 43+.
+**ATTENTION**: Use a browser with all the DOM properties on their prototype, I'm using chrome 43+.
 
 First let's consider that this line is being used in the following: `$ = document.querySelectorAll.bind(document);`.
 
@@ -230,7 +230,7 @@ $('div').set('className', 'these are the classes being set');
 
 $('div').className = 'these are the classes being set';
 ```
-`set()` has a third parameter `Boolean` which determines whether to check if node has the property before setting it:
+`set()` has a third `Boolean` parameter which determines whether to check if node has the property before setting it:
 ```JS
 $('div, a').set('href', 'https://www.example.com'); // would set `href` on both divs and anchor tags
 $('div, a').set('href', 'https://www.example.com', true); // only sets `href` on anchor tags because it checks if that property is not undefined
@@ -331,13 +331,9 @@ $('div').reverse(); // Simply returns a reversed NodeList (USELESS!! IMO)
 
 **NO JOIN METHOD** Completely useless!!
 
-## New Methods
-
-**There's most likely other methods that should exist that I can't think of right now feedback please!**
-
 # My wish
 
-My wish would be to have all modern browsers implement `NodeList` like how this script does. Obviously in a much better way (because this is technically a hack IMO).
+My wish would be to have all modern browsers implement `NodeList` like this.
 
 # Who/What is this for?
 
