@@ -365,10 +365,6 @@ This library is for devs who want to manipulate the `DOM` using the Native DOM A
 
 Getting this natively, I would need tons of help. I don't know anything about writing specs and getting things standardized.
 
-# **My Apolgies**
-
-This is the first repository I've ever written for others to use. So bare with me, this is not professionally done.
-
 # My Gratitude:
 
 I tweeted at [@paul_irish][1], [@addyosmani][2], [@jeresig][3], [@simevidas][4], [@BrendanEich][5] about this because those are people I admire in the Web Development Community. So Thank You Guys.
