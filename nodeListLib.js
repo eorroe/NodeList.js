@@ -138,7 +138,7 @@
 			if(checkExistence) {
 				for(var i = 0, l = this.length; i < l; i++) {
 					var element = this[i];
-					if(element[prop] !== undefined) element[prop] = vlue;
+					if(element[prop] !== undefined) element[prop] = value;
 				}
 			} else {
 				for(var i = 0, l = this.length; i < l; i++) this[i][prop] = value;
