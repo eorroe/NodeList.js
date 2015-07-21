@@ -1,10 +1,10 @@
 # Overview
 
-**First**: The File You'll use is `nodeListLib.js`, ignore the rest.
+**First Let Me Say:** The File You'll use is `nodeListLib.js`, **IGNORE** the others.
 
 ## What this is?
 
-`nodeList.js` is a very small (About 6kb) but yet powerful library which allows you to manipulate an **Array of Nodes** just like you would with a single node, using the `native DOM APIs`.
+`nodeList.js` is a small (About 6kb) fully `ES5` written very powerful library which allows you to manipulate an **Array of Nodes** just like you would with a single `Node`, using the `Native DOM APIs`.
 
 **RECOMMENDED**: Use within a browser with all the `DOM` properties on their `prototype` for example *chrome 43+*
 
@@ -44,7 +44,7 @@ $('div div');
 ## *Getting* properties of each `Node`:
 How you would normally do it:
 ```JS
-let children = document.getElementsByClassName('.child');
+let children = document.getElementsByClassName('child');
 ```
 Now you would get properties on the `#container`'s children:
 ```JS
@@ -64,7 +64,7 @@ $('.child').className; // ['child', 'child' ... x10]
 
 Therefore you would read each property just like you would with a single `Node` :)
 
-**Notice** how it returns an array of the property's value, meaning you can select them by `index` and use any `Array Methods` on them.
+**Notice** how it returns an array of the property's value, meaning you can select them by `index` and use any `Array Methods` on them, you'll see when you get to the [looping](https://github.com/eorroe/NodeList.js#looping) part.
 
 ## *Setting* properties on each `node`:
 
@@ -103,7 +103,8 @@ So cool right? You can use any `Native DOM method`:
 Let's set some attributes:
 ```JS
 $('.child').setAttribute('class', 'child div');
-// For class you could just do:
+
+// For setting the class you could just do:
 $('.child').className = 'child div';
 ```
 Clicking the elements:
@@ -116,8 +117,7 @@ $('.child').remove();
 ```
 *I think you're getting the point any **native method** you could just call on the **NodeList** and it'll call it on **each** element*
 
-BTW:
-**All DOM Methods that would normally return `undefined` when called on a single Node will return the same `NodeList` back to allow Method Chaining**
+**BTW:** All DOM Methods that would normally return `undefined` when called on a single Node will return the same `NodeList` back to allow Method Chaining. Like `setAttribute()`
 
 ## Looping
 Using a for loop and `ES6` `for-of`:
@@ -357,13 +357,19 @@ The solution would be (ES6 Proxies) which will allow the above to be possible.
 
 # My wish
 
-My wish would be to have all modern browsers implement `NodeList` like this. I mean I don't see why this would hurt if it grows with help/feedback. As of right now `NodeList` don't do anything but store `nodes`. And this is using the DOM's Native APIs so there's nothing new.
+My wish would be to have all modern browsers implement `NodeList` like this. I honestly don't see why this would hurt if it grows with help/feedback. As of right now `NodeList` doesn't do anything but store `Live Nodes`. And this is using the DOM's Native APIs so there's nothing new. Only thing is I'd say it would be done with `ES6` `Proxies`.
 
 # Who/What is this for?
 
 This library is for devs who want to manipulate the `DOM` using the Native DOM APIs without having to loop through elements and using one function `$` to query instead of all of the `getElementById`, `getElementsByClassName` etc.
 
 Getting this natively, I would need tons of help. I don't know anything about writing specs and getting things standardized.
+
+# **My Apolgies**
+
+This is the first repository I've ever written for others to use. So bare with me, this is not professionally done.
+
+# My Gratitude:
 
 I tweeted at [@paul_irish][1], [@addyosmani][2], [@jeresig][3], [@simevidas][4], [@BrendanEich][5] about this because those are people I admire in the Web Development Community. So Thank You Guys.
 
@@ -372,7 +378,3 @@ I tweeted at [@paul_irish][1], [@addyosmani][2], [@jeresig][3], [@simevidas][4],
 [3]: https://www.twitter.com/jeresig/
 [4]: https://www.twitter.com/simevidas/
 [5]: https://www.twitter.com/BrendanEich/
-
-# **My Apolgies**
-
-This is the first repository I've ever written for others to use. So bare with me, this is not professionally done.
