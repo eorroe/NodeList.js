@@ -156,7 +156,11 @@
 					var arr = [], nodes = [];
 					for(var i = 0, l = this.length; i < l; i++) {
 						var element = this[i], funcCall = element[prop].apply(element, arguments);
-						funcCall instanceof Node ? nodes.push(funcCall) : funcCall !== undefined ? arr.push(funcCall) : null;
+						if(funcCall instanceof Node) {
+							if(nodes.indexOf(funcCall) === -1) nodes.push(funcCall);
+						} else if(funcCall !== undefined) {
+							arr.push(funcCall);
+						}
 					}
 					if(nodes.length) {
 						nodes.__proto__ = NL;
