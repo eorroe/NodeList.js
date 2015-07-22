@@ -115,7 +115,7 @@ Removing the elements:
 ```JS
 $('.child').remove();
 ```
-*I think you're getting the point any **native method** you could just call on the **NodeList** and it'll call it on **each** element*
+*I think you're getting the point any `Native Method` you could just call on the **NodeList** and it'll call it on **each** element*
 
 **BTW:** All DOM Methods that would normally return `undefined` when called on a single Node will return the same `NodeList` back to allow Method Chaining. Like `setAttribute()`
 
