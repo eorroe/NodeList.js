@@ -115,9 +115,9 @@ Removing the elements:
 ```JS
 $('.child').remove();
 ```
-*I think you're getting the point any `Native Method` you could just call on the **NodeList** and it'll call it on **each** element*
+*I think you're getting the point any `Native Method` you could just call on the `NodeList` and it'll call it on EACH element*
 
-**BTW:** All DOM Methods that would normally return `undefined` when called on a single Node will return the same `NodeList` back to allow Method Chaining. Like `setAttribute()`
+**BTW:** All `DOM` Methods that would normally return `undefined` when called on a single Node will return the same `NodeList` back to allow Method Chaining. Like `setAttribute()`
 
 ## Looping
 Using a for loop and `ES6` `for-of`:
@@ -324,7 +324,7 @@ $('div').set('className', 'these are the classes being set');
 
 $('div').className = 'these are the classes being set';
 ```
-`set()` has a third `Boolean` parameter which determines whether to check if node has the property before setting it:
+`set()` has a third `Boolean` parameter which determines whether to check if each `Node` has the property before setting it:
 ```JS
 $('div, a').set('href', 'https://www.example.com'); // would set `href` on both divs and anchor tags
 $('div, a').set('href', 'https://www.example.com', true); // only sets `href` on anchor tags because it checks if that property is not undefined
