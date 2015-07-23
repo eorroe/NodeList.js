@@ -184,8 +184,8 @@
 			});
 		}
 	}
-
-	for(var prop in HTMLElement.prototype) setterGetter(prop);
+	var div = document.createElement('div');
+	for(var prop in div) setterGetter(prop);
 
 	window.$ = function(selector) {
 		var nodes = document.querySelectorAll(selector), newNodes = [];
