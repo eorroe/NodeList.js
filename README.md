@@ -28,7 +28,7 @@
 
 ## Let's start of by querying `#container`'s children:
 
-Each of the following return an `Array of Nodes` (AKA my `NodeList`, not the browser's `NodeList`)
+Each of the following returns an `Array of Nodes` (AKA my `NodeList`, not the browser's native `NodeList`)
 ```JS
 // Method 1
 $('#container div');
@@ -39,11 +39,14 @@ $('#container').children;
 // Method 3
 $('div div');
 ```
+
 ## *Getting* properties of each `Node`:
+
 How you would normally do it:
 ```JS
 let children = document.getElementsByClassName('child');
 ```
+
 Now you would get properties on the `#container`'s children:
 ```JS
 for(let i = 0, l = children.length; i < l; i++) {
@@ -73,18 +76,20 @@ for(let i = 0, l = children.length; i < l; i++) {
     children[i].textContent = 'This is some text';
 }
 ```
+
 Here's how you'd do it with `NodeList.js`:
 ```JS
 $('.child').className = 'containerChild';
 $('.child').textContent = 'This is some text';
 ```
+
 ## *Calling* methods on each `node`:
 
 Still using the `children` variable:
 
 Let's add an event listener to each node, even though `event delegation` would be best, but for the sake of this example:
 ```JS
-for(var i = 0, l = children.length; i++) {
+for(let i = 0, l = children.length; i++) {
 	children[i].addEventListener('click', function() {
     	console.log(this, 'was clicked');
     });
@@ -96,6 +101,7 @@ $('.child').addEventListener('click', function() {
 	console.log(this, 'was clicked');
 });
 ```
+
 So cool right? You can use any `Native DOM method`:
 
 Let's set some attributes:
@@ -105,20 +111,24 @@ $('.child').setAttribute('class', 'child div');
 // For setting the class you could just do:
 $('.child').className = 'child div';
 ```
+
 Clicking the elements:
 ```JS
 $('.child').click();
 ```
+
 Removing the elements:
 ```JS
 $('.child').remove();
 ```
+
 *I think you're getting the point any `Native Method` you could just call on the `NodeList` and it'll call it on EACH element*
 
 **BTW:** All `DOM` Methods that would normally return `undefined` when called on a single Node will return the same `NodeList` back to allow Method Chaining. Like `setAttribute()`
 
 ## Looping
 Using a for loop and `ES6` `for-of`:
+
 We'll just remove the nodes from the `DOM` as examples:
 ```JS
 let nodes = $('.child');
@@ -130,6 +140,7 @@ for(let node of nodes) {
 	node.remove();
 }
 ```
+
 Using `forEach`:
 ```JS
 $('.child').forEach(function(node) {
@@ -203,66 +214,66 @@ $('div').filter(div => !div.matches('#container')); // Returns #container childE
 ## Reducing
 ```JS
 // Useless example:
-var unique = $('div').reduce(function(set, div) {
+let unique = $('div').reduce(function(set, div) {
 	set.add(div.parentElement);
 	return set;
 }, new Set());
 
-// Yea that's horrible, but I have no good use of reduce on NodeList
+// Yea that's horrible, but I have no good example use of reduce() on NodeList
 ```
 
 ## Concatenating
 ```JS
-var divs = $('div');
+let divs = $('div');
 
-var divsAndBody = divs.concat(document.body); // Method 1 passing Node
+let divsAndBody = divs.concat(document.body); // Method 1 passing Node
 
-var divsAndBody = divs.concat([document.body]); // Method 2 passing array of Nodes
+let divsAndBody = divs.concat([document.body]); // Method 2 passing array of Nodes
 
-var divsAndBody = divs.concat($('body')); // Method 3 passing a NodeList
+let divsAndBody = divs.concat($('body')); // Method 3 passing a NodeList
 
-var divsAndBody = divs.concat([$('body')]); // Method 4 passing an array of NodeList
+let divsAndBody = divs.concat([$('body')]); // Method 4 passing an array of NodeList
 
-var divsAndBodyAndHTML = divs.concat(document.body, document.documentHTML); // Method 5 passing multiple Nodes as arguments
+let divsAndBodyAndHTML = divs.concat(document.body, document.documentHTML); // Method 5 passing multiple Nodes as arguments
 
-var divsAndBodyAndHTML = divs.concat([document.body], [document.documentHTML]); // Method 6 passing arrays of Nodes as arguments
+let divsAndBodyAndHTML = divs.concat([document.body], [document.documentHTML]); // Method 6 passing arrays of Nodes as arguments
 
-var divsAndBodyAndHTML = divs.concat([$('body')], [$('html')]); // Method 7 passing arrays of NodeList as are arguments
+let divsAndBodyAndHTML = divs.concat([$('body')], [$('html')]); // Method 7 passing arrays of NodeList as are arguments
 
-var divsAndBody = divs.concat([[document.body]]); // Error!! No array of arrays
+let divsAndBody = divs.concat([[document.body]]); // Error!! No array of arrays
 ```
 
 ## Pushing
 ```JS
-var divs = $('div');
+let divs = $('div');
 
 divs.push(document.body); // Returns length of NodeList, and accepts parameters just like `concat`. Now divs contains document.body
 ```
 
 ## Poping
 ```JS
-var divs = $('div');
+let divs = $('div');
 
 divs.pop(); // Returns last div in NodeList and removes it from NodeList
 ```
 
 ## Shifting
 ```JS
-var divs = $('div');
+let divs = $('div');
 
 divs.shift(); // Returns first div in NodeList and removes it from NodeList
 ```
 
 ## Unshifting
 ```JS
-var divs = $('div');
+let divs = $('div');
 
 divs.unshift(document.body); // Returns length of NodeList, and accepts parameters just like `concat`. Now divs contains document.body
 ```
 
 ## Splicing
 ```JS
-var divs = $('div');
+let divs = $('div');
 
 // Let's replace the first element which would be #container with document.body
 
@@ -270,25 +281,31 @@ divs.splice(0, 1, document.body); // Returns the same NodeList with the first el
 ```
 
 ## Sorting
-
-**I have no Idea why you would want to sort a `NodeList`**
-
 ```JS
-var divs = $('.child');
+let divs = $('.child');
 
 // Let's give each div a data-index attribute
 divs.forEach( (div, index) => div.dataset.index = index);
 
-// Reverse the NodeList (pretty useless example again I'm not sure why you would want to sort a NodeList)
+// Reverse the NodeList
 divs.sort( (div1, div2) => div2.dataset.index - div1.dataset.index);
 ```
 
 ## Reversing
 ```JS
-$('div').reverse(); // Simply returns a reversed NodeList (USELESS!! IMO)
+$('div').reverse(); // Simply returns a reversed NodeList
 ```
 
-**NO JOIN METHOD** Completely useless!!
+## Joining
+I didn't put a `join` method in the library because it'd be useless on the actual Nodes:
+```JS
+$('.child').join(); // "[object HTMLDivElement], [object HTMLDivElement] ..."
+```
+
+Therefore you can still use it when mapping out properties:
+```JS
+$('.child').className.join(); // "child,child,child,child,child,child,child,child,child,child"
+```
 
 ## Includes
 ```JS
@@ -309,8 +326,7 @@ $('a').get('href'); // returns array of href values
 $('a').set('href', 'https://www.example.com/');
 ```
 
-You can also call `set` for any property that **DOES NOT** exist on the actual elements.
-
+You can also call `set` for any property that **DOES NOT** exist on the actual elements:
 ```JS
 $('div').set('thisIsAPropertyThatDoesntExistOnEachElement', 'whateverValue');
 
@@ -319,9 +335,9 @@ $('div').get('thisIsAPropertyThatDoesntExistOnEachElement'); // ['whateverValue'
 $('div').set('className', 'these are the classes being set');
 
 // Would be the same as
-
 $('div').className = 'these are the classes being set';
 ```
+
 `set()` has a third `Boolean` parameter which determines whether to check if each `Node` has the property before setting it:
 ```JS
 $('div, a').set('href', 'https://www.example.com'); // would set `href` on both divs and anchor tags
@@ -331,7 +347,6 @@ $('div, a').set('href', 'https://www.example.com', true); // only sets `href` on
 # The future:
 
 ## The current problem:
-
 ```JS
 $('.child').style.background = 'red'; // Not possible
 ```
@@ -339,19 +354,22 @@ $('.child').style.background = 'red'; // Not possible
 `$('.child').style` returns an array of `CSSStyleDeclaration` objects so I can't set background on it
 
 Also calling methods that are not are not inherited from `HTMLElement.prototype`:
-
 ```JS
 // Not currently possible
 $('video').pause();
 
-// You have loop through it yourself
-for(var video of $('video')) video.pause();
+// You have to loop through it yourself
+$('video').forEach(video => video.pause());
 
 //or
-$('video').forEach(video => video.pause());
+for(let video of $('video')) video.pause();
+
+//or
+let videos = $('video');
+for(let i = 0, l = videos.length; i < l; i++) videos[i].pause();
 ```
 
-The solution would be (ES6 Proxies) which will allow the above to be possible.
+The solution would be (ES6 Proxies) which will allow the above to be possible, yet I want a fully `ES5` written library. Unless the following happens:
 
 # My wish
 
@@ -359,7 +377,7 @@ My wish would be to have all modern browsers implement `NodeList` like this. I h
 
 # Who/What is this for?
 
-This library is for devs who want to manipulate the `DOM` using the Native DOM APIs without having to loop through elements and using one function `$` to query instead of all of the `getElementById`, `getElementsByClassName` etc.
+This library is for devs who want to manipulate the `DOM` using the Native DOM APIs without having to manually aloop through elements by writing your own loop, and using one function `$` to query instead of all of the `getElementById`, `getElementsByClassName` etc.
 
 Getting this natively, I would need tons of help. I don't know anything about writing specs and getting things standardized.
 
