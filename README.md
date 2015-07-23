@@ -6,8 +6,6 @@
 
 `nodeList.js` is a small (About 6kb) fully `ES5` written very powerful library which allows you to manipulate an **Array of Nodes** just like you would with a single `Node`, using the `Native DOM APIs`.
 
-**RECOMMENDED**: Use within a browser with all the `DOM` properties on their `prototype` for example *chrome 43+*
-
 # Usage:
 
 ## The `HTML` we'll manipulate in the following:
