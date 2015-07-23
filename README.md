@@ -1,6 +1,6 @@
 # Overview
 
-**First Let Me Say:** The File You'll use is `nodeListLib.js`, **IGNORE** the others.
+**First Let Me Say:** The File You'll use is `nodeListLib.js`/`nodeListLib.min.js`, **IGNORE** the others.
 
 ## What this is?
 
