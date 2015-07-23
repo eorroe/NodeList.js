@@ -187,11 +187,40 @@
 
 	for(var prop in HTMLElement.prototype) setterGetter(prop);
 
-	window.$ = function(selector) {
-		var nodes = document.querySelectorAll(selector), newNodes = [];
-		for(var i = 0, l = nodes.length; i < l; i++) newNodes.push(nodes[i]);
-		newNodes.__proto__ = NL;
-		return newNodes;
-	}
-	window.$.NL = NL;
+	var querySelect = document.querySelectorAll.bind(document);
+    window.document.querySelectorAll = function(selector) {
+        var nodes = querySelect(selector), newNodes = [];
+        for(var i = 0, l = nodes.length; i < l; i++) newNodes.push(nodes[i]);
+        newNodes.__proto__ = NL;
+        return newNodes;
+  }
+  window.document.querySelectorAll.NL = NL;
+  
+	var getByName = document.getElementsByName.bind(document);
+  window.document.getElementsByName = function(selector) {
+    var nodes = getByName(selector), newNodes = [];
+    for(var i = 0, l = nodes.length; i < l; i++) newNodes.push(nodes[i]);
+    newNodes.__proto__ = NL;
+    return newNodes;
+  }
+  window.document.getElementsByName.NL = NL;
+
+	var getByClass = document.getElementsByClassName.bind(document);
+  window.document.getElementsByClassName = function(selector) {
+    var nodes = getByClass(selector), newNodes = [];
+    for(var i = 0, l = nodes.length; i < l; i++) newNodes.push(nodes[i]);
+    newNodes.__proto__ = NL;
+    return newNodes;
+  }
+  window.document.getElementsByClassName.NL = NL;
+
+
+  var getByTag = document.getElementsByTagName.bind(document);
+  window.document.getElementsByTagName = function(selector) {
+    var nodes = getByTag(selector), newNodes = [];
+    for(var i = 0, l = nodes.length; i < l; i++) newNodes.push(nodes[i]);
+    newNodes.__proto__ = NL;
+    return newNodes;
+  }
+  window.document.getElementsByTagName.NL = NL;
 })();
