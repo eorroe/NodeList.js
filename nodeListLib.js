@@ -130,7 +130,10 @@
 
 		get: function get(prop) {
 			var arr = [];
-			for(var i = 0, l = this.length; i < l; i++) arr.push(this[i][prop]);
+			for(var i = 0, l = this.length; i < l; i++) {
+				var item = this[i][prop];
+				if(arr.indexOf(item) === -1) arr.push(item);
+			}
 			return flatten(arr);
 		},
 
@@ -175,7 +178,10 @@
 			Object.defineProperty(NL, prop, {
 				get: function() {
 					var arr = [];
-					for(var i = 0, l = this.length; i < l; i++) arr.push(this[i][prop]);
+					for(var i = 0, l = this.length; i < l; i++) {
+						var item = this[i][prop];
+						if(arr.indexOf(item) === -1) arr.push(item);
+					}
 					return flatten(arr);
 				},
 				set: function(newVal) {
