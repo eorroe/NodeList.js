@@ -132,7 +132,8 @@
 			var arr = [];
 			for(var i = 0, l = this.length; i < l; i++) {
 				var item = this[i][prop];
-				if(typeof item === 'string' || typeof item === 'object' && arr.indexOf(item) === -1) arr.push(item);
+				if(item instanceof Node && (arr.indexOf(item) !== -1)) continue;
+				arr.push(item);
 			}
 			return flatten(arr);
 		},
@@ -180,7 +181,8 @@
 					var arr = [];
 					for(var i = 0, l = this.length; i < l; i++) {
 						var item = this[i][prop];
-						if(typeof item === 'string' || typeof item === 'object' && arr.indexOf(item) === -1) arr.push(item);
+						if(item instanceof Node && (arr.indexOf(item) !== -1)) continue;
+						arr.push(item);
 					}
 					return flatten(arr);
 				},
