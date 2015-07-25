@@ -65,7 +65,7 @@ $('.child').className; // ['child', 'child' ... x10]
 
 Therefore you would read each property just like you would with a single `Node` :)
 
-**Notice** how it returns an array of the property's value, meaning you can select them by `index` and use any `Array Methods` on them, you'll see when you get to the [looping](https://github.com/eorroe/NodeList.js#looping) part.
+**Notice** how it returns an `Array` of the property's value, meaning you can select them by `index` and use any `Array Methods` on them, you'll see when you get to the [looping](https://github.com/eorroe/NodeList.js#looping) part.
 
 ## *Setting* properties on each `node`:
 
@@ -153,7 +153,7 @@ $('.child').remove();
 
 Looping through the properties:
 ```JS
-let styles = $('.child').style; // returns array of style objects (CSSStyleDeclaration)
+let styles = $('.child').style; // returns Array of style objects (CSSStyleDeclaration)
 
 for(let i = 0, l = styles.length; i++) {
 	styles[i].color = 'red';
@@ -192,12 +192,12 @@ $('.child').slice(0, 1); // Returns NodeList with first element;
 ```JS
 // Mapping is easy just get the property just like you would on a node
 
-$('#container').id // Returns array of id for each element in NodeList
+$('#container').id // Returns Array of id for each element in NodeList
 
 // No need for:
 $('#container').map(element => element.id);
 
-$('#container div').map(div => div.firstChild); // Map() Checks if array is fully populated with nodes so returns a NodeList populated with firstChld nodes
+$('#container div').map(div => div.firstChild); // Map() Checks if Array is fully populated with nodes so returns a NodeList populated with firstChld nodes
 
 // Map the firstChild node and remove it.
 $('#container').map(div => div.firstChild).remove();
@@ -228,19 +228,19 @@ let divs = $('div');
 
 let divsAndBody = divs.concat(document.body); // Method 1 passing Node
 
-let divsAndBody = divs.concat([document.body]); // Method 2 passing array of Nodes
+let divsAndBody = divs.concat([document.body]); // Method 2 passing Array of Nodes
 
 let divsAndBody = divs.concat($('body')); // Method 3 passing a NodeList
 
-let divsAndBody = divs.concat([$('body')]); // Method 4 passing an array of NodeList
+let divsAndBody = divs.concat([$('body')]); // Method 4 passing an Array of NodeList
 
 let divsAndBodyAndHTML = divs.concat(document.body, document.documentHTML); // Method 5 passing multiple Nodes as arguments
 
-let divsAndBodyAndHTML = divs.concat([document.body], [document.documentHTML]); // Method 6 passing arrays of Nodes as arguments
+let divsAndBodyAndHTML = divs.concat([document.body], [document.documentHTML]); // Method 6 passing Arrays of Nodes as arguments
 
-let divsAndBodyAndHTML = divs.concat([$('body')], [$('html')]); // Method 7 passing arrays of NodeList as are arguments
+let divsAndBodyAndHTML = divs.concat([$('body')], [$('html')]); // Method 7 passing Arrays of NodeList as are arguments
 
-let divsAndBody = divs.concat([[document.body]]); // Error!! No array of arrays
+let divsAndBody = divs.concat([[document.body]]); // Error!! No Array of Arrays
 ```
 
 ## Pushing
@@ -314,11 +314,18 @@ $('body').includes(document.body); // Returns true if passed Node is in NodeList
 
 Ok now how about dealing with elements that have unique properties. Like `HTMLAnchorElement(s)` they have the `href` property which is not inherited from `HTMLElement`. There are no `HTMLAnchorElements` in this example but here's how you'll deal with it.
 
+# Special Methods
+
 ## Get
 ```JS
 $('a').href // undefined because it's a unique property that every element does not inherit
 
-$('a').get('href'); // returns array of href values
+$('a').get('href'); // returns Array of href values
+```
+
+`Get()` can also be used on an `Array` of properties:
+```JS
+$('.child').style.get('color'); // returns an Array of the value of each node.style.color
 ```
 
 ## Set
@@ -344,36 +351,35 @@ $('div, a').set('href', 'https://www.example.com'); // would set `href` on both 
 $('div, a').set('href', 'https://www.example.com', true); // only sets `href` on anchor tags because it checks if that property is not undefined
 ```
 
-# The future:
-
-## The current problem:
+`set()` can also be used on an `Array` of properties:
 ```JS
-$('.child').style.background = 'red'; // Not possible
+$('.child').style.set('color', 'red'); // sets each element's color to red
 ```
 
-`$('.child').style` returns an array of `CSSStyleDeclaration` objects so I can't set background on it
-
-Also calling methods that are not are not inherited from `HTMLElement.prototype`:
+# Call
+There are methods which are unique to certain elements. This is how you would call those methods:
 ```JS
-// Not currently possible
-$('video').pause();
-
-// You have to loop through it yourself
-$('video').forEach(video => video.pause());
-
-//or
-for(let video of $('video')) video.pause();
-
-//or
-let videos = $('video');
-for(let i = 0, l = videos.length; i < l; i++) videos[i].pause();
+$('video').call('pause');
 ```
 
-The solution would be (ES6 Proxies) which will allow the above to be possible, yet I want a fully `ES5` written library. Unless the following happens:
+Or you could just loop through the elements and call the methods
 
+What about passing arguments:
+```JS
+$('.child').call('addEventListener', 'click', function(e) {});
+```
+
+*That was not a good example, couldn't think of a method that not every element has and takes parameters at the moment.*
+
+So yes of course in this example do this instead:
+```JS
+$('.child').addEventListener('click', function(e) {});
+```
+
+If the method called on any of the elements return something an `Array` of the items that were returned, will be returned from `call()` otherwise the `NodeList` will be returned to allow method chaining.
 # My wish
 
-My wish would be to have all modern browsers implement `NodeList` like this. I honestly don't see why this would hurt if it grows with help/feedback. As of right now `NodeList` doesn't do anything but store `Live Nodes`. And this is using the DOM's Native APIs so there's nothing new. Only thing is I'd say it would be done with `ES6` `Proxies`.
+My wish would be to have all modern browsers implement `NodeList` like this. I honestly don't see why this would hurt if it grows with help/feedback. As of right now `NodeList` doesn't do anything but store `Live Nodes`. And this is using the DOM's Native APIs so there's nothing new. Only thing is it should be done with `ES6 Proxies`.
 
 # Who/What is this for?
 
