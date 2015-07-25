@@ -97,12 +97,12 @@
 			for(var i = 0, l = arguments.length; i < l; i++) {
 				var arg = arguments[i];
 				if(arg instanceof Node) {
-					if(this.indexOf(arg) === -1) this.push(arg);
+					if(this.indexOf(arg) === -1) this.push(el);
 				} else if(arg instanceof NodeList || arg instanceof HTMLCollection || arg instanceof Array || arg.__proto__ === NL) {
 					for(var i2 = 0, l2 = arg.length; i2 < l2; i2++) {
 						var el = arg[i2];
 						if(el instanceof Node) {
-							if(this.indexOf(el) === -1) this.push(arg);
+							if(this.indexOf(el) === -1) this.push(el);
 						} else if(el instanceof NodeList) {
 							for(var i3 = 0, l3 = el.length; i3 < l3; i3++) {
 								if(this.indexOf(arg) === -1) this.push(el[i3]);
@@ -135,7 +135,9 @@
 				if(item instanceof Node && (arr.indexOf(item) !== -1)) continue;
 				arr.push(item);
 			}
-			return flatten(arr);
+			arr = flatten(arr);
+			arr.get = NL.get, arr.set = NL.set, arr.call = NL.call;
+			return arr;
 		},
 
 		set: function set(prop, value, checkExistence) {
@@ -148,43 +150,60 @@
 				for(var i = 0, l = this.length; i < l; i++) this[i][prop] = value;
 			}
 			return this;
+		},
+
+		call: function(method) {
+			var argsLength = arguments.length, results = [], returnResults = false;
+			results.get = NL.get, results.set = NL.set, results.call = NL.call;
+
+			Array.prototype.shift.call(arguments);
+
+			for(var i = 0, l = this.length; i < l; i++) {
+				var element  = this[i];
+				if(element[method] instanceof Function) {
+					var funcCall = element[method].apply(element, arguments);
+					results.push(funcCall);
+					if(funcCall !== undefined) returnResults = true;
+				}
+			}
+			return returnResults ? results : this;
 		}
 	}
 
 	if(window.Symbol && window.Symbol.iterator) NL[Symbol.iterator] = Array.prototype[Symbol.iterator];
 
 	function setterGetter(prop) {
-		try {
-			if(HTMLElement.prototype[prop].constructor === Function) {
-				NL[prop] = NL[prop] || function() {
-					var arr = [], nodes = [];
-					for(var i = 0, l = this.length; i < l; i++) {
-						var element = this[i], funcCall = element[prop].apply(element, arguments);
-						if(funcCall instanceof Node) {
-							if(nodes.indexOf(funcCall) === -1) nodes.push(funcCall);
-						} else if(funcCall !== undefined) {
-							arr.push(funcCall);
-						}
+		if(div[prop] instanceof Function) {
+			NL[prop] = NL[prop] || function() {
+				var arr = [], nodes = [];
+				for(var i = 0, l = this.length; i < l; i++) {
+					var element = this[i], funcCall = element[prop].apply(element, arguments);
+					if(funcCall instanceof Node) {
+						if(nodes.indexOf(funcCall) === -1) nodes.push(funcCall);
+					} else if(funcCall !== undefined) {
+						arr.push(funcCall);
 					}
-					if(nodes.length) {
-						nodes.__proto__ = NL;
-						return nodes;
-					} else if(arr.length) {
-						return arr;
-					}
-					return this;
 				}
+				if(nodes.length) {
+					nodes.__proto__ = NL;
+					return nodes;
+				} else if(arr.length) {
+					return arr;
+				}
+				return this;
 			}
-		} catch(e) {
+		} else {
 			Object.defineProperty(NL, prop, {
-				get: function() {
+				get: function get() {
 					var arr = [];
 					for(var i = 0, l = this.length; i < l; i++) {
 						var item = this[i][prop];
 						if(item instanceof Node && (arr.indexOf(item) !== -1)) continue;
 						arr.push(item);
 					}
-					return flatten(arr);
+					arr = flatten(arr);
+					arr.get = NL.get, arr.set = NL.set, arr.call = NL.call;
+					return arr;
 				},
 				set: function(newVal) {
 					for(var i = 0, l = this.length; i < l; i++) this[i][prop] = newVal;
@@ -192,6 +211,7 @@
 			});
 		}
 	}
+
 	var div = document.createElement('div');
 	for(var prop in div) setterGetter(prop);
 
