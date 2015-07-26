@@ -175,19 +175,20 @@
 	function setterGetter(prop) {
 		if(div[prop] instanceof Function) {
 			NL[prop] = NL[prop] || function() {
-				var arr = [], nodes = [];
+				var arr = [], nodes = [], arrLength = 0;
 				for(var i = 0, l = this.length; i < l; i++) {
 					var element = this[i], funcCall = element[prop].apply(element, arguments);
 					if(funcCall instanceof Node) {
 						if(nodes.indexOf(funcCall) === -1) nodes.push(funcCall);
 					} else if(funcCall !== undefined) {
-						arr.push(funcCall);
+						arrLength = arr.push(funcCall);
 					}
 				}
 				if(nodes.length) {
 					nodes.__proto__ = NL;
 					return nodes;
-				} else if(arr.length) {
+				} else if(arrLength) {
+					arr.get = NL.get, arr.set = NL.set, arr.call = NL.call;
 					return arr;
 				}
 				return this;
