@@ -356,7 +356,7 @@ $('div, a').set('href', 'https://www.example.com', true); // only sets `href` on
 $('.child').style.set('color', 'red'); // sets each element's color to red
 ```
 
-# Call
+## Call
 There are methods which are unique to certain elements. This is how you would call those methods:
 ```JS
 $('video').call('pause');
@@ -377,18 +377,26 @@ $('.child').addEventListener('click', function(e) {});
 ```
 
 If the method called on any of the elements return something an `Array` of the items that were returned, will be returned from `call()` otherwise the `NodeList` will be returned to allow method chaining.
-# My wish
 
-My wish would be to have all modern browsers implement `NodeList` like this. I honestly don't see why this would hurt if it grows with help/feedback. As of right now `NodeList` doesn't do anything but store `Live Nodes`. And this is using the DOM's Native APIs so there's nothing new. Only thing is it should be done with `ES6 Proxies`.
+# Adding Your Own Methods:
+```JS
+$.NL.myMethod = function() {
+	// You'll have to write your own loop here if you want to call this on each Node or use:
+	this.forEach(function(node) {
+		// do something with each node
+	});
+}
+```
+
+# My wish
+My wish would be to have all modern browsers implement `NodeList` like this. I honestly don't see why this would hurt if it grows with help/feedback. As of right now `NodeList` doesn't do anything but store `Live Nodes`. And this is using the **DOM's Native APIs** so there's nothing new, now the `set` and `get` methods won't be needed since it would be done with `ES6 Proxies`.
 
 # Who/What is this for?
-
 This library is for devs who want to manipulate the `DOM` using the Native DOM APIs without having to manually aloop through elements by writing your own loop, and using one function `$` to query instead of all of the `getElementById`, `getElementsByClassName` etc.
 
 Getting this natively, I would need tons of help. I don't know anything about writing specs and getting things standardized.
 
 # My Gratitude:
-
 I tweeted at [@paul_irish][1], [@addyosmani][2], [@jeresig][3], [@simevidas][4], [@BrendanEich][5] about this because those are people I admire in the Web Development Community. So Thank You Guys.
 
 [1]: https://www.twitter.com/paul_irish/
