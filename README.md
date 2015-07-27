@@ -1,10 +1,8 @@
 # Overview
 
-**First Let Me Say:** The File You'll use is `nodeListLib.js`/`nodeListLib.min.js`, **IGNORE** the others.
-
 ## What this is?
 
-`nodeList.js` is a small (About 6kb) fully `ES5` written very powerful library which allows you to manipulate an **Array of Nodes** just like you would with a single `Node`, using the `Native DOM APIs`.
+[`nodeListLib.js`](https://github.com/eorroe/NodeList.js/blob/master/nodeListLib.js) is a small (About 6kb) `ES5` compliant very powerful library which allows you to manipulate an **Array of Nodes** just like you would with a single `Node`, using the `Native DOM APIs`.
 
 # Usage:
 
@@ -399,11 +397,25 @@ $$.NL.myMethod = function() {
 }
 ```
 
-# My wish
-My wish would be to have all modern browsers implement `NodeList` like this. I honestly don't see why this would hurt if it grows with help/feedback. As of right now `NodeList` doesn't do anything but store `Live Nodes`. And this is using the **DOM's Native APIs** so there's nothing new, now the `set` and `get` methods won't be needed since it would be done with `ES6 Proxies`.
+# NodeListJS Compatability
+
+| Browser | Version |
+| --------|---------|
+| FireFox | 3+      |
+| Safari  | 5.0.5+  |
+| Chrome  | 7+      |
+| IE      | 10+     |
+| Opera   | 11.6+    |
+
+**Attention:** You have to realize that my libary's dependent on the browser it's running (which is awesome so it automatically updates) meaning if let's say the property `hidden` doesn't exist on each element you cant do: `$$('.child').hidden = true;`
+
+So the [Compatability Table](https://github.com/eorroe/NodeList.js#nodelistjs-compatability) above represents what browsers suport `__proto__` which is being used in my library. Or your page will break.
 
 # Who/What is this for?
-This library is for devs who want to manipulate the `DOM` using the Native DOM APIs without having to manually aloop through elements by writing your own loop, and using one function `$$` to query instead of all of the `getElementById`, `getElementsByClassName` etc.
+This library is for devs who want to manipulate the `DOM` using the **`Native DOM APIs`** in a special way using one function `$$`. Basically for [Vanilla-js](http://vanilla-js.com/) developers like myself.
+
+# My wish
+My wish would be to have all modern browsers implement `NodeList` like this. I honestly don't see why this would hurt if it grows with help/feedback. As of right now `NodeList` doesn't do anything but store `Live Nodes`. And this is using the **DOM's Native APIs** so there's nothing new, now the `set` and `get` methods won't be needed since it would be done with `ES6 Proxies`.
 
 Getting this natively, I would need tons of help. I don't know anything about writing specs and getting things standardized.
 
