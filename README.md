@@ -407,7 +407,7 @@ $$.NL.myMethod = function() {
 | IE      | 10+     |
 | Opera   | 11.6+    |
 
-**Attention:** You have to realize that my libary's dependent on the browser it's running (which is awesome so it automatically updates) meaning if let's say the property `hidden` doesn't exist on each element you cant do: `$$('.child').hidden = true;`
+**Attention:** You have to realize that my library's dependent on the browser it's running (which is awesome so it automatically updates when the browser updates the DOM with new properties/methods) meaning if let's say the property `hidden` doesn't exist on `HTMLElement.prototype` you cant do: `$$('.child').hidden = true;`
 
 So the [Compatability Table](https://github.com/eorroe/NodeList.js#nodelistjs-compatability) above represents what browsers suport `__proto__` which is being used in my library. Or your page will break.
 
