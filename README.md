@@ -40,6 +40,17 @@ $$('#container').children;
 $$('div div');
 ```
 
+There's a second argument you can pass which is the scope:
+```JS
+let container = document.getElementById('container');
+$$('div', container);
+```
+
+Which would be equivalent to:
+```JS
+container.querySelectorAll('div'); // just this doesn't return my NodeList, but the browsers NodeList
+```
+
 ## *Getting* properties of each `Node`:
 
 How you would normally do it:
