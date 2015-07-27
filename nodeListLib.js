@@ -1,5 +1,4 @@
 (function() {
-	'use strict';
 	function flatten(arr) {
 		var nodes = [];
 		for(var i = 0, l = arr.length; i < l; i++) {
