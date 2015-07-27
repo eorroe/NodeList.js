@@ -216,8 +216,8 @@
 	var div = document.createElement('div');
 	for(var prop in div) setterGetter(prop);
 
-	window.$$ = function(selector) {
-		var nodes = document.querySelectorAll(selector), newNodes = [];
+	window.$$ = function(selector, scope) {
+		var nodes = (scope || document).querySelectorAll(selector), newNodes = [];
 		for(var i = 0, l = nodes.length; i < l; i++) newNodes.push(nodes[i]);
 		newNodes.__proto__ = NL;
 		return newNodes;
