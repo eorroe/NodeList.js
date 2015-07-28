@@ -401,7 +401,7 @@ $$.NL.myMethod = function() {
 
 | Browser | Version |
 | --------|---------|
-| FireFox | 3+      |
+| FireFox | 3.5+      |
 | Safari  | 5.0.5+  |
 | Chrome  | 7+      |
 | IE      | 10+     |
@@ -409,7 +409,7 @@ $$.NL.myMethod = function() {
 
 **Attention:** You have to realize that my library's dependent on the browser it's running (which is awesome so it automatically updates when the browser updates the DOM with new properties/methods) meaning if let's say the property `hidden` doesn't exist on `HTMLElement.prototype` you cant do: `$$('.child').hidden = true;`
 
-So the [Compatability Table](https://github.com/eorroe/NodeList.js#nodelistjs-compatability) above represents what browsers suport `__proto__` which is being used in my library.
+So the [Compatability Table](https://github.com/eorroe/NodeList.js#nodelistjs-compatability) above represents what browsers suport `__proto__` and `querySelectorAll` combined which is being used in my library.
 
 # Who/What is this for?
 This library is for devs who want to manipulate the `DOM` using the **`Native DOM APIs`** in a special way using one function `$$`. Basically for [Vanilla-js](http://vanilla-js.com/) developers like myself.
