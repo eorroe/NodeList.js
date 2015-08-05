@@ -118,13 +118,12 @@
 		},
 
 		querySelectorAll: function querySelectorAll(selector) {
-			var newNodes = [];
+			var nodes = [];
 			for(var i = 0, l = this.length; i < l; i++) {
-				var nodes = [], queriedNodes = this[i].querySelectorAll(selector);
+				var queriedNodes = this[i].querySelectorAll(selector);
 				for(var i2 = 0, l2 = queriedNodes.length; i2 < l2; i2++) nodes.push(queriedNodes[i2]);
-				newNodes.push(nodes);
 			}
-			return flatten(newNodes);
+			return flatten(nodes);
 		},
 
 		get: function get(prop) {
@@ -158,7 +157,7 @@
 			Array.prototype.shift.call(arguments);
 
 			for(var i = 0, l = this.length; i < l; i++) {
-				var element  = this[i];
+				var element = this[i];
 				if(element[method] instanceof Function) {
 					var funcCall = element[method].apply(element, arguments);
 					results.push(funcCall);
