@@ -151,15 +151,15 @@
 		},
 
 		call: function(method) {
-			var argsLength = arguments.length, results = [], returnResults = false;
+			var argsLength = arguments.length, results = [], args = [], returnResults = false;
 			results.get = NL.get, results.set = NL.set, results.call = NL.call;
 
-			Array.prototype.shift.call(arguments);
+			for(var i = 1, l = arguments.length; i < l; i++) args.push(arguments[i]);
 
 			for(var i = 0, l = this.length; i < l; i++) {
 				var element = this[i];
 				if(element[method] instanceof Function) {
-					var funcCall = element[method].apply(element, arguments);
+					var funcCall = element[method].apply(element, args);
 					results.push(funcCall);
 					if(funcCall !== undefined) returnResults = true;
 				}
