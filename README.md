@@ -2,7 +2,7 @@
 
 ## What this is?
 
-[`nodeListLib.js`](https://github.com/eorroe/NodeList.js/blob/master/nodeListLib.js) is a small (About 6kb) `ES5` compliant very powerful library which allows you to manipulate an **Array of Nodes** just like you would with a single `Node`, using the `Native DOM APIs`.
+[`nodeListLib.js`](https://github.com/eorroe/NodeList.js/blob/master/nodeListLib.js) is a small (About 7kb) `ES5` compliant very powerful library which allows you to manipulate an **Array of Nodes** just like you would with a single `Node`, using the `Native DOM APIs`.
 
 # Usage:
 
@@ -194,7 +194,7 @@ nodes.forEach(function(node) {
 
 ## Slicing
 ```JS
-$$('.child').slice(0, 1); // Returns NodeList with first element;
+$$('.child').slice(0, 1); // Returns NodeList containing first element;
 ```
 
 ## Mapping
@@ -206,7 +206,8 @@ $$('#container').id // Returns Array of id for each element in NodeList
 // No need for:
 $$('#container').map(element => element.id);
 
-$$('#container div').map(div => div.firstChild); // Map() Checks if Array is fully populated with nodes so returns a NodeList populated with firstChld nodes
+// Map() Checks if Array is fully populated with nodes so returns a NodeList populated with firstChld nodes
+$$('#container div').map(div => div.firstChild);
 
 // Map the firstChild node and remove it.
 $$('#container').map(div => div.firstChild).remove();
@@ -232,61 +233,82 @@ let unique = $$('div').reduce(function(set, div) {
 ```
 
 ## Concatenating
+
+The following `concat()` methods all return a `NodeList`
 ```JS
 let divs = $$('div');
 
-let divsAndBody = divs.concat(document.body); // Method 1 passing Node
+// Method 1 passing Node
+let divsAndBody = divs.concat(document.body);
 
-let divsAndBody = divs.concat([document.body]); // Method 2 passing Array of Nodes
+// Method 2 passing Array of Nodes
+let divsAndBody = divs.concat([document.body]);
 
-let divsAndBody = divs.concat($$('body')); // Method 3 passing a NodeList
+// Method 3 passing a NodeList
+let divsAndBody = divs.concat($$('body'));
 
-let divsAndBody = divs.concat([$$('body')]); // Method 4 passing an Array of NodeList
+// Method 4 passing an Array of NodeList
+let divsAndBody = divs.concat([$$('body')]);
 
-let divsAndBodyAndHTML = divs.concat(document.body, document.documentHTML); // Method 5 passing multiple Nodes as arguments
+// Method 5 passing multiple Nodes as arguments
+let divsAndBodyAndHTML = divs.concat(document.body, document.documentHTML);
 
-let divsAndBodyAndHTML = divs.concat([document.body], [document.documentHTML]); // Method 6 passing Arrays of Nodes as arguments
+// Method 6 passing Arrays of Nodes as arguments
+let divsAndBodyAndHTML = divs.concat([document.body], [document.documentHTML]);
 
-let divsAndBodyAndHTML = divs.concat([$$('body')], [$$('html')]); // Method 7 passing Arrays of NodeList as are arguments
+// Method 7 passing Arrays of NodeList as are arguments
+let divsAndBodyAndHTML = divs.concat([$$('body')], [$$('html')]);
 
-let divsAndBody = divs.concat([[document.body]]); // Error!! No Array of Arrays
+// Error!! No Array of Arrays
+let divsAndBody = divs.concat([[document.body]]);
 ```
 
 ## Pushing
 ```JS
 let divs = $$('div');
 
-divs.push(document.body); // Returns length of NodeList, and accepts parameters just like `concat`. Now divs contains document.body
+divs.push(document.body); // Returns length of NodeList. Now the `divs` NodeList contains document.body
 ```
 
 ## Poping
 ```JS
 let divs = $$('div');
 
-divs.pop(); // Returns last div in NodeList and removes it from NodeList
+divs.pop(); // Removes last Node in the NodeList and returns a NodeList of the removed Nodes
+```
+
+`pop()` takes an optional argument of how many `Nodes` to **POP**
+```JS
+divs.pop(2); // Removes last 2 Nodes in the NodeList and returns a NodeList of the removed Nodes
 ```
 
 ## Shifting
 ```JS
 let divs = $$('div');
 
-divs.shift(); // Returns first div in NodeList and removes it from NodeList
+divs.shift(); // Removes first Node in the NodeList and returns a NodeList of the removed Nodes
+```
+
+`shift()` also takes an optional argument of how many `Nodes` to **SHIFT**
+```JS
+divs.shift(2); // Removes first 2 Nodes in the NodeList and returns a NodeList of the removed Nodes
 ```
 
 ## Unshifting
 ```JS
 let divs = $$('div');
 
-divs.unshift(document.body); // Returns length of NodeList, and accepts parameters just like `concat`. Now divs contains document.body
+divs.unshift(document.body); // Returns length of NodeList. Now divs contains document.body
 ```
 
 ## Splicing
+
+Let's replace the first element which would be #container with document.body
 ```JS
 let divs = $$('div');
 
-// Let's replace the first element which would be #container with document.body
-
-divs.splice(0, 1, document.body); // Returns the same NodeList with the first element being document.body
+// Removes the first Element and inserts document.body in its place. Returns a NodeList of the spliced Nodes
+divs.splice(0, 1, document.body);
 ```
 
 ## Sorting
@@ -297,12 +319,12 @@ let divs = $$('.child');
 divs.forEach( (div, index) => div.dataset.index = index);
 
 // Reverse the NodeList
-divs.sort( (div1, div2) => div2.dataset.index - div1.dataset.index);
+divs.sort( (div1, div2) => div2.dataset.index - div1.dataset.index); // Returns same NodeList
 ```
 
 ## Reversing
 ```JS
-$$('div').reverse(); // Simply returns a reversed NodeList
+$$('div').reverse(); // Returns the same NodeList but reversed
 ```
 
 ## Joining
@@ -318,7 +340,7 @@ $$('.child').className.join(); // "child,child,child,child,child,child,child,chi
 
 ## Includes
 ```JS
-$$('body').includes(document.body); // Returns true if passed Node is in NodeList
+$$('body').includes(document.body); // Returns true if passed Node is included in the NodeList
 ```
 
 Ok now how about dealing with elements that have unique properties. Like `HTMLAnchorElement(s)` they have the `href` property which is not inherited from `HTMLElement`. There are no `HTMLAnchorElements` in this example but here's how you'll deal with it.
@@ -356,13 +378,16 @@ $$('div').className = 'these are the classes being set';
 
 `set()` has a third `Boolean` parameter which determines whether to check if each `Node` has the property before setting it:
 ```JS
-$$('div, a').set('href', 'https://www.example.com'); // would set `href` on both divs and anchor tags
-$$('div, a').set('href', 'https://www.example.com', true); // only sets `href` on anchor tags because it checks if that property is not undefined
+// would set `href` on both divs and anchor tags
+$$('div, a').set('href', 'https://www.example.com');
+
+// only sets `href` on anchor tags because it is a property of the anchor elements
+$$('div, a').set('href', 'https://www.example.com', true);
 ```
 
 `set()` can also be used on an `Array` of properties:
 ```JS
-$$('.child').style.set('color', 'red'); // sets each element's color to red
+$$('.child').style.set('color', 'red'); // sets each element's color to red. Returns the Array of styles back
 ```
 
 ## Call
@@ -375,17 +400,10 @@ Or you could just loop through the elements and call the methods
 
 What about passing arguments:
 ```JS
-$$('.child').call('addEventListener', 'click', function(e) {});
+$$('canvas').call('getContext', '2d'); // Returns Array of `CanvasRenderingContext2D`
 ```
 
-*That was not a good example, couldn't think of a method that not every element has and takes parameters at the moment.*
-
-So yes of course in this example do this instead:
-```JS
-$$('.child').addEventListener('click', function(e) {});
-```
-
-If the method called on any of the elements return something an `Array` of the items that were returned, will be returned from `call()` otherwise the `NodeList` will be returned to allow method chaining.
+If the method called on any of the elements returns something, an `Array` of those returned items would be returned from `call()` otherwise the `NodeList` will be returned to allow method chaining.
 
 # Adding Your Own Methods:
 ```JS
@@ -401,11 +419,11 @@ $$.NL.myMethod = function() {
 
 | Browser | Version |
 | --------|---------|
-| FireFox | 3.5+      |
+| FireFox | 3.5+    |
 | Safari  | 5.0.5+  |
 | Chrome  | 7+      |
 | IE      | 10+     |
-| Opera   | 11.6+    |
+| Opera   | 11.6+   |
 
 **Attention:** You have to realize that my library's dependent on the browser it's running (which is awesome so it automatically updates when the browser updates the DOM with new properties/methods) meaning if let's say the property `hidden` doesn't exist on `HTMLElement.prototype` you cant do: `$$('.child').hidden = true;`
 
@@ -418,12 +436,3 @@ This library is for devs who want to manipulate the `DOM` using the **`Native DO
 My wish would be to have all modern browsers implement `NodeList` like this. I honestly don't see why this would hurt if it grows with help/feedback. As of right now `NodeList` doesn't do anything but store `Live Nodes`. And this is using the **DOM's Native APIs** so there's nothing new, now the `set` and `get` methods won't be needed since it would be done with `ES6 Proxies`.
 
 Getting this natively, I would need tons of help. I don't know anything about writing specs and getting things standardized.
-
-# My Gratitude:
-I tweeted at [@paul_irish][1], [@addyosmani][2], [@jeresig][3], [@simevidas][4], [@BrendanEich][5] about this because those are people I admire in the Web Development Community. So Thank You Guys.
-
-[1]: https://www.twitter.com/paul_irish/
-[2]: https://www.twitter.com/addyosmani/
-[3]: https://www.twitter.com/jeresig/
-[4]: https://www.twitter.com/simevidas/
-[5]: https://www.twitter.com/BrendanEich/
