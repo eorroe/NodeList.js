@@ -28,68 +28,85 @@
 		some:              Array.prototype.some,
 		reduce:            Array.prototype.reduce,
 		reduceRight:       Array.prototype.reduceRight,
-		pop:               Array.prototype.pop,
-		shift:             Array.prototype.shift,
 		sort:              Array.prototype.sort,
 		reverse:           Array.prototype.reverse,
-		values:            Array.prototype.values || newArrayMethodError('values'),
-		find:              Array.prototype.find || newArrayMethodError('find'),
-		findIndex:         Array.prototype.findIndex || newArrayMethodError('findIndex'),
+		values:            Array.prototype.values     || newArrayMethodError('values'),
+		find:              Array.prototype.find       || newArrayMethodError('find'),
+		findIndex:         Array.prototype.findIndex  || newArrayMethodError('findIndex'),
 		copyWithin:        Array.prototype.copyWithin || newArrayMethodError('copyWithin'),
-		includes:          Array.prototype.includes || function includes(element) {
+		includes:          Array.prototype.includes   || function includes(element) {
 			return this.indexOf(element) > -1;
 		},
 
-		forEach: function() {
+		forEach: function forEach() {
 			Array.prototype.forEach.apply(this, arguments);
 			return this;
 		},
 
-		push: function() {
+		push: function push() {
 			for(var i = 0, l = arguments.length; i < l; i++) {
 				if(!(arguments[i] instanceof Node)) throw Error('Passed arguments must be a Node');
 			}
 			return Array.prototype.push.apply(this, arguments);
 		},
 
-		unshift: function() {
+		pop: function pop(amount) {
+			if(typeof amount !== "number") amount = 1;
+			var nodes = [], pop = Array.prototype.pop.bind(this);
+			for(var i = 0; i < amount; i++) nodes.push(pop());
+			nodes.__proto__ = NL;
+			return nodes;
+		},
+
+		unshift: function unshift() {
 			for(var i = 0, l = arguments.length; i < l; i++) {
 				if(!(arguments[i] instanceof Node)) throw Error('Passed arguments must be a Node');
 			}
 			return Array.prototype.unshift.apply(this, arguments);
 		},
 
-		splice: function() {
+		shift: function shift(amount) {
+			if(typeof amount !== "number") amount = 1;
+			var nodes = [], shift = Array.prototype.shift.bind(this);
+			for(var i = 0; i < amount; i++) nodes.push(shift());
+			nodes.__proto__ = NL;
+			return nodes;
+		},
+
+		splice: function splice() {
 			for(var i = 2, l = arguments.length; i < l; i++) {
 				if(!(arguments[i] instanceof Node)) throw Error('Passed arguments must be a Node');
 			}
-			return Array.prototype.splice.apply(this, arguments);
-		},
-
-		slice: function slice(begin, end) {
-			var nodes = Array.prototype.slice.call(this, begin, end);
+			var nodes = Array.prototype.splice.apply(this, arguments);
 			nodes.__proto__ = NL;
 			return nodes;
 		},
 
-		filter: function filter(cb) {
-			var nodes = Array.prototype.filter.call(this, cb);
+		slice: function slice() {
+			var nodes = Array.prototype.slice.apply(this, arguments);
 			nodes.__proto__ = NL;
 			return nodes;
 		},
 
-		map: function map(cb) {
-			var nodes = Array.prototype.map.call(this, cb),
+		filter: function filter() {
+			var nodes = Array.prototype.filter.apply(this, arguments);
+			nodes.__proto__ = NL;
+			return nodes;
+		},
 
-			areAllNodes = nodes.every(function(el) {
+		map: function map() {
+			var mapped = Array.prototype.map.apply(this, arguments),
+
+			areAllNodes = mapped.every(function(el) {
 				return el instanceof Node;
 			});
 
 			if(areAllNodes) {
-				nodes.__proto__ = NL;
-				return nodes;
+				mapped.__proto__ = NL;
+				return mapped;
 			}
-			return nodes;
+			mapped.get = NL.get, mapped.set = NL.set, mapped.call = NL.call;
+			return mapped;
 		},
 
 		concat: function concat() {
@@ -150,7 +167,7 @@
 			return this;
 		},
 
-		call: function(method) {
+		call: function call(method) {
 			var argsLength = arguments.length, results = [], args = [], returnResults = false;
 			results.get = NL.get, results.set = NL.set, results.call = NL.call;
 
@@ -213,6 +230,7 @@
 
 	var div = document.createElement('div');
 	for(var prop in div) setterGetter(prop);
+	div = null;
 
 	window.$$ = function NodeListJS(selector, scope) {
 		var nodes = (scope || document).querySelectorAll(selector), newNodes = [];
