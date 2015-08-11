@@ -113,7 +113,7 @@
 			for(var i = 0, l = arguments.length; i < l; i++) {
 				var arg = arguments[i];
 				if(arg instanceof Node) {
-					if(this.indexOf(arg) === -1) this.push(el);
+					if(this.indexOf(arg) === -1) this.push(arg);
 				} else if(arg instanceof NodeList || arg instanceof HTMLCollection || arg instanceof Array || arg.__proto__ === NL) {
 					for(var i2 = 0, l2 = arg.length; i2 < l2; i2++) {
 						var el = arg[i2];
