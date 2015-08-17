@@ -30,7 +30,7 @@
 		reduceRight:       Array.prototype.reduceRight,
 		sort:              Array.prototype.sort,
 		reverse:           Array.prototype.reverse,
-		values:            Array.prototype.values     || newArrayMethodError('values'),
+		values:            Array.prototype.values     || Array.prototype[Symbol.iterator] || newArrayMethodError('values'),
 		find:              Array.prototype.find       || newArrayMethodError('find'),
 		findIndex:         Array.prototype.findIndex  || newArrayMethodError('findIndex'),
 		copyWithin:        Array.prototype.copyWithin || newArrayMethodError('copyWithin'),
@@ -151,12 +151,19 @@
 				arr.push(item);
 			}
 			arr = flatten(arr);
-			arr.get = NL.get, arr.set = NL.set, arr.call = NL.call;
+			arr.get = NL.get, arr.set = NL.set, arr.call = NL.call, arr.owner = this;
 			return arr;
 		},
 
 		set: function set(prop, value, checkExistence) {
-			if(checkExistence) {
+			if(prop.constructor === Object) {
+				for(var i = 0, l = this.length; i < l; i++) {
+					var element = this[i];
+					for(var p in prop) {
+						if(element[p] !== undefined) element[p] = prop[p];
+					}
+				}
+			} else if(checkExistence) {
 				for(var i = 0, l = this.length; i < l; i++) {
 					var element = this[i];
 					if(element[prop] !== undefined) element[prop] = value;
@@ -218,7 +225,7 @@
 						arr.push(item);
 					}
 					arr = flatten(arr);
-					arr.get = NL.get, arr.set = NL.set, arr.call = NL.call;
+					arr.get = NL.get, arr.set = NL.set, arr.call = NL.call, arr.owner = this;
 					return arr;
 				},
 				set: function(newVal) {
