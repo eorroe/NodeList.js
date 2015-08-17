@@ -207,10 +207,10 @@
 					}
 				}
 				if(nodes.length) {
-					nodes.__proto__ = NL;
+					nodes.__proto__ = NL, nodes.owner = this;
 					return nodes;
 				} else if(arrLength) {
-					arr.get = NL.get, arr.set = NL.set, arr.call = NL.call;
+					arr.get = NL.get, arr.set = NL.set, arr.call = NL.call, arr.owner = this;
 					return arr;
 				}
 				return this;
