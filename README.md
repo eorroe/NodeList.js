@@ -390,6 +390,33 @@ $$('div, a').set('href', 'https://www.example.com', true);
 $$('.child').style.set('color', 'red'); // sets each element's color to red. Returns the Array of styles back
 ```
 
+You can also set multiple properties:
+```JS
+$$('.child').set({
+ textContent: 'Hello World',
+ className: 'class1 class2'
+});
+```
+
+Same with properties:
+```JS
+$$('.child').style.set({
+ color: 'red',
+ background: 'black'
+});
+```
+
+Remember you can chain:
+```JS
+$$('.child').set({
+ textContent: 'Hello World',
+ className: 'class1 class2'
+}).style.set({
+ color: 'red',
+ background: 'black'
+});
+```
+
 ## Call
 There are methods which are unique to certain elements. This is how you would call those methods:
 ```JS
@@ -404,6 +431,23 @@ $$('canvas').call('getContext', '2d'); // Returns Array of `CanvasRenderingConte
 ```
 
 If the method called on any of the elements returns something, an `Array` of those returned items would be returned from `call()` otherwise the `NodeList` will be returned to allow method chaining.
+
+## The `owner` property:
+All the owner propety does is give you back the `NodeList` that the property was mapped from:
+```JS
+var elms = $$('.child');
+elms.style.owner === elms; // true
+```
+
+So I can do all kinds of stuff:
+```JS
+var elms = $$('.child');
+var childs = elms.children.children;
+childs.owner === elms.children;
+childs.owner.owner === elms;
+```
+
+A bit confusing but look over it again :)
 
 # Adding Your Own Methods:
 ```JS
