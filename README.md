@@ -1,12 +1,8 @@
 # Overview
 
-**First Let Me Say:** The File You'll use is `nodeListLib.js`, **IGNORE** the others.
-
 ## What this is?
 
-`nodeList.js` is a small (About 6kb) fully `ES5` written very powerful library which allows you to manipulate an **Array of Nodes** just like you would with a single `Node`, using the `Native DOM APIs`.
-
-**RECOMMENDED**: Use within a browser with all the `DOM` properties on their `prototype` for example *chrome 43+*
+[`nodeListLib.js`](https://github.com/eorroe/NodeList.js/blob/master/nodeListLib.js) is a small (About 8kb) `ES5` compliant very powerful library which allows you to manipulate an **Array of Nodes** just like you would with a single `Node`, using the `Native DOM APIs`.
 
 # Usage:
 
@@ -30,22 +26,36 @@
 
 ## Let's start of by querying `#container`'s children:
 
-Each of the following return an `Array of Nodes` (AKA my `NodeList`, not the browser's `NodeList`)
+Each of the following returns an `Array of Nodes` (AKA my `NodeList`, not the browser's native `NodeList`)
 ```JS
 // Method 1
-$('#container div');
+$$('#container div');
 
 // Method 2
-$('#container').children;
+$$('#container').children;
 
 // Method 3
-$('div div');
+$$('div div');
 ```
+
+There's a second argument you can pass which is the scope:
+```JS
+let container = document.getElementById('container');
+$$('div', container);
+```
+
+Which would be equivalent to:
+```JS
+container.querySelectorAll('div'); // just this doesn't return my NodeList, but the browsers NodeList
+```
+
 ## *Getting* properties of each `Node`:
+
 How you would normally do it:
 ```JS
 let children = document.getElementsByClassName('child');
 ```
+
 Now you would get properties on the `#container`'s children:
 ```JS
 for(let i = 0, l = children.length; i < l; i++) {
@@ -57,14 +67,14 @@ for(let i = 0, l = children.length; i < l; i++) {
 
 Here's how you would do it with `nodeList.js`:
 ```JS
-$('.child').id; // ['', '' ... x10]
-$('.child').nodeName; // ['DIV', 'DIV' ... x10]
-$('.child').className; // ['child', 'child' ... x10]
+$$('.child').id; // ['', '' ... x10]
+$$('.child').nodeName; // ['DIV', 'DIV' ... x10]
+$$('.child').className; // ['child', 'child' ... x10]
 ```
 
 Therefore you would read each property just like you would with a single `Node` :)
 
-**Notice** how it returns an array of the property's value, meaning you can select them by `index` and use any `Array Methods` on them, you'll see when you get to the [looping](https://github.com/eorroe/NodeList.js#looping) part.
+**Notice** how it returns an `Array` of the property's value, meaning you can select them by `index` and use any `Array Methods` on them, you'll see when you get to the [looping](https://github.com/eorroe/NodeList.js#looping) part.
 
 ## *Setting* properties on each `node`:
 
@@ -75,18 +85,20 @@ for(let i = 0, l = children.length; i < l; i++) {
     children[i].textContent = 'This is some text';
 }
 ```
+
 Here's how you'd do it with `NodeList.js`:
 ```JS
-$('.child').className = 'containerChild';
-$('.child').textContent = 'This is some text';
+$$('.child').className = 'containerChild';
+$$('.child').textContent = 'This is some text';
 ```
+
 ## *Calling* methods on each `node`:
 
 Still using the `children` variable:
 
 Let's add an event listener to each node, even though `event delegation` would be best, but for the sake of this example:
 ```JS
-for(var i = 0, l = children.length; i++) {
+for(let i = 0, l = children.length; i++) {
 	children[i].addEventListener('click', function() {
     	console.log(this, 'was clicked');
     });
@@ -94,36 +106,41 @@ for(var i = 0, l = children.length; i++) {
 ```
 Here's how you'd do it with `NodeList.js`:
 ```JS
-$('.child').addEventListener('click', function() {
+$$('.child').addEventListener('click', function() {
 	console.log(this, 'was clicked');
 });
 ```
+
 So cool right? You can use any `Native DOM method`:
 
 Let's set some attributes:
 ```JS
-$('.child').setAttribute('class', 'child div');
+$$('.child').setAttribute('class', 'child div');
 
 // For setting the class you could just do:
-$('.child').className = 'child div';
+$$('.child').className = 'child div';
 ```
+
 Clicking the elements:
 ```JS
-$('.child').click();
+$$('.child').click();
 ```
+
 Removing the elements:
 ```JS
-$('.child').remove();
+$$('.child').remove();
 ```
+
 *I think you're getting the point any `Native Method` you could just call on the `NodeList` and it'll call it on EACH element*
 
 **BTW:** All `DOM` Methods that would normally return `undefined` when called on a single Node will return the same `NodeList` back to allow Method Chaining. Like `setAttribute()`
 
 ## Looping
 Using a for loop and `ES6` `for-of`:
+
 We'll just remove the nodes from the `DOM` as examples:
 ```JS
-let nodes = $('.child');
+let nodes = $$('.child');
 for(let i = 0, l = nodes.length; i < l; i++) {
 	nodes[i].remove();
 }
@@ -132,19 +149,20 @@ for(let node of nodes) {
 	node.remove();
 }
 ```
+
 Using `forEach`:
 ```JS
-$('.child').forEach(function(node) {
+$$('.child').forEach(function(node) {
 	node.remove();
 }); // returns same Array of Nodes to allow method chaining.
 
 // or just do:
-$('.child').remove();
+$$('.child').remove();
 ```
 
 Looping through the properties:
 ```JS
-let styles = $('.child').style; // returns array of style objects (CSSStyleDeclaration)
+let styles = $$('.child').style; // returns Array of style objects (CSSStyleDeclaration)
 
 for(let i = 0, l = styles.length; i++) {
 	styles[i].color = 'red';
@@ -159,7 +177,7 @@ styles.forEach(function(style) {
 });
 
 // or loop thorugh the nodes themselves
-let nodes = $('.child');
+let nodes = $$('.child');
 
 for(let i = 0, l = nodes.length; i++) {
 	nodes[i].style.color = 'red';
@@ -176,201 +194,289 @@ nodes.forEach(function(node) {
 
 ## Slicing
 ```JS
-$('.child').slice(0, 1); // Returns NodeList with first element;
+$$('.child').slice(0, 1); // Returns NodeList containing first element;
 ```
 
 ## Mapping
 ```JS
 // Mapping is easy just get the property just like you would on a node
 
-$('#container').id // Returns array of id for each element in NodeList
+$$('#container').id // Returns Array of id for each element in NodeList
 
 // No need for:
-$('#container').map(element => element.id);
+$$('#container').map(element => element.id);
 
-$('#container div').map(div => div.firstChild); // Map() Checks if array is fully populated with nodes so returns a NodeList populated with firstChld nodes
+// Map() Checks if Array is fully populated with nodes so returns a NodeList populated with firstChld nodes
+$$('#container div').map(div => div.firstChild);
 
 // Map the firstChild node and remove it.
-$('#container').map(div => div.firstChild).remove();
+$$('#container').map(div => div.firstChild).remove();
 
 // Or:
-$('#container').firstChild.remove();
+$$('#container').firstChild.remove();
 ```
 
 ## Filtering
 ```JS
-$('div').filter(div => !div.matches('#container')); // Returns #container childElements NodeList
+$$('div').filter(div => !div.matches('#container')); // Returns #container childElements NodeList
 ```
 
 ## Reducing
 ```JS
 // Useless example:
-var unique = $('div').reduce(function(set, div) {
+let unique = $$('div').reduce(function(set, div) {
 	set.add(div.parentElement);
 	return set;
 }, new Set());
 
-// Yea that's horrible, but I have no good use of reduce on NodeList
+// Yea that's horrible, but I have no good example use of reduce() on NodeList
 ```
 
 ## Concatenating
+
+The following `concat()` methods all return a `NodeList`
 ```JS
-var divs = $('div');
+let divs = $$('div');
 
-var divsAndBody = divs.concat(document.body); // Method 1 passing Node
+// Method 1 passing Node
+let divsAndBody = divs.concat(document.body);
 
-var divsAndBody = divs.concat([document.body]); // Method 2 passing array of Nodes
+// Method 2 passing Array of Nodes
+let divsAndBody = divs.concat([document.body]);
 
-var divsAndBody = divs.concat($('body')); // Method 3 passing a NodeList
+// Method 3 passing a NodeList
+let divsAndBody = divs.concat($$('body'));
 
-var divsAndBody = divs.concat([$('body')]); // Method 4 passing an array of NodeList
+// Method 4 passing an Array of NodeList
+let divsAndBody = divs.concat([$$('body')]);
 
-var divsAndBodyAndHTML = divs.concat(document.body, document.documentHTML); // Method 5 passing multiple Nodes as arguments
+// Method 5 passing multiple Nodes as arguments
+let divsAndBodyAndHTML = divs.concat(document.body, document.documentHTML);
 
-var divsAndBodyAndHTML = divs.concat([document.body], [document.documentHTML]); // Method 6 passing arrays of Nodes as arguments
+// Method 6 passing Arrays of Nodes as arguments
+let divsAndBodyAndHTML = divs.concat([document.body], [document.documentHTML]);
 
-var divsAndBodyAndHTML = divs.concat([$('body')], [$('html')]); // Method 7 passing arrays of NodeList as are arguments
+// Method 7 passing Arrays of NodeList as are arguments
+let divsAndBodyAndHTML = divs.concat([$$('body')], [$$('html')]);
 
-var divsAndBody = divs.concat([[document.body]]); // Error!! No array of arrays
+// Error!! No Array of Arrays
+let divsAndBody = divs.concat([[document.body]]);
 ```
 
 ## Pushing
 ```JS
-var divs = $('div');
+let divs = $$('div');
 
-divs.push(document.body); // Returns length of NodeList, and accepts parameters just like `concat`. Now divs contains document.body
+divs.push(document.body); // Returns length of NodeList. Now the `divs` NodeList contains document.body
 ```
 
-## Poping
+## Popping
 ```JS
-var divs = $('div');
+let divs = $$('div');
 
-divs.pop(); // Returns last div in NodeList and removes it from NodeList
+divs.pop(); // Removes last Node in the NodeList and returns a NodeList of the removed Nodes
+```
+
+`pop()` takes an optional argument of how many `Nodes` to **POP**
+```JS
+divs.pop(2); // Removes last 2 Nodes in the NodeList and returns a NodeList of the removed Nodes
 ```
 
 ## Shifting
 ```JS
-var divs = $('div');
+let divs = $$('div');
 
-divs.shift(); // Returns first div in NodeList and removes it from NodeList
+divs.shift(); // Removes first Node in the NodeList and returns a NodeList of the removed Nodes
+```
+
+`shift()` also takes an optional argument of how many `Nodes` to **SHIFT**
+```JS
+divs.shift(2); // Removes first 2 Nodes in the NodeList and returns a NodeList of the removed Nodes
 ```
 
 ## Unshifting
 ```JS
-var divs = $('div');
+let divs = $$('div');
 
-divs.unshift(document.body); // Returns length of NodeList, and accepts parameters just like `concat`. Now divs contains document.body
+divs.unshift(document.body); // Returns length of NodeList. Now divs contains document.body
 ```
 
 ## Splicing
+
+Let's replace the first element which would be #container with document.body
 ```JS
-var divs = $('div');
+let divs = $$('div');
 
-// Let's replace the first element which would be #container with document.body
-
-divs.splice(0, 1, document.body); // Returns the same NodeList with the first element being document.body
+// Removes the first Element and inserts document.body in its place. Returns a NodeList of the spliced Nodes
+divs.splice(0, 1, document.body);
 ```
 
 ## Sorting
-
-**I have no Idea why you would want to sort a `NodeList`**
-
 ```JS
-var divs = $('.child');
+let divs = $$('.child');
 
 // Let's give each div a data-index attribute
 divs.forEach( (div, index) => div.dataset.index = index);
 
-// Reverse the NodeList (pretty useless example again I'm not sure why you would want to sort a NodeList)
-divs.sort( (div1, div2) => div2.dataset.index - div1.dataset.index);
+// Reverse the NodeList
+divs.sort( (div1, div2) => div2.dataset.index - div1.dataset.index); // Returns same NodeList
 ```
 
 ## Reversing
 ```JS
-$('div').reverse(); // Simply returns a reversed NodeList (USELESS!! IMO)
+$$('div').reverse(); // Returns the same NodeList but reversed
 ```
 
-**NO JOIN METHOD** Completely useless!!
+## Joining
+I didn't put a `join` method in the library because it'd be useless on the actual Nodes:
+```JS
+$$('.child').join(); // "[object HTMLDivElement], [object HTMLDivElement] ..."
+```
+
+Therefore you can still use it when mapping out properties:
+```JS
+$$('.child').className.join(); // "child,child,child,child,child,child,child,child,child,child"
+```
 
 ## Includes
 ```JS
-$('body').includes(document.body); // Returns true if passed Node is in NodeList
+$$('body').includes(document.body); // Returns true if passed Node is included in the NodeList
 ```
 
 Ok now how about dealing with elements that have unique properties. Like `HTMLAnchorElement(s)` they have the `href` property which is not inherited from `HTMLElement`. There are no `HTMLAnchorElements` in this example but here's how you'll deal with it.
 
+# Special Methods
+
 ## Get
 ```JS
-$('a').href // undefined because it's a unique property that every element does not inherit
+$$('a').href // undefined because it's a unique property that every element does not inherit
 
-$('a').get('href'); // returns array of href values
+$$('a').get('href'); // returns Array of href values
+```
+
+`Get()` can also be used on an `Array` of properties:
+```JS
+$$('.child').style.get('color'); // returns an Array of the value of each node.style.color
 ```
 
 ## Set
 ```JS
-$('a').set('href', 'https://www.example.com/');
+$$('a').set('href', 'https://www.example.com/');
 ```
 
-You can also call `set` for any property that **DOES NOT** exist on the actual elements.
-
+You can also call `set` for any property that **DOES NOT** exist on the actual elements:
 ```JS
-$('div').set('thisIsAPropertyThatDoesntExistOnEachElement', 'whateverValue');
+$$('div').set('thisIsAPropertyThatDoesntExistOnEachElement', 'whateverValue');
 
-$('div').get('thisIsAPropertyThatDoesntExistOnEachElement'); // ['whateverValue', 'whateverValue', 'whateverValue', ...]
+$$('div').get('thisIsAPropertyThatDoesntExistOnEachElement'); // ['whateverValue', 'whateverValue', 'whateverValue', ...]
 
-$('div').set('className', 'these are the classes being set');
+$$('div').set('className', 'these are the classes being set');
 
 // Would be the same as
-
-$('div').className = 'these are the classes being set';
+$$('div').className = 'these are the classes being set';
 ```
+
 `set()` has a third `Boolean` parameter which determines whether to check if each `Node` has the property before setting it:
 ```JS
-$('div, a').set('href', 'https://www.example.com'); // would set `href` on both divs and anchor tags
-$('div, a').set('href', 'https://www.example.com', true); // only sets `href` on anchor tags because it checks if that property is not undefined
+// would set `href` on both divs and anchor tags
+$$('div, a').set('href', 'https://www.example.com');
+
+// only sets `href` on anchor tags because it is a property of the anchor elements
+$$('div, a').set('href', 'https://www.example.com', true);
 ```
 
-# The future:
-
-## The current problem:
-
+`set()` can also be used on an `Array` of properties:
 ```JS
-$('.child').style.background = 'red'; // Not possible
+$$('.child').style.set('color', 'red'); // sets each element's color to red. Returns the Array of styles back
 ```
 
-`$('.child').style` returns an array of `CSSStyleDeclaration` objects so I can't set background on it
-
-Also calling methods that are not are not inherited from `HTMLElement.prototype`:
-
+You can also set multiple properties:
 ```JS
-// Not currently possible
-$('video').pause();
-
-// You have loop through it yourself
-for(var video of $('video')) video.pause();
-
-//or
-$('video').forEach(video => video.pause());
+$$('.child').set({
+ textContent: 'Hello World',
+ className: 'class1 class2'
+});
 ```
 
-The solution would be (ES6 Proxies) which will allow the above to be possible.
+Same with properties:
+```JS
+$$('.child').style.set({
+ color: 'red',
+ background: 'black'
+});
+```
 
-# My wish
+Remember you can chain:
+```JS
+$$('.child').set({
+ textContent: 'Hello World',
+ className: 'class1 class2'
+}).style.set({
+ color: 'red',
+ background: 'black'
+});
+```
 
-My wish would be to have all modern browsers implement `NodeList` like this. I honestly don't see why this would hurt if it grows with help/feedback. As of right now `NodeList` doesn't do anything but store `Live Nodes`. And this is using the DOM's Native APIs so there's nothing new. Only thing is I'd say it would be done with `ES6` `Proxies`.
+## Call
+There are methods which are unique to certain elements. This is how you would call those methods:
+```JS
+$$('video').call('pause');
+```
+
+Or you could just loop through the elements and call the methods
+
+What about passing arguments:
+```JS
+$$('canvas').call('getContext', '2d'); // Returns Array of `CanvasRenderingContext2D`
+```
+
+If the method called on any of the elements returns something, an `Array` of those returned items would be returned from `call()` otherwise the `NodeList` will be returned to allow method chaining.
+
+## The `owner` property:
+All the owner propety does is give you back the `NodeList` that the property was mapped from:
+```JS
+var elms = $$('.child');
+elms.style.owner === elms; // true
+```
+
+So I can do all kinds of stuff:
+```JS
+var elms = $$('.child');
+var childs = elms.children.children;
+childs.owner === elms.children;
+childs.owner.owner === elms;
+```
+
+A bit confusing but look over it again :)
+
+# Adding Your Own Methods:
+```JS
+$$.NL.myMethod = function() {
+	// You'll have to write your own loop here if you want to call this on each Node or use:
+	this.forEach(function(node) {
+		// do something with each node
+	});
+}
+```
+
+# NodeListJS Compatability
+
+| Browser | Version |
+| --------|---------|
+| FireFox | 3.5+    |
+| Safari  | 5.0.5+  |
+| Chrome  | 7+      |
+| IE      | 10+     |
+| Opera   | 11.6+   |
+
+**Attention:** You have to realize that my library's dependent on the browser it's running (which is awesome so it automatically updates when the browser updates the DOM with new properties/methods) meaning if let's say the property `hidden` doesn't exist on `HTMLElement.prototype` you cant do: `$$('.child').hidden = true;`
+
+So the [Compatability Table](https://github.com/eorroe/NodeList.js#nodelistjs-compatability) above represents what browsers suport `__proto__` and `querySelectorAll` combined which is being used in my library.
 
 # Who/What is this for?
+This library is for devs who want to manipulate the `DOM` using the **`Native DOM APIs`** in a special way using one function `$$`. Basically for [Vanilla-js](http://vanilla-js.com/) developers like myself.
 
-This library is for devs who want to manipulate the `DOM` using the Native DOM APIs without having to loop through elements and using one function `$` to query instead of all of the `getElementById`, `getElementsByClassName` etc.
+# My wish
+My wish would be to have all modern browsers implement `NodeList` like this. I honestly don't see why this would hurt if it grows with help/feedback. As of right now `NodeList` doesn't do anything but store `Live Nodes`. And this is using the **DOM's Native APIs** so there's nothing new, now the `set` and `get` methods won't be needed since it would be done with `ES6 Proxies`.
 
 Getting this natively, I would need tons of help. I don't know anything about writing specs and getting things standardized.
-
-# My Gratitude:
-
-I tweeted at [@paul_irish][1], [@addyosmani][2], [@jeresig][3], [@simevidas][4], [@BrendanEich][5] about this because those are people I admire in the Web Development Community. So Thank You Guys.
-
-[1]: https://www.twitter.com/paul_irish/
-[2]: https://www.twitter.com/addyosmani/
-[3]: https://www.twitter.com/jeresig/
-[4]: https://www.twitter.com/simevidas/
-[5]: https://www.twitter.com/BrendanEich/
