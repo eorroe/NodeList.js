@@ -1,3 +1,4 @@
+try {
 (function() {
 	function flatten(arr) {
 		var nodes = [];
@@ -30,12 +31,12 @@
 		reduceRight:       Array.prototype.reduceRight,
 		sort:              Array.prototype.sort,
 		reverse:           Array.prototype.reverse,
-		values:            Array.prototype.values     || Array.prototype[Symbol.iterator] || newArrayMethodError('values'),
+		values:            Array.prototype.values     || newArrayMethodError('values'),
 		find:              Array.prototype.find       || newArrayMethodError('find'),
 		findIndex:         Array.prototype.findIndex  || newArrayMethodError('findIndex'),
 		copyWithin:        Array.prototype.copyWithin || newArrayMethodError('copyWithin'),
-		includes:          Array.prototype.includes   || function includes(element) {
-			return this.indexOf(element) > -1;
+		includes:          Array.prototype.includes   || function includes(element, index) {
+			return this.indexOf(element, index) > -1;
 		},
 
 		forEach: function forEach() {
@@ -44,10 +45,13 @@
 		},
 
 		push: function push() {
+			var push = Array.prototype.push.bind(this);
 			for(var i = 0, l = arguments.length; i < l; i++) {
-				if(!(arguments[i] instanceof Node)) throw Error('Passed arguments must be a Node');
+				var arg = arguments[i];
+				if(!(arg instanceof Node)) throw Error('Passed arguments must be a Node');
+				if(this.indexOf(arg) === -1) push(arg);
 			}
-			return Array.prototype.push.apply(this, arguments);
+			return this.length;
 		},
 
 		pop: function pop(amount) {
@@ -59,10 +63,13 @@
 		},
 
 		unshift: function unshift() {
+			var shift = Array.prototype.shift.bind(this);
 			for(var i = 0, l = arguments.length; i < l; i++) {
-				if(!(arguments[i] instanceof Node)) throw Error('Passed arguments must be a Node');
+				var arg = arguments[i];
+				if(!(arg instanceof Node)) throw Error('Passed arguments must be a Node');
+				if(this.indexOf(arg) === -1) shift(arg);
 			}
-			return Array.prototype.unshift.apply(this, arguments);
+			return this.length;
 		},
 
 		shift: function shift(amount) {
@@ -176,7 +183,7 @@
 
 		call: function call(method) {
 			var argsLength = arguments.length, results = [], args = [], returnResults = false;
-			results.get = NL.get, results.set = NL.set, results.call = NL.call;
+			results.get = NL.get, results.set = NL.set, results.call = NL.call, results.owner = this;
 
 			for(var i = 1, l = arguments.length; i < l; i++) args.push(arguments[i]);
 
@@ -192,7 +199,9 @@
 		}
 	}
 
-	if(window.Symbol && window.Symbol.iterator) NL[Symbol.iterator] = Array.prototype[Symbol.iterator];
+	if(window.Symbol && window.Symbol.iterator) {
+		NL[Symbol.iterator] = NL.values = Array.prototype[Symbol.iterator];
+	}
 
 	function setterGetter(prop) {
 		if(div[prop] instanceof Function) {
@@ -247,3 +256,7 @@
 	}
 	window.$$.NL = NL;
 })();
+
+} catch(e) {
+	alert(e);
+}
