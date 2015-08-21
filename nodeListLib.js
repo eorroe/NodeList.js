@@ -1,4 +1,3 @@
-try {
 (function() {
 	function flatten(arr) {
 		var nodes = [];
@@ -256,7 +255,3 @@ try {
 	}
 	window.$$.NL = NL;
 })();
-
-} catch(e) {
-	alert(e);
-}
