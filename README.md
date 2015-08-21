@@ -2,7 +2,7 @@
 
 ## What this is?
 
-[`nodeListLib.js`](https://github.com/eorroe/NodeList.js/blob/master/nodeListLib.js) is a small (About 7kb) `ES5` compliant very powerful library which allows you to manipulate an **Array of Nodes** just like you would with a single `Node`, using the `Native DOM APIs`.
+[`nodeListLib.js`](https://github.com/eorroe/NodeList.js/blob/master/nodeListLib.js) is a small (About 8kb) `ES5` compliant very powerful library which allows you to manipulate an **Array of Nodes** just like you would with a single `Node`, using the `Native DOM APIs`.
 
 # Usage:
 
@@ -270,7 +270,7 @@ let divs = $$('div');
 divs.push(document.body); // Returns length of NodeList. Now the `divs` NodeList contains document.body
 ```
 
-## Poping
+## Popping
 ```JS
 let divs = $$('div');
 
