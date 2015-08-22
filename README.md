@@ -1,10 +1,16 @@
 # Overview
 
-## What this is?
+## What this is:
 
-[`nodeListLib.js`](https://github.com/eorroe/NodeList.js/blob/master/nodeListLib.js) is a small (About 8kb) `ES5` compliant very powerful library which allows you to manipulate an **Array of Nodes** just like you would with a single `Node`, using the `Native DOM APIs`.
+`NodeList.js` makes using the **Native DOM APIs** on an `Array` of `Nodes` as easy as `jQuery` with the benefits of it being extremely small at around **5k gzipped**, a **HUGE** performance boost and the browser as a dependency **(That's the most interesting part)**. It's the closest library that will ever come close to the speed of the **Native DOM APIs** because its using those APIs directly. Actually its faster in some cases (I'll let you read on and see if you can figure out why, by also looking at the source code, and a bit of playing around with it).
 
-# Usage:
+The first thing you'll notice is I'm using `$$`, the reason I chose this is because if you open up your devtools and do the following:
+
+```JS
+$$('div'); // will return a NodeList
+```
+
+# `NodeList.js` Usage:
 
 ## The `HTML` we'll manipulate in the following:
 ```HTML
@@ -479,4 +485,4 @@ This library is for devs who want to manipulate the `DOM` using the **`Native DO
 # My wish
 My wish would be to have all modern browsers implement `NodeList` like this. I honestly don't see why this would hurt if it grows with help/feedback. As of right now `NodeList` doesn't do anything but store `Live Nodes`. And this is using the **DOM's Native APIs** so there's nothing new, now the `set` and `get` methods won't be needed since it would be done with `ES6 Proxies`.
 
-Getting this natively, I would need tons of help. I don't know anything about writing specs and getting things standardized.
+Getting `NodeList` natively implemented like `NodeList.js` I would need tons of help. I don't know anything about writing specs and getting things standardized.
