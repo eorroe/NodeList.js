@@ -121,20 +121,9 @@
 				if(arg instanceof Node) {
 					if(this.indexOf(arg) === -1) this.push(arg);
 				} else if(arg instanceof NodeList || arg instanceof HTMLCollection || arg instanceof Array || arg.__proto__ === NL) {
-					for(var i2 = 0, l2 = arg.length; i2 < l2; i2++) {
-						var el = arg[i2];
-						if(el instanceof Node) {
-							if(this.indexOf(el) === -1) this.push(el);
-						} else if(el instanceof NodeList) {
-							for(var i3 = 0, l3 = el.length; i3 < l3; i3++) {
-								if(this.indexOf(arg) === -1) this.push(el[i3]);
-							}
-						} else {
-							throw Error(el.constructor.name + ': ' + el + ' is not a Node');
-						}
-					}
+					this.concat.apply(this, arg);
 				} else {
-					throw Error('Only Node, NodeList, HTMLCollection, or Array of (Node, NodeList, HTMLCollection)');
+					throw Error('Concat only takes a Node, NodeList, HTMLCollection, or Array of (Node, NodeList, HTMLCollection)');
 				}
 			}
 			return this;
