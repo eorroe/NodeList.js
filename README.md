@@ -104,7 +104,7 @@ Still using the `children` variable:
 
 Let's add an event listener to each node, even though `event delegation` would be best, but for the sake of this example:
 ```JS
-for(let i = 0, l = children.length; i++) {
+for(let i = 0, l = children.length; i < l; i++) {
 	children[i].addEventListener('click', function() {
     	console.log(this, 'was clicked');
     });
@@ -170,7 +170,7 @@ Looping through the properties:
 ```JS
 let styles = $$('.child').style; // returns Array of style objects (CSSStyleDeclaration)
 
-for(let i = 0, l = styles.length; i++) {
+for(let i = 0, l = styles.length; i < l; i++) {
 	styles[i].color = 'red';
 }
 
@@ -185,7 +185,7 @@ styles.forEach(function(style) {
 // or loop thorugh the nodes themselves
 let nodes = $$('.child');
 
-for(let i = 0, l = nodes.length; i++) {
+for(let i = 0, l = nodes.length; i < l; i++) {
 	nodes[i].style.color = 'red';
 }
 
