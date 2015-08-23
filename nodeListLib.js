@@ -1,18 +1,18 @@
 (function() {
 	function flatten(arr) {
-		var nodes = [];
+		var elms = [];
 		for(var i = 0, l = arr.length; i < l; i++) {
-			var n = arr[i];
-			if(n instanceof Node) {
-				nodes.push(n);
-			} else if(n instanceof NodeList || n instanceof HTMLCollection || n instanceof Array) {
-				for(var i2 = 0, l2 = n.length; i2 < l2; i2++) nodes.push(n[i2]);
+			var el = arr[i];
+			if(el instanceof Node) {
+				elms.push(el);
+			} else if(el instanceof NodeList || el instanceof HTMLCollection || el instanceof Array) {
+				elms = elms.concat(flatten(el));
 			} else {
 				return arr;
 			}
 		}
-		nodes.__proto__ = NL;
-		return nodes;
+		elms.__proto__ = NL;
+		return elms;
 	}
 
 	function newArrayMethodError(methodName) {
@@ -116,17 +116,19 @@
 		},
 
 		concat: function concat() {
+			var nodes = []; nodes.__proto__ = NL, nodes.owner = this;
+			for(var i = 0, l = this.length; i < l; i++) nodes.push(this[i]);
 			for(var i = 0, l = arguments.length; i < l; i++) {
 				var arg = arguments[i];
 				if(arg instanceof Node) {
-					if(this.indexOf(arg) === -1) this.push(arg);
+					if(nodes.indexOf(arg) === -1) nodes.push(arg);
 				} else if(arg instanceof NodeList || arg instanceof HTMLCollection || arg instanceof Array || arg.__proto__ === NL) {
-					this.concat.apply(this, arg);
+					nodes = nodes.concat.apply(nodes, arg);
 				} else {
 					throw Error('Concat only takes a Node, NodeList, HTMLCollection, or Array of (Node, NodeList, HTMLCollection)');
 				}
 			}
-			return this;
+			return nodes;
 		},
 
 		querySelectorAll: function querySelectorAll(selector) {
@@ -135,7 +137,8 @@
 				var queriedNodes = this[i].querySelectorAll(selector);
 				for(var i2 = 0, l2 = queriedNodes.length; i2 < l2; i2++) nodes.push(queriedNodes[i2]);
 			}
-			return flatten(nodes);
+			nodes = flatten(nodes), nodes.owner = this;
+			return nodes;
 		},
 
 		get: function get(prop) {
