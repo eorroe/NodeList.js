@@ -264,10 +264,11 @@ let divsAndBodyAndHTML = divs.concat([document.body], [document.documentHTML]);
 
 // Method 7 passing Arrays of NodeList as are arguments
 let divsAndBodyAndHTML = divs.concat([$$('body')], [$$('html')]);
-
-// Error!! No Array of Arrays
-let divsAndBody = divs.concat([[document.body]]);
 ```
+
+`Concat()` is recursive so you can pass an `Array` that is as deep as you'd like.
+
+Now if you pass anythinng that's not a `Node`, `NodeList`, `HTMLCollections`, `Array` or deep `Array of Arrays` that have something other than `Node`, `NodeList`, `HTMLCollections`, `Array` will **Throw** an `Error`.
 
 ## Pushing
 ```JS
