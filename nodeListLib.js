@@ -38,7 +38,7 @@
 			return this.indexOf(element, index) > -1;
 		},
 
-		forEach: function forEach() {
+		forEach: function forEach(cb, context) {
 			Array.prototype.forEach.apply(this, arguments);
 			return this;
 		},
@@ -57,16 +57,16 @@
 			if(typeof amount !== "number") amount = 1;
 			var nodes = [], pop = Array.prototype.pop.bind(this);
 			for(var i = 0; i < amount; i++) nodes.push(pop());
-			nodes.__proto__ = NL;
+			nodes.__proto__ = NL, nodes.owner = this;
 			return nodes;
 		},
 
 		unshift: function unshift() {
-			var shift = Array.prototype.shift.bind(this);
+			var unshift = Array.prototype.unshift.bind(this);
 			for(var i = 0, l = arguments.length; i < l; i++) {
 				var arg = arguments[i];
 				if(!(arg instanceof Node)) throw Error('Passed arguments must be a Node');
-				if(this.indexOf(arg) === -1) shift(arg);
+				if(this.indexOf(arg) === -1) unshift(arg);
 			}
 			return this.length;
 		},
@@ -75,7 +75,7 @@
 			if(typeof amount !== "number") amount = 1;
 			var nodes = [], shift = Array.prototype.shift.bind(this);
 			for(var i = 0; i < amount; i++) nodes.push(shift());
-			nodes.__proto__ = NL;
+			nodes.__proto__ = NL, nodes.owner = this;
 			return nodes;
 		},
 
@@ -84,19 +84,19 @@
 				if(!(arguments[i] instanceof Node)) throw Error('Passed arguments must be a Node');
 			}
 			var nodes = Array.prototype.splice.apply(this, arguments);
-			nodes.__proto__ = NL;
+			nodes.__proto__ = NL, nodes.owner = this;
 			return nodes;
 		},
 
 		slice: function slice() {
 			var nodes = Array.prototype.slice.apply(this, arguments);
-			nodes.__proto__ = NL;
+			nodes.__proto__ = NL, nodes.owner = this;
 			return nodes;
 		},
 
 		filter: function filter() {
 			var nodes = Array.prototype.filter.apply(this, arguments);
-			nodes.__proto__ = NL;
+			nodes.__proto__ = NL, nodes.owner = this;
 			return nodes;
 		},
 
@@ -106,6 +106,8 @@
 			areAllNodes = mapped.every(function(el) {
 				return el instanceof Node;
 			});
+
+			mapped.owner = this;
 
 			if(areAllNodes) {
 				mapped.__proto__ = NL;
