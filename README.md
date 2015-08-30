@@ -470,18 +470,15 @@ $$.NL.myMethod = function() {
 
 | Browser | Version |
 | --------|---------|
-| FireFox | 3.5+    |
+| FireFox | 6+    |
 | Safari  | 5.0.5+  |
-| Chrome  | 7+      |
+| Chrome  | 6+      |
 | IE      | 10+     |
 | Opera   | 11.6+   |
 
-**Attention:** You have to realize that my library's dependent on the browser it's running (which is awesome so it automatically updates when the browser updates the DOM with new properties/methods) meaning if let's say the property `hidden` doesn't exist on `HTMLElement.prototype` you cant do: `$$('.child').hidden = true;`
+**Attention:** You have to realize that my library's dependent on the browser it's running (which is awesome so it automatically updates when the browser updates the `DOM` with new properties/methods) meaning: let's say the property `hidden` doesn't exist on `HTMLElement.prototype` you cant do: `$$('.child').hidden = true;`
 
-So the [Compatability Table](https://github.com/eorroe/NodeList.js#nodelistjs-compatability) above represents what browsers suport `__proto__` and `querySelectorAll` combined which is being used in my library.
-
-# Who/What is this for?
-This library is for devs who want to manipulate the `DOM` using the **`Native DOM APIs`** in a special way using one function `$$`. Basically for [Vanilla-js](http://vanilla-js.com/) developers like myself.
+So the [Compatability Table](https://github.com/eorroe/NodeList.js#nodelistjs-compatability) above represents what browsers suport `__proto__` and `querySelectorAll`, and `Object.defineProperty` etc combined which is being used in my library.
 
 # My wish
 My wish would be to have all modern browsers implement `NodeList` like this. I honestly don't see why this would hurt if it grows with help/feedback. As of right now `NodeList` doesn't do anything but store `Live Nodes`. And this is using the **DOM's Native APIs** so there's nothing new, now the `set` and `get` methods won't be needed since it would be done with `ES6 Proxies`.
