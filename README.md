@@ -352,6 +352,16 @@ $$('body').includes(document.body); // Returns true if passed Node is included i
 
 Ok now how about dealing with elements that have unique properties. Like `HTMLAnchorElement(s)` they have the `href` property which is not inherited from `HTMLElement`. There are no `HTMLAnchorElements` in this example but here's how you'll deal with it.
 
+## Item
+The browser's native `item(index)` method does the same as `NodeList[index]` but in mine it returns that `Node` as a my `NodeList`:
+```JS
+$$('html, body')[0]; // returns the <html> element
+
+$$('html, body').item(0); // returns my NodeList [<html>]
+```
+
+This is so that you can keep using the same properties/methods of my NodeList, instead of having to `slice`
+
 # Special Methods
 
 ## Get
@@ -373,9 +383,9 @@ $$('a').set('href', 'https://www.example.com/');
 
 You can also call `set` for any property that **DOES NOT** exist on the actual elements:
 ```JS
-$$('div').set('thisIsAPropertyThatDoesntExistOnEachElement', 'whateverValue');
+$$('div').set('APropertyThatDoesntExistOnEachElement', 'whateverValue');
 
-$$('div').get('thisIsAPropertyThatDoesntExistOnEachElement'); // ['whateverValue', 'whateverValue', 'whateverValue', ...]
+$$('div').get('APropertyThatDoesntExistOnEachElement'); // ['whateverValue', 'whateverValue', 'whateverValue', ...]
 
 $$('div').set('className', 'these are the classes being set');
 
