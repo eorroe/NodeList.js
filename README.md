@@ -331,7 +331,7 @@ Let's replace the first element which would be #container with document.body
 ```JS
 let divs = $$('div');
 
-// Removes the first Element and inserts document.body in its place and returns a NodeList of the spliced Nodes
+// Removes the first Element, inserts document.body in its place and returns a NodeList of the spliced Nodes
 divs.splice(0, 1, document.body);
 ```
 
