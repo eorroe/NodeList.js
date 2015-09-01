@@ -371,7 +371,8 @@ $$('.child').className.join();
 
 ## Includes
 ```JS
-$$('body').includes(document.body); // Returns true if passed Node is included in the NodeList
+// Returns true if passed Node is included in the NodeList
+$$('body').includes(document.body);
 ```
 
 ## Item
