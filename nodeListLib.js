@@ -51,7 +51,7 @@
 				if(!(arg instanceof Node)) throw Error('Passed arguments must be a Node');
 				if(this.indexOf(arg) === -1) push(arg);
 			}
-			return this.length;
+			return this;
 		},
 
 		pop: function pop(amount) {
@@ -69,7 +69,7 @@
 				if(!(arg instanceof Node)) throw Error('Passed arguments must be a Node');
 				if(this.indexOf(arg) === -1) unshift(arg);
 			}
-			return this.length;
+			return this;
 		},
 
 		shift: function shift(amount) {
@@ -107,19 +107,12 @@
 				var funcCall = cb.call(context, this[i], i, this);
 				if( !(funcCall instanceof Node) ) areAllNodes = false;
 			}
-
-			mapped.owner = this;
-			if(areAllNodes) {
-				mapped.__proto__ = NL;
-				return mapped;
-			}
-			mapped.get = NL.get, mapped.set = NL.set, mapped.call = NL.call;
-			return mapped;
+			if(areAllNodes) return flatten(mapped);
+			return flatten(mapped, this);
 		},
 
 		concat: function concat() {
-			var nodes = []; nodes.__proto__ = NL, nodes.owner = this;
-			for(var i = 0, l = this.length; i < l; i++) nodes.push(this[i]);
+			var nodes = flatten(this);
 			for(var i = 0, l = arguments.length; i < l; i++) {
 				var arg = arguments[i];
 				if(arg instanceof Node) {
@@ -130,6 +123,7 @@
 					throw Error('Concat only takes a Node, NodeList, HTMLCollection, or Array of (Node, NodeList, HTMLCollection, Array)');
 				}
 			}
+			nodes.owner = this;
 			return nodes;
 		},
 
@@ -147,8 +141,8 @@
 			if(prop.constructor === Object) {
 				for(var i = 0, l = this.length; i < l; i++) {
 					var element = this[i];
-					for(var p in prop) {
-						if(element[p] !== undefined) element[p] = prop[p];
+					for(var key in prop) {
+						if(element[key] !== undefined) element[key] = prop[key];
 					}
 				}
 			} else if(checkExistence) {
@@ -162,15 +156,12 @@
 			return this;
 		},
 
-		call: function call(method) {
-			var argsLength = arguments.length, args = [], arr = [], nodes = [];
-
-			for(var i = 1, l = arguments.length; i < l; i++) args.push(arguments[i]);
-
+		call: function call() {
+			var arr = [], nodes = [], method = Array.prototype.shift.call(arguments);
 			for(var i = 0, l = this.length; i < l; i++) {
 				var element = this[i];
 				if(element[method] instanceof Function) {
-					var funcCall = element[method].apply(element, args);
+					var funcCall = element[method].apply(element, arguments);
 					if(funcCall instanceof Node && nodes.indexOf(funcCall) === -1) {
 						nodes.push(funcCall);
 					} else if(funcCall !== undefined) {
