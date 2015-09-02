@@ -16,26 +16,8 @@
 		return elms;
 	}
 
-	function newMethodError(methodName) {
-		return TypeError('The ' + methodName + ' Method Does Not Yet Exist In This Browser, NodeList.js Will Automatically Add It When It Does');
-	}
-
 	var NL = {
-		keys:              Array.prototype.keys,
-		entries:           Array.prototype.entries,
-		indexOf:           Array.prototype.indexOf,
-		lastIndexOf:       Array.prototype.lastIndexOf,
-		every:             Array.prototype.every,
-		some:              Array.prototype.some,
-		reduce:            Array.prototype.reduce,
-		reduceRight:       Array.prototype.reduceRight,
-		sort:              Array.prototype.sort,
-		reverse:           Array.prototype.reverse,
-		values:            Array.prototype.values     || newMethodError('values'),
-		find:              Array.prototype.find       || newMethodError('find'),
-		findIndex:         Array.prototype.findIndex  || newMethodError('findIndex'),
-		copyWithin:        Array.prototype.copyWithin || newMethodError('copyWithin'),
-		includes:          Array.prototype.includes   || function includes(element, index) {
+		includes: Array.prototype.includes || function includes(element, index) {
 			return this.indexOf(element, index) > -1;
 		},
 
@@ -185,9 +167,12 @@
 		}
 	}
 
-	if(window.Symbol && window.Symbol.iterator) {
-		NL[Symbol.iterator] = NL.values = Array.prototype[Symbol.iterator];
-	}
+	var arrProps = ['join', 'copyWithin', 'fill'];
+	Object.getOwnPropertyNames(Array.prototype).forEach(function(key) {
+		if(arrProps.indexOf(key) === -1 && NL[key] === undefined) NL[key] = Array.prototype[key];
+	});
+
+	if(Symbol && Symbol.iterator) NL[Symbol.iterator] = NL.values = Array.prototype[Symbol.iterator];
 
 	function setterGetter(prop) {
 		if(div[prop] instanceof Function) {
@@ -229,7 +214,7 @@
 
 	var div = document.createElement('div');
 	for(var prop in div) setterGetter(prop);
-	div = null;
+	arrProps = div = null;
 
 	window.$$ = function NodeListJS(selector, scope) {
 		var nodes = (scope || document).querySelectorAll(selector), newNodes = [];
