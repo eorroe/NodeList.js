@@ -201,13 +201,15 @@ nodes.forEach(function(node) {
 });
 ```
 
-## Slice Method
+# Array Methods
+
+## Slice
 ```JS
 // Returns NodeList containing first Node
 $$('.child').slice(0, 1);
 ```
 
-## Map Method
+## Map
 Mapping is easy just get the property just like you would on a **single** Node
 ```JS
 // Returns an Array of the id of each Node in the NodeList
@@ -232,7 +234,7 @@ $$('#container').map(function(div) {
 $$('#container').firstChild.remove();
 ```
 
-## Filter Method
+## Filter
 ```JS
 // Filter out the #container div
 $$('div').filter(function(div) {
@@ -240,7 +242,7 @@ $$('div').filter(function(div) {
 });
 ```
 
-## Reduce Method
+## Reduce
 I couldn't think of a better example for using Reduce on a NodeList (but it's possible)
 ```JS
 let unique = $$('div').reduce(function(set, div) {
@@ -251,7 +253,7 @@ let unique = $$('div').reduce(function(set, div) {
 
 There's also `reduceRight()`
 
-## Concat Method
+## Concat
 
 The following `concat()` methods all return a new concatenated `NodeList` (Not affecting the `NodeList` that `concat()` is being called on)
 ```JS
@@ -283,7 +285,7 @@ let divsAndBodyAndHTML = divs.concat([$$('body')], [$$('html')]);
 
 Now if you pass anythinng that's not a `Node`, `NodeList`, `HTMLCollections`, `Array` or deep `Array of Arrays` that contain something other than a `Node`, `NodeList`, `HTMLCollections`, `Array` will **Throw** an `Error`.
 
-## Push Method
+## Push
 ```JS
 let divs = $$('div');
 
@@ -291,7 +293,7 @@ let divs = $$('div');
 divs.push(document.body);
 ```
 
-## Pop Method
+## Pop
 ```JS
 let divs = $$('div');
 
@@ -305,7 +307,7 @@ divs.pop();
 divs.pop(2);
 ```
 
-## Shift Method
+## Shift
 ```JS
 let divs = $$('div');
 
@@ -319,7 +321,7 @@ divs.shift();
 divs.shift(2);
 ```
 
-## Unshift Method
+## Unshift
 ```JS
 let divs = $$('div');
 
@@ -327,7 +329,7 @@ let divs = $$('div');
 divs.unshift(document.body);
 ```
 
-## Splice Method
+## Splice
 
 Let's replace the first element which would be #container with document.body
 ```JS
@@ -337,7 +339,7 @@ let divs = $$('div');
 divs.splice(0, 1, document.body);
 ```
 
-## Sort Method
+## Sort
 ```JS
 let divs = $$('.child');
 
@@ -352,13 +354,13 @@ divs.sort(function(div1, div2) {
 });
 ```
 
-## Reverse Method
+## Reverse
 ```JS
 // Returns the same NodeList, but reversed
 $$('div').reverse();
 ```
 
-## Join Method
+## Join
 I didn't put a `join` method for `NodeLists` because it'd be useless on the actual Nodes:
 ```JS
 // Returns "[object HTMLDivElement], [object HTMLDivElement] ..."
@@ -371,13 +373,13 @@ Therefore you can still use it when mapping out properties:
 $$('.child').className.join();
 ```
 
-## Includes Method
+## Includes
 ```JS
 // Returns true if passed Node is included in the NodeList
 $$('body').includes(document.body);
 ```
 
-## Find Method
+## Find
 ```JS
 // Returns body element: <body>
 $$('body').find(function(el) {
@@ -385,25 +387,13 @@ $$('body').find(function(el) {
 });
 ```
 
-## FindIndex Method
+## FindIndex
 ```JS
 // Returns 0
 $$('body').findIndex(function(el) {
 	return el === el;
 });
 ```
-
-## Item Method
-The browser's native `item(index)` method does the same as `NodeList[index]` but in mine it returns that `Node` as a my `NodeList`:
-```JS
-// returns the <html> element
-$$('html, body')[0];
-
-// returns my NodeList [<html>]
-$$('html, body').item(0);
-```
-
-This is so that you can keep using the same properties/methods of my NodeList, instead of having to `slice` out the one `Node`
 
 Ok now how about dealing with elements that have unique properties. Like `HTMLAnchorElement(s)` they have the `href` property which is not inherited from `HTMLElement`. There are no `HTMLAnchorElements` in this example but here's how you'll deal with it.
 
@@ -500,6 +490,18 @@ $$('canvas').call('getContext', '2d');
 ```
 
 If the method called on any of the elements returns something, an `Array` of those returned items would be returned from `call()` otherwise the `NodeList` will be returned to allow method chaining.
+
+## The Item Method
+The browser's native `item(index)` method does the same as `NodeList[index]` but in mine it returns that `Node` as a my `NodeList`:
+```JS
+// returns the <html> element
+$$('html, body')[0];
+
+// returns my NodeList [<html>]
+$$('html, body').item(0);
+```
+
+This is so that you can keep using the same properties/methods of my NodeList, instead of having to `slice` out the one `Node`
 
 ## The `owner` property:
 All the owner propety does is give you back the `NodeList` that the property was mapped from:
