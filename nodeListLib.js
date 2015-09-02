@@ -189,7 +189,7 @@
 
 		item: function(index) {
 			var nodes = [this[index]];
-			nodes.__proto__ = NL, owner = this;
+			nodes.__proto__ = NL, nodes.owner = this;
 			return nodes;
 		}
 	}
