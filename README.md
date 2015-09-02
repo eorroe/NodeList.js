@@ -223,7 +223,7 @@ $$('#container div').map(function(div) {
 	return div.firstChild;
 });
 
-// Map the firstChild node and remove it, and return the NodeList of firstChild Nodes
+// Maps the firstChild node and removes it, and returns the NodeList of firstChild Nodes
 $$('#container').map(function(div) {
 	return div.firstChild;
 }).remove();
@@ -285,7 +285,7 @@ Now if you pass anythinng that's not a `Node`, `NodeList`, `HTMLCollections`, `A
 ```JS
 let divs = $$('div');
 
-// Pushes the document.body element, and returns length of NodeList.
+// Pushes the document.body element, and returns the same NodeList to allow method chaining.
 divs.push(document.body);
 ```
 
@@ -321,7 +321,7 @@ divs.shift(2);
 ```JS
 let divs = $$('div');
 
-// Insert/unshift the document.body into the beginning of the NodeList and returns length of NodeList.
+// Inserts/unshifts the document.body into the beginning of the NodeList and returns the same NodeList to allow method chaining.
 divs.unshift(document.body);
 ```
 
