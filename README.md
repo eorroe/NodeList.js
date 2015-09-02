@@ -201,13 +201,13 @@ nodes.forEach(function(node) {
 });
 ```
 
-## Slicing
+## Slice Method
 ```JS
 // Returns NodeList containing first Node
 $$('.child').slice(0, 1);
 ```
 
-## Mapping
+## Map Method
 Mapping is easy just get the property just like you would on a **single** Node
 ```JS
 // Returns an Array of the id of each Node in the NodeList
@@ -232,7 +232,7 @@ $$('#container').map(function(div) {
 $$('#container').firstChild.remove();
 ```
 
-## Filtering
+## Filter Method
 ```JS
 // Filter out the #container div
 $$('div').filter(function(div) {
@@ -240,7 +240,7 @@ $$('div').filter(function(div) {
 });
 ```
 
-## Reducing
+## Reduce Method
 I couldn't think of a better example for using Reduce on a NodeList (but it's possible)
 ```JS
 let unique = $$('div').reduce(function(set, div) {
@@ -249,7 +249,9 @@ let unique = $$('div').reduce(function(set, div) {
 }, new Set());
 ```
 
-## Concatenating
+There's also `reduceRight()`
+
+## Concat Method
 
 The following `concat()` methods all return a new concatenated `NodeList` (Not affecting the `NodeList` that `concat()` is being called on)
 ```JS
@@ -281,7 +283,7 @@ let divsAndBodyAndHTML = divs.concat([$$('body')], [$$('html')]);
 
 Now if you pass anythinng that's not a `Node`, `NodeList`, `HTMLCollections`, `Array` or deep `Array of Arrays` that contain something other than a `Node`, `NodeList`, `HTMLCollections`, `Array` will **Throw** an `Error`.
 
-## Pushing
+## Push Method
 ```JS
 let divs = $$('div');
 
@@ -289,7 +291,7 @@ let divs = $$('div');
 divs.push(document.body);
 ```
 
-## Popping
+## Pop Method
 ```JS
 let divs = $$('div');
 
@@ -303,7 +305,7 @@ divs.pop();
 divs.pop(2);
 ```
 
-## Shifting
+## Shift Method
 ```JS
 let divs = $$('div');
 
@@ -317,7 +319,7 @@ divs.shift();
 divs.shift(2);
 ```
 
-## Unshifting
+## Unshift Method
 ```JS
 let divs = $$('div');
 
@@ -325,7 +327,7 @@ let divs = $$('div');
 divs.unshift(document.body);
 ```
 
-## Splicing
+## Splice Method
 
 Let's replace the first element which would be #container with document.body
 ```JS
@@ -335,7 +337,7 @@ let divs = $$('div');
 divs.splice(0, 1, document.body);
 ```
 
-## Sorting
+## Sort Method
 ```JS
 let divs = $$('.child');
 
@@ -350,13 +352,13 @@ divs.sort(function(div1, div2) {
 });
 ```
 
-## Reversing
+## Reverse Method
 ```JS
 // Returns the same NodeList, but reversed
 $$('div').reverse();
 ```
 
-## Joining
+## Join Method
 I didn't put a `join` method for `NodeLists` because it'd be useless on the actual Nodes:
 ```JS
 // Returns "[object HTMLDivElement], [object HTMLDivElement] ..."
@@ -369,13 +371,29 @@ Therefore you can still use it when mapping out properties:
 $$('.child').className.join();
 ```
 
-## Includes
+## Includes Method
 ```JS
 // Returns true if passed Node is included in the NodeList
 $$('body').includes(document.body);
 ```
 
-## Item
+## Find Method
+```JS
+// Returns body element: <body>
+$$('body').find(function(el) {
+	return el === el;
+});
+```
+
+## FindIndex Method
+```JS
+// Returns 0
+$$('body').findIndex(function(el) {
+	return el === el;
+});
+```
+
+## Item Method
 The browser's native `item(index)` method does the same as `NodeList[index]` but in mine it returns that `Node` as a my `NodeList`:
 ```JS
 // returns the <html> element
