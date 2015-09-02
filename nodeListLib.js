@@ -84,12 +84,11 @@
 		},
 
 		map: function map(cb, context) {
-			var elems = [], areAllNodes = true;
+			var mapped = [];
 			for(var i = 0, l = this.length; i < l; i++) {
 				var funcCall = cb.call(context, this[i], i, this);
-				if( !(funcCall instanceof Node) ) areAllNodes = false;
+				mapped.push(funcCall);
 			}
-			if(areAllNodes) return flatten(mapped);
 			return flatten(mapped, this);
 		},
 
