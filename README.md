@@ -251,7 +251,7 @@ let unique = $$('div').reduce(function(set, div) {
 
 ## Concatenating
 
-The following `concat()` methods all return a `NodeList`
+The following `concat()` methods all return a new concatenated `NodeList` (Not affecting the `NodeList` that `concat()` is being called on)
 ```JS
 let divs = $$('div');
 
