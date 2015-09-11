@@ -429,7 +429,7 @@ $$('div').get('APropertyThatDoesntExistOnEachElement');
 
 $$('div').set('className', 'these are the classes being set');
 
-// But just do
+// But just do the following, unless you want method chaining then use the set() method
 $$('div').className = 'these are the classes being set';
 ```
 
@@ -492,7 +492,7 @@ $$('canvas').call('getContext', '2d');
 If the method called on any of the elements returns something, an `Array` of those returned items would be returned from `call()` otherwise the `NodeList` will be returned to allow method chaining.
 
 ## The Item Method
-The browser's native `item(index)` method does the same as `NodeList[index]` but in mine it returns that `Node` as a my `NodeList`:
+The browser's native `item(index)` method does the same as `NodeList[index]` but in mine it returns that `Node` as a my `NodeList` (If you know `jQuery` it's the same as jQuery's `eq()` method)
 ```JS
 // returns the <html> element
 $$('html, body')[0];
@@ -518,7 +518,7 @@ childs.owner === elms.children;
 childs.owner.owner === elms;
 ```
 
-A bit confusing but look over it again :)
+A bit confusing but look over it again :) (if you know `jQuery` its the same as its `prevObj` property)
 
 # Adding Your Own Methods:
 ```JS
@@ -540,7 +540,7 @@ $$.NL.myMethod = function() {
 | IE      | 10+     |
 | Opera   | 11.6+   |
 
-**Attention:** You have to realize that my library's dependent on the browser it's running (which is awesome, so it automatically updates when the browser updates the `DOM` with new properties/methods) meaning: let's say the property `hidden` doesn't exist on `HTMLElement.prototype` you cant do: `$$('.child').hidden = true;`
+**Attention:** You have to realize that my library's dependent on the browser it's running (which is awesome, so it automatically updates when the browser updates the `DOM` with new properties/methods) meaning: let's say the property `hidden` doesn't exist in the browser's DOM API you can't do: `$$('.child').hidden = true;`
 
 So the [Compatability Table](https://github.com/eorroe/NodeList.js#nodelistjs-compatability) above represents what browsers suport `__proto__` and `querySelectorAll`, and `Object.defineProperty` etc combined which is being used in my library.
 
