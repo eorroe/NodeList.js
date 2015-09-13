@@ -5,18 +5,27 @@
 			var el = arr[i];
 			if(el instanceof Node || el === null || el === undefined) {
 				elms.push(el);
-			} else if(el instanceof NodeList || el instanceof HTMLCollection || el instanceof Array) {
+			} else if(el instanceof window.NodeList || el instanceof HTMLCollection || el instanceof Array) {
 				elms = elms.concat(flatten(el));
 			} else {
 				arr.get = NL.get, arr.set = NL.set, arr.call = NL.call, arr.owner = owner;
 				return arr;
 			}
 		}
-		elms.__proto__ = NL, elms.owner = owner;
-		return elms;
+		return new NodeList(elms, owner);
 	}
 
-	var NL = {
+	function NodeList(selector, scope) {
+		if(typeof selector === 'string') {
+			var nodes = (scope || document).querySelectorAll(selector);
+			for(var i = 0, l = this.length = nodes.length; i < l; i++) this[i] = nodes[i];
+		} else if(selector instanceof Array) {
+			for(var i = 0, l = this.length = selector.length; i < l; i++) this[i] = selector[i];
+			if(scope) this.owner = scope;
+		}
+	}
+
+	var NL = NodeList.prototype = {
 		includes: Array.prototype.includes || function includes(element, index) {
 			return this.indexOf(element, index) > -1;
 		},
@@ -40,8 +49,7 @@
 			if(typeof amount !== "number") amount = 1;
 			var nodes = [], pop = Array.prototype.pop.bind(this);
 			for(var i = 0; i < amount; i++) nodes.push(pop());
-			nodes.__proto__ = NL, nodes.owner = this;
-			return nodes;
+			return new NodeList(nodes, this);
 		},
 
 		unshift: function unshift() {
@@ -58,8 +66,7 @@
 			if(typeof amount !== "number") amount = 1;
 			var nodes = [], shift = Array.prototype.shift.bind(this);
 			for(var i = 0; i < amount; i++) nodes.push(shift());
-			nodes.__proto__ = NL, nodes.owner = this;
-			return nodes;
+			return new NodeList(nodes, this);
 		},
 
 		splice: function splice() {
@@ -67,20 +74,17 @@
 				if(!(arguments[i] instanceof Node)) throw Error('Passed arguments must be a Node');
 			}
 			var nodes = Array.prototype.splice.apply(this, arguments);
-			nodes.__proto__ = NL, nodes.owner = this;
-			return nodes;
+			return new NodeList(nodes, this);
 		},
 
 		slice: function slice() {
 			var nodes = Array.prototype.slice.apply(this, arguments);
-			nodes.__proto__ = NL, nodes.owner = this;
-			return nodes;
+			return new NodeList(nodes, this);
 		},
 
 		filter: function filter() {
 			var nodes = Array.prototype.filter.apply(this, arguments);
-			nodes.__proto__ = NL, nodes.owner = this;
-			return nodes;
+			return new NodeList(nodes, this);
 		},
 
 		map: function map(cb, context) {
@@ -94,7 +98,7 @@
 				var arg = arguments[i];
 				if(arg instanceof Node) {
 					if(nodes.indexOf(arg) === -1) nodes.push(arg);
-				} else if(arg instanceof NodeList || arg instanceof HTMLCollection || arg instanceof Array || arg.__proto__ === NL) {
+				} else if(arg instanceof window.NodeList || arg instanceof HTMLCollection || arg instanceof Array || arg instanceof NodeList) {
 					nodes = nodes.concat.apply(nodes, arg);
 				} else {
 					throw Error('Concat only takes a Node, NodeList, HTMLCollection, or Array of (Node, NodeList, HTMLCollection, Array)');
@@ -109,8 +113,7 @@
 			for(var i = 0, l = this.length; i < l; i++) {
 				var el = this[i];
 				if(el === null || el === undefined) {
-					arr.push(el);
-					continue;
+					arr.push(el); continue;
 				}
 				var item = el[prop];
 				if(item instanceof Node && arr.indexOf(item) !== -1) continue;
@@ -143,8 +146,7 @@
 			for(var i = 0, l = this.length; i < l; i++) {
 				var el = this[i];
 				if(el === null || el === undefined) {
-					arr.push(el);
-					nodes.push(el);
+					arr.push(el), nodes.push(el);
 				} else if(el[method] instanceof Function) {
 					var funcCall = el[method].apply(el, arguments);
 					if(funcCall instanceof Node && nodes.indexOf(funcCall) === -1) {
@@ -155,8 +157,7 @@
 				}
 			}
 			if(nodesLen) {
-				nodes.__proto__ = NL, nodes.owner = this;
-				return nodes;
+				return new NodeList(nodes, this);
 			} else if(arrLen) {
 				return flatten(arr, this);
 			}
@@ -165,8 +166,7 @@
 
 		item: function(index) {
 			var nodes = [this[index]];
-			nodes.__proto__ = NL, nodes.owner = this;
-			return nodes;
+			return new NodeList(nodes, this);
 		}
 	}
 
@@ -184,8 +184,7 @@
 				for(var i = 0, l = this.length; i < l; i++) {
 					var el = this[i];
 					if(el === null || el === undefined) {
-						arr.push(el);
-						nodes.push(el);
+						arr.push(el), nodes.push(el);
 					} else if(el[prop] instanceof Function) {
 						var funcCall = el[prop].apply(el, arguments);
 						if(funcCall instanceof Node && nodes.indexOf(funcCall) === -1) {
@@ -196,8 +195,7 @@
 					}
 				}
 				if(nodesLen) {
-					nodes.__proto__ = NL, nodes.owner = this;
-					return nodes;
+					return new NodeList(nodes, this);
 				} else if(arrLen) {
 					return flatten(arr, this);
 				}
@@ -231,10 +229,7 @@
 	arrProps = div = prop = null;
 
 	window.$$ = function NodeListJS(selector, scope) {
-		var nodes = (scope || document).querySelectorAll(selector), newNodes = [];
-		for(var i = 0, l = nodes.length; i < l; i++) newNodes.push(nodes[i]);
-		newNodes.__proto__ = NL;
-		return newNodes;
+		return new NodeList(selector, scope);
 	}
 	window.$$.NL = NL;
 })();
