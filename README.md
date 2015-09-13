@@ -44,7 +44,7 @@ $$('#container').children;
 $$('div div');
 ```
 
-There's a second argument you can pass which is the scope:
+If you pass a query string there's a second argument you can pass as the scope:
 ```JS
 let container = document.getElementById('container');
 $$('div', container);
@@ -54,6 +54,11 @@ Which would be equivalent to:
 ```JS
 // Just this doesn't return my NodeList, but the browser's NodeList
 container.querySelectorAll('div'); 
+```
+
+You can also pass an array of Nodes:
+```
+$$([document, document.body]); // returns NodeList
 ```
 
 ## *Getting* properties of each `Node`:
@@ -537,12 +542,10 @@ $$.NL.myMethod = function() {
 | FireFox | 6+      |
 | Safari  | 5.0.5+  |
 | Chrome  | 6+      |
-| IE      | 10+     |
+| IE      | 9+      |
 | Opera   | 11.6+   |
 
-**Attention:** You have to realize that my library's dependent on the browser it's running (which is awesome, so it automatically updates when the browser updates the `DOM` with new properties/methods) meaning: let's say the property `hidden` doesn't exist in the browser's DOM API you can't do: `$$('.child').hidden = true;`
-
-So the [Compatability Table](https://github.com/eorroe/NodeList.js#nodelistjs-compatability) above represents what browsers suport `__proto__` and `querySelectorAll`, and `Object.defineProperty` etc combined which is being used in my library.
+**Attention:** You have to realize that my library's dependent on the browser it's running (which is awesome, so it automatically updates when the browser updates the `DOM` with new properties/methods) meaning: let's say the property `hidden` doesn't exist in the browser's `DOM` API you can't do: `$$('.child').hidden = true;`
 
 # My wish
 My wish would be to have all modern browsers implement `NodeList` like this. I honestly don't see why this would hurt if it grows with help/feedback. As of right now `NodeList` doesn't do anything but store `Live Nodes`. And this is using the **DOM's Native APIs** so there's nothing new, now the `set` and `get` methods won't be needed since it would be done with `ES6 Proxies`.
