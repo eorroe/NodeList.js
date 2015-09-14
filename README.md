@@ -543,7 +543,7 @@ $$.NL.myMethod = function() {
 | Safari  | 5.0.5+  |
 | Chrome  | 6+      |
 | IE      | 9+      |
-| Opera   | 11.6+   |
+| Opera   | 11+     |
 
 **Attention:** You have to realize that my library's dependent on the browser it's running (which is awesome, so it automatically updates when the browser updates the `DOM` with new properties/methods) meaning: let's say the property `hidden` doesn't exist in the browser's `DOM` API you can't do: `$$('.child').hidden = true;`
 
