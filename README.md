@@ -425,27 +425,13 @@ $$('.child').style.get('color');
 $$('a').set('href', 'https://www.example.com/');
 ```
 
-You can also call `set` for any property that **DOES NOT** exist on the actual elements:
+`set()` will only set the properties on the `Nodes` who's properties are not undefined:
+
 ```JS
-$$('div').set('APropertyThatDoesntExistOnEachElement', 'whateverValue');
-
-// Returns ['whateverValue', 'whateverValue', 'whateverValue', ...]
-$$('div').get('APropertyThatDoesntExistOnEachElement');
-
-$$('div').set('className', 'these are the classes being set');
-
-// But just do the following, unless you want method chaining then use the set() method
-$$('div').className = 'these are the classes being set';
+$$('div, a').set('href', 'https://www.example.com/');
 ```
 
-`set()` has a third `Boolean` parameter which determines whether to check if each `Node` has the property before setting it:
-```JS
-// Sets `href` on both divs and anchor tags
-$$('div, a').set('href', 'https://www.example.com');
-
-// Only sets `href` on anchor tags because it is a property of the anchor elements
-$$('div, a').set('href', 'https://www.example.com', true);
-```
+`href` will only be set on the `<a>` elements and not the `<div>`s
 
 `set()` can also be used on an `Array` of properties:
 ```JS
@@ -516,14 +502,19 @@ elms.style.owner === elms; // true
 ```
 
 So I can do all kinds of stuff:
+
+Remember mapping `style` returns an `Array` of `CSSStyleDeclarations`
 ```JS
-var elms = $$('.child');
-var childs = elms.children.children;
-childs.owner === elms.children;
-childs.owner.owner === elms;
+$$('.child').style;
 ```
 
-A bit confusing but look over it again :) (if you know `jQuery` its the same as its `prevObj` property)
+This will give you back the `NodeList` which `style` was mapped from:
+```JS
+var childs  = $$('.child');
+childs.style.owner === childs; // true
+```
+
+If you know `jQuery` its the same as its `prevObj` property
 
 # Adding Your Own Methods:
 ```JS
