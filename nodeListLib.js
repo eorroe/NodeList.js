@@ -6,7 +6,7 @@
 			if(el instanceof Node || el === null || el === undefined) {
 				elms.push(el);
 			} else if(el instanceof window.NodeList || el instanceof HTMLCollection || el instanceof Array) {
-				elms = elms.concat(flatten(el));
+				elms = NL.concat(flatten(el));
 			} else {
 				arr.get = NL.get, arr.set = NL.set, arr.call = NL.call, arr.owner = owner;
 				return arr;
@@ -19,7 +19,7 @@
 		if(typeof selector === 'string') {
 			var nodes = (scope || document).querySelectorAll(selector);
 			for(var i = 0, l = this.length = nodes.length; i < l; i++) this[i] = nodes[i];
-		} else if(selector instanceof Array) {
+		} else if(selector instanceof Array || selector instanceof NodeList) {
 			for(var i = 0, l = this.length = selector.length; i < l; i++) this[i] = selector[i];
 			if(scope) this.owner = scope;
 		}
@@ -122,21 +122,21 @@
 			return flatten(arr, this);
 		},
 
-		set: function set(prop, value, checkExistence) {
+		set: function set(prop, value) {
 			if(prop.constructor === Object) {
 				for(var i = 0, l = this.length; i < l; i++) {
-					var element = this[i];
-					for(var key in prop) {
-						if(element[key] !== undefined) element[key] = prop[key];
+					var el = this[i];
+					if(el) {
+						for(var key in prop) {
+							if(el[key] !== undefined) el[key] = prop[key];
+						}
 					}
 				}
-			} else if(checkExistence) {
-				for(var i = 0, l = this.length; i < l; i++) {
-					var element = this[i];
-					if(element[prop] !== undefined) element[prop] = value;
-				}
 			} else {
-				for(var i = 0, l = this.length; i < l; i++) this[i][prop] = value;
+				for(var i = 0, l = this.length; i < l; i++) {
+					var el = this[i];
+					if(el && el[prop] !== undefined) el[prop] = value;
+				}
 			}
 			return this;
 		},
@@ -218,7 +218,10 @@
 					return flatten(arr, this);
 				},
 				set: function(newVal) {
-					for(var i = 0, l = this.length; i < l; i++) this[i][prop] = newVal;
+					for(var i = 0, l = this.length; i < l; i++) {
+						var el = this[i];
+						if(el && el[prop] !== undefined) el[prop] = newVal;
+					}
 				}
 			});
 		}
