@@ -61,6 +61,11 @@ You can also pass an array of Nodes:
 $$([document, document.body]); // returns NodeList
 ```
 
+or as arguments:
+```
+$$(document, document.body); // returns NodeList
+```
+
 ## *Getting* properties of each `Node`:
 
 How you would normally do it:
@@ -398,6 +403,16 @@ $$('body').find(function(el) {
 $$('body').findIndex(function(el) {
 	return el === el;
 });
+```
+
+**There may be `DOM` methods that are the same name as the ones of `Array.prototype` in the future, or you may just want to convert the `NodeList` to an `Array` therefore you can use as a native `Array`:
+
+
+The property `asArray` returns the `NodeList` as an `Array`:
+```
+$$('body').asArray; // returns Array
+
+$$('body').asArray.forEach(function() {...}); // uses native Array method therefore you cannot chain
 ```
 
 Ok now how about dealing with elements that have unique properties. Like `HTMLAnchorElement(s)` they have the `href` property which is not inherited from `HTMLElement`. There are no `HTMLAnchorElements` in this example but here's how you'll deal with it.
