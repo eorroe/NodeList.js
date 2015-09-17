@@ -1,4 +1,4 @@
-(function() {
+(function(undefined) {
 	function flatten(arr, owner) {
 		var elms = [];
 		for(var i = 0, l = arr.length; i < l; i++) {
@@ -6,7 +6,7 @@
 			if(el instanceof Node || el === null || el === undefined) {
 				elms.push(el);
 			} else if(el instanceof window.NodeList || el instanceof HTMLCollection || el instanceof Array) {
-				elms = NL.concat(flatten(el));
+				elms = NL.concat.call(elms, flatten(el));
 			} else {
 				arr.get = NL.get, arr.set = NL.set, arr.call = NL.call, arr.owner = owner;
 				return arr;
@@ -22,7 +22,10 @@
 		} else if(selector instanceof Array || selector instanceof NodeList) {
 			for(var i = 0, l = this.length = selector.length; i < l; i++) this[i] = selector[i];
 			if(scope) this.owner = scope;
+		} else if(selector instanceof Node) {
+			for(var i = 0, l = this.length = arguments.length; i < l; i++) this[i] = arguments[i];
 		}
+		return this;
 	}
 
 	var NL = NodeList.prototype = {
@@ -167,6 +170,10 @@
 		item: function(index) {
 			var nodes = [this[index]];
 			return new NodeList(nodes, this);
+		},
+
+		get asArray() {
+			return Array.prototype.slice.call(this);
 		}
 	}
 
@@ -175,11 +182,11 @@
 		if(arrProps.indexOf(key) === -1 && NL[key] === undefined) NL[key] = Array.prototype[key];
 	});
 
-	if(window.Symbol && window.Symbol.iterator) NL[window.Symbol.iterator] = NL.values = Array.prototype[window.Symbol.iterator];
+	if(window.Symbol && window.Symbol.iterator) NL[Symbol.iterator] = NL.values = Array.prototype[Symbol.iterator];
 
 	function setterGetter(prop) {
 		if(div[prop] instanceof Function) {
-			NL[prop] = NL[prop] || function() {
+			NL[prop] = function() {
 				var arr = [], nodes = [], arrLen = 0, nodesLen = 0;
 				for(var i = 0, l = this.length; i < l; i++) {
 					var el = this[i];
@@ -203,7 +210,7 @@
 			}
 		} else {
 			Object.defineProperty(NL, prop, {
-				get: function get() {
+				get: function() {
 					var arr = [];
 					for(var i = 0, l = this.length; i < l; i++) {
 						var el = this[i];
@@ -231,8 +238,8 @@
 	for(var prop in div) setterGetter(prop);
 	arrProps = div = prop = null;
 
-	window.$$ = function NodeListJS(selector, scope) {
-		return new NodeList(selector, scope);
+	window.$$ = function NodeListJS() {
+		return NodeList.apply(Object.create(NL), arguments);
 	}
 	window.$$.NL = NL;
-})();
+})(undefined);
