@@ -405,10 +405,10 @@ $$('body').findIndex(function(el) {
 });
 ```
 
-**There may be `DOM` methods that are the same name as the ones of `Array.prototype` in the future, or you may just want to convert the `NodeList` to an `Array` therefore you can use as a native `Array`:
+**There may be `DOM` methods that are the same name as the ones of `Array.prototype` in the future, or you may just want to convert the `NodeList` to an `Array` therefore you can use as a native `Array`**:
 
 
-The property `asArray` returns the `NodeList` as an `Array`:
+## The `asArray` property
 ```
 $$('body').asArray; // returns Array
 
