@@ -32,7 +32,7 @@
 		} else if(args[0] instanceof Array || args[0] instanceof NodeList) {
 			for(var i = 0, l = this.length = args[0].length; i < l; i++) this[i] = args[0][i];
 			if(args[1]) this.owner = args[1];
-		} else if(args[0] instanceof Node) {
+		} else {
 			for(var i = 0, l = this.length = args.length; i < l; i++) this[i] = args[i];
 		}
 		return this;
