@@ -17,7 +17,7 @@
 			if( el instanceof Node || el === null || el === undefined ) {
 				elms.push( el );
 			} else if( el instanceof window.NodeList || el instanceof HTMLCollection || el instanceof Array ) {
-				elms = [].concat.apply( elms, flatten( el ) );
+				elms = Array.prototype.concat.apply( elms, flatten( el ) );
 			} else {
 				arr.get = NL.get; arr.set = NL.set; arr.call = NL.call; arr.owner = owner;
 				return arr;
@@ -54,7 +54,7 @@
 			var push = Array.prototype.push.bind( this ), i, l, arg;
 			for( i = 0, l = arguments.length; i < l; i++ ) {
 				arg = arguments[ i ];
-				if( arg === null || arg === undefined ) continue;
+				if( arg === null ) continue;
 				if( !( arg instanceof Node ) ) throw Error( 'Passed arguments must be a Node' );
 				if( this.indexOf( arg ) === -1 ) push( arg );
 			}
@@ -72,7 +72,7 @@
 			var unshift = Array.prototype.unshift.bind( this ), i, l, arg;
 			for( i = 0, l = arguments.length; i < l; i++ ) {
 				arg = arguments[ i ];
-				if( arg === null || arg === undefined ) continue;
+				if( arg === null ) continue;
 				if( !( arg instanceof Node ) ) throw Error( 'Passed arguments must be a Node' );
 				if( this.indexOf(arg) === -1 ) unshift( arg );
 			}
@@ -114,7 +114,7 @@
 			var nodes = flatten( this ), i, l, arg;
 			for( i = 0, l = arguments.length; i < l; i++ ) {
 				arg = arguments[ i ];
-				if(arg === null || arg === undefined) {
+				if( arg === null ) {
 					continue;
 				} else if( arg instanceof Node ) {
 					if( nodes.indexOf( arg ) === -1 ) nodes.push( arg );
@@ -148,7 +148,7 @@
 			if( prop.constructor === Object ) {
 				for( i = 0, l = this.length; i < l; i++ ) {
 					el = this[ i ];
-					if( el ) {
+					if( el !== null || el !== undefined ) {
 						for( key in prop ) {
 							if( el[ key ] !== undefined ) el[ key ] = prop[ key ];
 						}
@@ -157,7 +157,7 @@
 			} else {
 				for( i = 0, l = this.length; i < l; i++ ) {
 					el = this[ i ];
-					if( el && el[ prop ] !== undefined ) el[ prop ] = value;
+					if( el !== null && el !== undefined && el[ prop ] !== undefined ) el[ prop ] = value;
 				}
 			}
 			return this;
@@ -243,7 +243,7 @@
 				set: function( newVal ) {
 					for( var i = 0, l = this.length, el; i < l; i++ ) {
 						el = this[ i ];
-						if(el && el[ prop ] !== undefined) el[ prop ] = newVal;
+						if( el && el[ prop ] !== undefined ) el[ prop ] = newVal;
 					}
 				}
 			});
