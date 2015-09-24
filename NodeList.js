@@ -17,7 +17,7 @@
 			if( el instanceof Node || el === null || el === undefined ) {
 				elms.push( el );
 			} else if( el instanceof window.NodeList || el instanceof HTMLCollection || el instanceof Array ) {
-				elms = NL.concat.call( elms, flatten( el ) );
+				elms = [].concat.apply( elms, flatten( el ) );
 			} else {
 				arr.get = NL.get; arr.set = NL.set; arr.call = NL.call; arr.owner = owner;
 				return arr;
