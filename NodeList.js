@@ -54,7 +54,6 @@
 			var push = Array.prototype.push.bind( this ), i, l, arg;
 			for( i = 0, l = arguments.length; i < l; i++ ) {
 				arg = arguments[ i ];
-				if( arg === null ) continue;
 				if( !( arg instanceof Node ) ) throw Error( 'Passed arguments must be a Node' );
 				if( this.indexOf( arg ) === -1 ) push( arg );
 			}
@@ -72,7 +71,6 @@
 			var unshift = Array.prototype.unshift.bind( this ), i, l, arg;
 			for( i = 0, l = arguments.length; i < l; i++ ) {
 				arg = arguments[ i ];
-				if( arg === null ) continue;
 				if( !( arg instanceof Node ) ) throw Error( 'Passed arguments must be a Node' );
 				if( this.indexOf(arg) === -1 ) unshift( arg );
 			}
