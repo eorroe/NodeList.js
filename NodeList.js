@@ -1,11 +1,12 @@
 ( function( undefined ) {
+	var setProto;
 	if( Object.setPrototypeOf ) {
-		function setProto( nodes, owner ) {
+		setProto = function setProto( nodes, owner ) {
 			nodes.owner = owner;
 			return Object.setPrototypeOf( nodes, NL );
 		}
 	} else {
-		function setProto( nodes, owner ) {
+		setProto = function setProto( nodes, owner ) {
 			return new NodeList( [ nodes, owner ] );
 		}
 	}
