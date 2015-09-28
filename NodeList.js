@@ -147,7 +147,7 @@
 			if( prop.constructor === Object ) {
 				for( i = 0, l = this.length; i < l; i++ ) {
 					el = this[ i ];
-					if( el !== null || el !== undefined ) {
+					if( el !== null && el !== undefined ) {
 						for( key in prop ) {
 							if( el[ key ] !== undefined ) el[ key ] = prop[ key ];
 						}
