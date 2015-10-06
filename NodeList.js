@@ -17,7 +17,7 @@
 			el = arr[ i ];
 			if( el instanceof Node || el === null || el === undefined ) {
 				elms.push( el );
-			} else if( el instanceof window.NodeList || el instanceof HTMLCollection || el instanceof Array ) {
+			} else if( el instanceof window.NodeList || el instanceof NodeList || el instanceof HTMLCollection || el instanceof Array ) {
 				elms = Array.prototype.concat.apply( elms, flatten( el ) );
 			} else {
 				arr.get = NL.get; arr.set = NL.set; arr.call = NL.call; arr.owner = owner;
@@ -32,7 +32,7 @@
 		if( typeof args[0] === 'string' ) {
 			nodes = ( args[1] || document ).querySelectorAll( args[0] );
 			for( i = 0, l = this.length = nodes.length; i < l; i++ ) this[ i ] = nodes[ i ];
-		} else if( args[0] instanceof Array || args[0] instanceof NodeList ) {
+		} else if( args[0] instanceof Array || args[0] instanceof NodeList || args[0] instanceof window.NodeList || args[0] instanceof HTMLCollection ) {
 			for( i = 0, l = this.length = args[ 0 ].length; i < l; i++ ) this[ i ] = args[0][ i ];
 			if( args[1] ) this.owner = args[1];
 		} else {
@@ -217,9 +217,9 @@
 					}
 				}
 				if( nodesLen ) {
-					return setProto(nodes, this);
+					return setProto( nodes, this );
 				} else if( arrLen ) {
-					return flatten(arr, this);
+					return flatten( arr, this );
 				}
 				return this;
 			}
