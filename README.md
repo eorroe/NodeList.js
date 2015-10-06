@@ -56,14 +56,14 @@ Which would be equivalent to:
 container.querySelectorAll('div'); 
 ```
 
-You can also pass an array of Nodes:
-```
-$$([document, document.body]); // returns NodeList
-```
-
-or as arguments:
+You can pass nodes as arguments:
 ```
 $$(document, document.body); // returns NodeList
+```
+
+You can also pass 1 `Array` of Nodes or a `NodeList` or an `HTMLCollection` **Will not be flattened, to flatten use [`concat()`](https://github.com/eorroe/NodeList.js#concat)**:
+```
+$$([document, document.body]); // returns NodeList
 ```
 
 ## *Getting* properties of each `Node`:
