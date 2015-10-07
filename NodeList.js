@@ -55,7 +55,7 @@
 			var push = Array.prototype.push.bind( this ), i, l, arg;
 			for( i = 0, l = arguments.length; i < l; i++ ) {
 				arg = arguments[ i ];
-				if( !( arg instanceof Node ) ) throw Error( 'Passed arguments must be a Node' );
+				if( !( arg instanceof Node ) ) throw Error( 'Passed arguments must be of Node' );
 				if( this.indexOf( arg ) === -1 ) push( arg );
 			}
 			return this;
@@ -72,7 +72,7 @@
 			var unshift = Array.prototype.unshift.bind( this ), i, l, arg;
 			for( i = 0, l = arguments.length; i < l; i++ ) {
 				arg = arguments[ i ];
-				if( !( arg instanceof Node ) ) throw Error( 'Passed arguments must be a Node' );
+				if( !( arg instanceof Node ) ) throw Error( 'Passed arguments must be of Node' );
 				if( this.indexOf(arg) === -1 ) unshift( arg );
 			}
 			return this;
@@ -88,7 +88,7 @@
 		splice: function splice() {
 			var i, l, nodes;
 			for( i = 2, l = arguments.length; i < l; i++ ) {
-				if( !( arguments[i] instanceof Node ) ) throw Error( 'Passed arguments must be a Node' );
+				if( !( arguments[i] instanceof Node ) ) throw Error( 'Passed arguments must be of Node' );
 			}
 			nodes = Array.prototype.splice.apply( this, arguments );
 			return setProto( nodes, this );
@@ -120,7 +120,7 @@
 				} else if( arg instanceof window.NodeList || arg instanceof HTMLCollection || arg instanceof Array || arg instanceof NodeList ) {
 					nodes = nodes.concat.apply( nodes, arg );
 				} else {
-					throw Error( 'Concat only takes a Node, NodeList, HTMLCollection, or Array of (Node, NodeList, HTMLCollection, Array)' );
+					throw Error( 'Concat arguments must be of a Node, NodeList, HTMLCollection, or Array of (Node, NodeList, HTMLCollection, Array)' );
 				}
 			}
 			nodes.owner = this;
@@ -163,22 +163,18 @@
 		},
 
 		call: function call() {
-			var arr = [], nodes = [], method = Array.prototype.shift.call( arguments ), arrLen = 0, nodesLen = 0, i, l, el, funcCall;
+			var arr = [], method = Array.prototype.shift.call( arguments ), returnThis = true, i, l, el, funcCall;
 			for( i = 0, l = this.length; i < l; i++ ) {
 				el = this[ i ];
-				if( el === null || el === undefined ) {
-					arr.push( el );
-					nodes.push( el );
-				} else if( el[ method ] instanceof Function ) {
+				if( el !== null && el !== undefined && el[ method ] instanceof Function ) {
 					funcCall = el[ method ].apply( el, arguments );
-					if( funcCall instanceof Node && nodes.indexOf( funcCall ) === -1 ) {
-						nodesLen = nodes.push( funcCall );
-					} else if( funcCall !== undefined ) {
-						arrLen = arr.push( funcCall );
-					}
+					arr.push( funcCall );
+					if( returnThis && funcCall !== undefined ) returnThis = false;
+				} else {
+					arr.push( null );
 				}
 			}
-			return nodesLen ? setProto( nodes, this ) : arrLen ? flatten( arr, this ) : this;
+			return returnThis ? this : flatten( arr, this );
 		},
 
 		item: function( index ) {
@@ -191,9 +187,10 @@
 		}
 	}
 
-	var arrProps = [ 'join', 'copyWithin', 'fill' ];
 	Object.getOwnPropertyNames( Array.prototype ).forEach( function( key ) {
-		if( arrProps.indexOf( key ) === -1 && NL[ key ] === undefined ) NL[ key ] = Array.prototype[ key ];
+		if( key !== 'join' && key !== 'copyWithin' && key !== 'fill' && NL[ key ] === undefined ) {
+			NL[ key ] = Array.prototype[ key ];
+		}
 	});
 
 	if(window.Symbol && Symbol.iterator) NL[ Symbol.iterator ] = NL.values = Array.prototype[ Symbol.iterator ];
@@ -201,27 +198,18 @@
 	function setterGetter( prop ) {
 		if( div[ prop ] instanceof Function ) {
 			NL[ prop ] = function() {
-				var arr = [], nodes = [], arrLen = 0, nodesLen = 0, i, l, el, funcCall;
+				var arr = [], returnThis = true, i, l, el, funcCall;
 				for( i = 0, l = this.length; i < l; i++ ) {
 					el = this[ i ];
-					if( el === null || el === undefined ) {
-						arr.push( el );
-						nodes.push( el );
-					} else if( el[ prop ] instanceof Function ) {
+					if( el !== null && el !== undefined && el[ prop ] instanceof Function ) {
 						funcCall = el[ prop ].apply( el, arguments );
-						if( funcCall instanceof Node && nodes.indexOf( funcCall ) === -1 ) {
-							nodesLen = nodes.push( funcCall );
-						} else if(funcCall !== undefined) {
-							arrLen = arr.push( funcCall );
-						}
+						arr.push( funcCall );
+						if( returnThis && funcCall !== undefined ) returnThis = false;
+					} else {
+						arr.push( null );
 					}
 				}
-				if( nodesLen ) {
-					return setProto( nodes, this );
-				} else if( arrLen ) {
-					return flatten( arr, this );
-				}
-				return this;
+				return returnThis ? this : flatten( arr, this );
 			}
 		} else {
 			Object.defineProperty( NL, prop, {
@@ -251,7 +239,7 @@
 
 	var div = document.createElement( 'div' );
 	for( var prop in div ) setterGetter( prop );
-	arrProps = div = prop = null;
+	div = prop = null;
 
 	window.$$ = function NodeListJS() {
 		return new NodeList( arguments );
