@@ -409,7 +409,7 @@ $$('body').findIndex(function(el) {
 
 
 ## The `asArray` property
-```
+```JS
 $$('body').asArray; // returns Array
 
 $$('body').asArray.forEach(function() {...}); // uses native Array method therefore you cannot chain
