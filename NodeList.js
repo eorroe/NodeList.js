@@ -12,13 +12,13 @@
 	}
 
 	function flatten( arr, owner ) {
-		var elms = [], i = 0, l = arr.length, el;
+		var elms = [], i = 0, l = arr.length, i2 = 0, l2, el;
 		for( ; i < l; i++ ) {
 			el = arr[ i ];
 			if( el instanceof Node || el == null ) {
 				elms.push( el );
 			} else if( el instanceof window.NodeList || el instanceof NodeList || el instanceof HTMLCollection || el instanceof Array ) {
-				elms = ArrayProto.concat.apply( elms, flatten( el ) );
+				for(l2 = el.length; i2 < l2; i2++) elms.push(el[i2]);
 			} else {
 				arr.get = NL.get; arr.set = NL.set; arr.call = NL.call; arr.owner = owner;
 				return arr;
