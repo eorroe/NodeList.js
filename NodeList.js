@@ -1,15 +1,5 @@
 ( function( undefined ) {
-	var setProto, ArrayProto = Array.prototype, nodeError = new Error('Passed arguments must be of Node'), NL, div, prop;
-	if( Object.setPrototypeOf ) {
-		setProto = function setProto( nodes, owner ) {
-			nodes.owner = owner;
-			return Object.setPrototypeOf( nodes, NL );
-		}
-	} else {
-		setProto = function setProto( nodes, owner ) {
-			return new NodeList( [ nodes, owner ] );
-		}
-	}
+	var ArrayProto = Array.prototype, nodeError = new Error('Passed arguments must be of Node'), NL, div, prop;
 
 	function flatten( arr, owner ) {
 		var elms = [], i = 0, l = arr.length, i2, l2, el;
@@ -18,13 +8,13 @@
 			if( el instanceof Node || el == null ) {
 				elms.push( el );
 			} else if( el instanceof window.NodeList || el instanceof NodeList || el instanceof HTMLCollection || el instanceof Array ) {
-				for(i2 = 0, l2 = el.length; i2 < l2; i2++) elms.push(el[i2]);
+				for(i2 = 0, l2 = el.length; i2 < l2; i2++) elms.push( el[i2] );
 			} else {
 				arr.get = NL.get; arr.set = NL.set; arr.call = NL.call; arr.owner = owner;
 				return arr;
 			}
 		}
-		return setProto( elms, owner );
+		return new NodeList( [elms, owner] );
 	}
 
 	function NodeList( args ) {
@@ -62,7 +52,7 @@
 			if( typeof amount !== "number" ) amount = 1;
 			var nodes = [], pop = ArrayProto.pop.bind( this ), i;
 			for( i = 0; i < amount; i++ ) nodes.push( pop() );
-			return setProto( nodes, this );
+			return new NodeList( [nodes, this] );
 		},
 
 		unshift: function unshift() {
@@ -79,22 +69,22 @@
 			if( typeof amount !== "number" ) amount = 1;
 			var nodes = [], shift = ArrayProto.shift.bind( this ), i;
 			for( i = 0; i < amount; i++ ) nodes.push( shift() );
-			return setProto(  nodes, this );
+			return new NodeList( [ nodes, this ] );
 		},
 
 		splice: function splice() {
 			for( var i = 2, l = arguments.length; i < l; i++ ) {
 				if( !( arguments[i] instanceof Node ) ) throw nodeError;
 			}
-			return setProto( ArrayProto.splice.apply( this, arguments ), this );
+			return new NodeList( [ ArrayProto.splice.apply( this, arguments ), this ] );
 		},
 
 		slice: function slice() {
-			return setProto( ArrayProto.slice.apply( this, arguments ), this );
+			return new NodeList( [ ArrayProto.slice.apply( this, arguments ), this ] );
 		},
 
 		filter: function filter() {
-			return setProto( ArrayProto.filter.apply( this, arguments ), this );
+			return new NodeList( [ ArrayProto.filter.apply( this, arguments ), this ] );
 		},
 
 		map: function map() {
@@ -170,7 +160,7 @@
 		},
 
 		item: function( index ) {
-			return setProto( [ this[ index ] ], this );
+			return new NodeList( [ [ this[ index ] ], this ] );
 		},
 
 		get asArray() {
