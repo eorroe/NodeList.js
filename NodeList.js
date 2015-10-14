@@ -28,16 +28,15 @@
 	}
 
 	function NodeList( args ) {
-		var nodes, i, l;
-		if( typeof args[0] === 'string' ) {
-			nodes = ( args[1] || document ).querySelectorAll( args[0] );
-			for( i = 0, l = this.length = nodes.length; i < l; i++ ) this[ i ] = nodes[ i ];
-		} else if( 0 in args && !( args[0] instanceof Node ) && 'length' in args[0] ) {
-			for( i = 0, l = this.length = args[ 0 ].length; i < l; i++ ) this[ i ] = args[0][ i ];
-			if( args[1] ) this.owner = args[1];
-		} else {
-			for( i = 0, l = this.length = args.length; i < l; i++ ) this[ i ] = args[ i ];
+		var i, l, list=args.length;
+    		if(typeof args[0] === 'string'){
+			list=( args[1] || document ).querySelectorAll( args[0] );
 		}
+		else if( 0 in args && !( args[0] instanceof Node ) && 'length' in args[0] ) {
+			list=args[ 0 ];
+			if( args[1] ) this.owner = args[1];
+		}
+		for( i = 0, l = this.length = list.length; i < l; i++ ) this[ i ] = list[ i ];
 	}
 
 	NL = NodeList.prototype = {
