@@ -1,5 +1,5 @@
 ( function( undefined ) {
-	var setProto, ArrayProto = Array.prototype, NL, div, prop;
+	var setProto, ArrayProto = Array.prototype, NL, div, prop, nodeError;
 	if( Object.setPrototypeOf ) {
 		setProto = function setProto( nodes, owner ) {
 			nodes.owner = owner;
@@ -38,7 +38,9 @@
 		}
 		for( i = 0, l = this.length = list.length; i < l; i++ ) this[ i ] = list[ i ];
 	}
-
+	
+	nodeError = new Error('Passed arguments must be of Node');
+	
 	NL = NodeList.prototype = {
 		includes: ArrayProto.includes || function includes( element, index ) {
 			return this.indexOf( element, index ) > -1;
@@ -53,7 +55,7 @@
 			var push = ArrayProto.push.bind( this ), i = 0, l = arguments.length, arg;
 			for( ; i < l; i++ ) {
 				arg = arguments[ i ];
-				if( !( arg instanceof Node ) ) throw Error( 'Passed arguments must be of Node' );
+				if( !( arg instanceof Node ) ) throw nodeError;
 				if( this.indexOf( arg ) === -1 ) push( arg );
 			}
 			return this;
@@ -70,7 +72,7 @@
 			var unshift = ArrayProto.unshift.bind( this ), i = 0, l = arguments.length, arg;
 			for( ; i < l; i++ ) {
 				arg = arguments[ i ];
-				if( !( arg instanceof Node ) ) throw Error( 'Passed arguments must be of Node' );
+				if( !( arg instanceof Node ) ) throw nodeError;
 				if( this.indexOf(arg) === -1 ) unshift( arg );
 			}
 			return this;
@@ -85,7 +87,7 @@
 
 		splice: function splice() {
 			for( var i = 2, l = arguments.length; i < l; i++ ) {
-				if( !( arguments[i] instanceof Node ) ) throw Error( 'Passed arguments must be of Node' );
+				if( !( arguments[i] instanceof Node ) ) throw nodeError;
 			}
 			return setProto( ArrayProto.splice.apply( this, arguments ), this );
 		},
