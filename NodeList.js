@@ -1,5 +1,5 @@
 ( function( undefined ) {
-	var setProto, ArrayProto = Array.prototype, NL, div, prop;
+	var setProto, ArrayProto = Array.prototype, nodeError = new Error('Passed arguments must be of Node'), NL, div, prop;
 	if( Object.setPrototypeOf ) {
 		setProto = function setProto( nodes, owner ) {
 			nodes.owner = owner;
@@ -12,13 +12,13 @@
 	}
 
 	function flatten( arr, owner ) {
-		var elms = [], i = 0, l = arr.length, i2 = 0, l2, el;
+		var elms = [], i = 0, l = arr.length, i2, l2, el;
 		for( ; i < l; i++ ) {
 			el = arr[ i ];
 			if( el instanceof Node || el == null ) {
 				elms.push( el );
 			} else if( el instanceof window.NodeList || el instanceof NodeList || el instanceof HTMLCollection || el instanceof Array ) {
-				for(l2 = el.length; i2 < l2; i2++) elms.push(el[i2]);
+				for(i2 = 0, l2 = el.length; i2 < l2; i2++) elms.push(el[i2]);
 			} else {
 				arr.get = NL.get; arr.set = NL.set; arr.call = NL.call; arr.owner = owner;
 				return arr;
@@ -28,16 +28,14 @@
 	}
 
 	function NodeList( args ) {
-		var nodes, i, l;
-		if( typeof args[0] === 'string' ) {
+		var i = 0, l, nodes = args;
+		if(typeof args[0] === 'string') {
 			nodes = ( args[1] || document ).querySelectorAll( args[0] );
-			for( i = 0, l = this.length = nodes.length; i < l; i++ ) this[ i ] = nodes[ i ];
 		} else if( 0 in args && !( args[0] instanceof Node ) && 'length' in args[0] ) {
-			for( i = 0, l = this.length = args[ 0 ].length; i < l; i++ ) this[ i ] = args[0][ i ];
+			nodes = args[ 0 ];
 			if( args[1] ) this.owner = args[1];
-		} else {
-			for( i = 0, l = this.length = args.length; i < l; i++ ) this[ i ] = args[ i ];
 		}
+		for( l = this.length = nodes.length; i < l; i++ ) this[ i ] = nodes[ i ];
 	}
 
 	NL = NodeList.prototype = {
@@ -54,7 +52,7 @@
 			var push = ArrayProto.push.bind( this ), i = 0, l = arguments.length, arg;
 			for( ; i < l; i++ ) {
 				arg = arguments[ i ];
-				if( !( arg instanceof Node ) ) throw Error( 'Passed arguments must be of Node' );
+				if( !( arg instanceof Node ) ) throw nodeError;
 				if( this.indexOf( arg ) === -1 ) push( arg );
 			}
 			return this;
@@ -71,7 +69,7 @@
 			var unshift = ArrayProto.unshift.bind( this ), i = 0, l = arguments.length, arg;
 			for( ; i < l; i++ ) {
 				arg = arguments[ i ];
-				if( !( arg instanceof Node ) ) throw Error( 'Passed arguments must be of Node' );
+				if( !( arg instanceof Node ) ) throw nodeError;
 				if( this.indexOf(arg) === -1 ) unshift( arg );
 			}
 			return this;
@@ -86,7 +84,7 @@
 
 		splice: function splice() {
 			for( var i = 2, l = arguments.length; i < l; i++ ) {
-				if( !( arguments[i] instanceof Node ) ) throw Error( 'Passed arguments must be of Node' );
+				if( !( arguments[i] instanceof Node ) ) throw nodeError;
 			}
 			return setProto( ArrayProto.splice.apply( this, arguments ), this );
 		},
