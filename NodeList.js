@@ -1,6 +1,5 @@
 ( function( undefined ) {
-	var ArrayProto = Array.prototype, nodeError = new Error('Passed arguments must be of Node'), NL, div, prop;
-
+	var ArrayProto = Array.prototype, nodeError = new Error( 'Passed arguments must be of Node' ), NL, div, prop;
 	function flatten( arr, owner ) {
 		var elms = [], i = 0, l = arr.length, i2, l2, el;
 		for( ; i < l; i++ ) {
@@ -8,21 +7,21 @@
 			if( el instanceof Node || el == null ) {
 				elms.push( el );
 			} else if( el instanceof window.NodeList || el instanceof NodeList || el instanceof HTMLCollection || el instanceof Array ) {
-				for(i2 = 0, l2 = el.length; i2 < l2; i2++) elms.push( el[i2] );
+				for( i2 = 0, l2 = el.length; i2 < l2; i2++ ) elms.push( el[i2] );
 			} else {
 				arr.get = NL.get; arr.set = NL.set; arr.call = NL.call; arr.owner = owner;
 				return arr;
 			}
 		}
-		return new NodeList( [elms, owner] );
+		return new NodeList( [ elms, owner ] );
 	}
 
 	function NodeList( args ) {
 		var i = 0, l, nodes = args;
-		if(typeof args[0] === 'string') {
+		if( typeof args[0] === 'string' ) {
 			nodes = ( args[1] || document ).querySelectorAll( args[0] );
 		} else if( 0 in args && !( args[0] instanceof Node ) && 'length' in args[0] ) {
-			nodes = args[ 0 ];
+			nodes = args[0];
 			if( args[1] ) this.owner = args[1];
 		}
 		for( l = this.length = nodes.length; i < l; i++ ) this[ i ] = nodes[ i ];
@@ -43,7 +42,7 @@
 			for( ; i < l; i++ ) {
 				arg = arguments[ i ];
 				if( !( arg instanceof Node ) ) throw nodeError;
-				if( this.indexOf( arg ) === -1 ) push( arg );
+				if( this.indexOf( arg ) < 0 ) push( arg );
 			}
 			return this;
 		},
@@ -60,7 +59,7 @@
 			for( ; i < l; i++ ) {
 				arg = arguments[ i ];
 				if( !( arg instanceof Node ) ) throw nodeError;
-				if( this.indexOf(arg) === -1 ) unshift( arg );
+				if( this.indexOf(arg) < 0 ) unshift( arg );
 			}
 			return this;
 		},
@@ -74,7 +73,7 @@
 
 		splice: function splice() {
 			for( var i = 2, l = arguments.length; i < l; i++ ) {
-				if( !( arguments[i] instanceof Node ) ) throw nodeError;
+				if( !( arguments[ i ] instanceof Node ) ) throw nodeError;
 			}
 			return new NodeList( [ ArrayProto.splice.apply( this, arguments ), this ] );
 		},
@@ -92,21 +91,28 @@
 		},
 
 		concat: function concat() {
-			var nodes = flatten( this ), i = 0, l = arguments.length, arg;
+			var nodes = this.asArray, i = 0, l = arguments.length, arg;
+			function flatten( arr ) {
+				for( var i = 0, l = arr.length; i < l; i++ ) {
+					if( arr[ i ] instanceof Node ) {
+						if( nodes.indexOf( arr[ i ] ) < 0 ) nodes.push( arr[ i ] );
+					} else if( arr[ i ] ) {
+						flatten( arr[ i ] );
+					}
+				}
+			}
+
 			for( ; i < l; i++ ) {
-				arg = arguments[ i ];
-				if( arg == null  ) {
-					continue;
-				} else if( arg instanceof Node ) {
-					if( nodes.indexOf( arg ) === -1 ) nodes.push( arg );
+				arg = arguments[i];
+				if( arg instanceof Node ) {
+					if( nodes.indexOf( arg ) < 0 ) nodes.push( arg );
 				} else if( arg instanceof window.NodeList || arg instanceof HTMLCollection || arg instanceof Array || arg instanceof NodeList ) {
-					nodes = nodes.concat.apply( nodes, arg );
+					flatten( arg );
 				} else {
 					throw Error( 'Concat arguments must be of a Node, NodeList, HTMLCollection, or Array of (Node, NodeList, HTMLCollection, Array)' );
 				}
 			}
-			nodes.owner = this;
-			return nodes;
+			return new NodeList( [ nodes, this ] );
 		},
 
 		get: function get( prop ) {
@@ -118,7 +124,7 @@
 					continue;
 				}
 				item = el[ prop ];
-				if( item instanceof Node && arr.indexOf(item) !== -1 ) continue;
+				if( item instanceof Node && arr.indexOf(item) > -1 ) continue;
 				arr.push( item );
 			}
 			return flatten( arr, this );
@@ -129,7 +135,7 @@
 			if( prop.constructor === Object ) {
 				for( ; i < l; i++ ) {
 					el = this[ i ];
-					if( el != null  ) {
+					if( el ) {
 						for( key in prop ) {
 							if( key in el ) el[ key ] = prop[ key ];
 						}
@@ -138,7 +144,7 @@
 			} else {
 				for( ; i < l; i++ ) {
 					el = this[ i ];
-					if( el != null && prop in el ) el[ prop ] = value;
+					if( el && prop in el ) el[ prop ] = value;
 				}
 			}
 			return this;
@@ -148,7 +154,7 @@
 			var arr = [], method = ArrayProto.shift.call( arguments ), returnThis = true, i = 0, l = this.length, el, funcCall;
 			for( ; i < l; i++ ) {
 				el = this[ i ];
-				if( el != null && el[ method ] instanceof Function ) {
+				if( el && el[ method ] instanceof Function ) {
 					funcCall = el[ method ].apply( el, arguments );
 					arr.push( funcCall );
 					if( returnThis && funcCall !== undefined ) returnThis = false;
@@ -174,7 +180,7 @@
 		}
 	});
 
-	if(window.Symbol && Symbol.iterator) NL[ Symbol.iterator ] = NL.values = ArrayProto[ Symbol.iterator ];
+	if( window.Symbol && Symbol.iterator ) NL[ Symbol.iterator ] = NL.values = ArrayProto[ Symbol.iterator ];
 
 	function setterGetter( prop ) {
 		if( div[ prop ] instanceof Function ) {
@@ -182,7 +188,7 @@
 				var arr = [], returnThis = true, i = 0, l = this.length, el, funcCall;
 				for( ; i < l; i++ ) {
 					el = this[ i ];
-					if( el != null && el[ prop ] instanceof Function ) {
+					if( el && el[ prop ] instanceof Function ) {
 						funcCall = el[ prop ].apply( el, arguments );
 						arr.push( funcCall );
 						if( returnThis && funcCall !== undefined ) returnThis = false;
@@ -203,7 +209,7 @@
 							continue;
 						}
 						item = el[ prop ];
-						if( item instanceof Node && arr.indexOf( item ) !== -1 ) continue;
+						if( item instanceof Node && arr.indexOf( item ) > -1 ) continue;
 						arr.push( item );
 					}
 					return flatten( arr, this );
@@ -211,7 +217,7 @@
 				set: function( value ) {
 					for( var i = 0, l = this.length, el; i < l; i++ ) {
 						el = this[ i ];
-						if( el != null && prop in el ) el[ prop ] = value;
+						if( el && prop in el ) el[ prop ] = value;
 					}
 				}
 			});
@@ -226,4 +232,4 @@
 		return new NodeList( arguments );
 	}
 	window.$$.NL = NL;
-} )( undefined );
+})( undefined );
