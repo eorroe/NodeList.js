@@ -552,8 +552,3 @@ $$.NL.myMethod = function() {
 | Opera   | 11+     |
 
 **Attention:** You have to realize that my library's dependent on the browser it's running (which is awesome, so it automatically updates when the browser updates the `DOM` with new properties/methods) meaning: let's say the property `hidden` doesn't exist in the browser's `DOM` API you can't do: `$$('.child').hidden = true;`
-
-# My wish
-My wish would be to have all modern browsers implement `NodeList` like this. I honestly don't see why this would hurt if it grows with help/feedback. As of right now `NodeList` doesn't do anything but store `Live Nodes`. And this is using the **DOM's Native APIs** so there's nothing new, now the `set` and `get` methods won't be needed since it would be done with `ES6 Proxies`.
-
-Getting `NodeList` natively implemented like `NodeList.js` I would need tons of help. I don't know anything about writing specs and getting things standardized.
