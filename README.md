@@ -2,7 +2,7 @@
 
 ## What this is:
 
-`NodeList.js` makes using the **Native DOM APIs** on an `Array` of `Nodes` as easy as `jQuery` with the benefits of it being extremely small at around **4k minified**, a **HUGE** performance boost and the browser as a dependency **(That's the most interesting part)**.
+`NodeList.js` makes using the **Native DOM APIs** on an `Array` of `Nodes` as easy as `jQuery` with the benefits of it being extremely small at around **4k minified**, and the browser as a dependency **(That's the most interesting part)**.
 
 The first thing you'll notice is I'm using `$$`, the reason I chose this for selecting `DOM Nodes` is because if you open up your devtools and type in the following:
 
