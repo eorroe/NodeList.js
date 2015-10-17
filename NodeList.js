@@ -91,7 +91,7 @@
 		},
 
 		concat: function concat() {
-			var nodes = this.asArray, i = 0, l = arguments.length, arg;
+			var nodes = ArrayProto.slice.call(this), i = 0, l = arguments.length, arg;
 			function flatten( arr ) {
 				for( var i = 0, l = arr.length; i < l; i++ ) {
 					if( arr[ i ] instanceof Node ) {
@@ -116,16 +116,14 @@
 		},
 
 		get: function get( prop ) {
-			var arr = [], i = 0, l = this.length, el, item;
+			var arr = [], i = 0, l = this.length, el;
 			for( ; i < l; i++ ) {
 				el = this[ i ];
-				if( el == null ) {
-					arr.push( el );
-					continue;
+				if( el != null ) {
+					el = el[prop];
+					if( el instanceof Node && arr.indexOf( el ) > -1 ) continue;
 				}
-				item = el[ prop ];
-				if( item instanceof Node && arr.indexOf(item) > -1 ) continue;
-				arr.push( item );
+				arr.push( el );
 			}
 			return flatten( arr, this );
 		},
@@ -151,15 +149,15 @@
 		},
 
 		call: function call() {
-			var arr = [], method = ArrayProto.shift.call( arguments ), returnThis = true, i = 0, l = this.length, el, funcCall;
+			var arr = [], method = ArrayProto.shift.call( arguments ), returnThis = true, i = 0, l = this.length, el;
 			for( ; i < l; i++ ) {
 				el = this[ i ];
 				if( el && el[ method ] instanceof Function ) {
-					funcCall = el[ method ].apply( el, arguments );
-					arr.push( funcCall );
-					if( returnThis && funcCall !== undefined ) returnThis = false;
+					el = el[ method ].apply( el, arguments );
+					arr.push( el );
+					if( returnThis && el !== undefined ) returnThis = false;
 				} else {
-					arr.push( null );
+					arr.push( el );
 				}
 			}
 			return returnThis ? this : flatten( arr, this );
@@ -180,20 +178,20 @@
 		}
 	});
 
-	if( window.Symbol && Symbol.iterator ) NL[ Symbol.iterator ] = NL.values = ArrayProto[ Symbol.iterator ];
+	if( Symbol && Symbol.iterator ) NL[ Symbol.iterator ] = NL.values = ArrayProto[ Symbol.iterator ];
 
 	function setterGetter( prop ) {
 		if( div[ prop ] instanceof Function ) {
 			NL[ prop ] = function() {
-				var arr = [], returnThis = true, i = 0, l = this.length, el, funcCall;
+				var arr = [], returnThis = true, i = 0, l = this.length, el;
 				for( ; i < l; i++ ) {
 					el = this[ i ];
 					if( el && el[ prop ] instanceof Function ) {
-						funcCall = el[ prop ].apply( el, arguments );
-						arr.push( funcCall );
-						if( returnThis && funcCall !== undefined ) returnThis = false;
+						el = el[ prop ].apply( el, arguments );
+						arr.push( el );
+						if( returnThis && el !== undefined ) returnThis = false;
 					} else {
-						arr.push( null );
+						arr.push( el );
 					}
 				}
 				return returnThis ? this : flatten( arr, this );
@@ -201,16 +199,14 @@
 		} else {
 			Object.defineProperty( NL, prop, {
 				get: function() {
-					var arr = [], i = 0, l = this.length, el, item;
+					var arr = [], i = 0, l = this.length, el;
 					for( ; i < l; i++ ) {
 						el = this[ i ];
-						if( el == null ) {
-							arr.push( el );
-							continue;
+						if( el != null ) {
+							el = el[prop];
+							if( el instanceof Node && arr.indexOf( el ) > -1 ) continue;
 						}
-						item = el[ prop ];
-						if( item instanceof Node && arr.indexOf( item ) > -1 ) continue;
-						arr.push( item );
+						arr.push( el );
 					}
 					return flatten( arr, this );
 				},
