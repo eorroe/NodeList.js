@@ -1,13 +1,15 @@
-( function( undefined ) {
+( function() {
 	var ArrayProto = Array.prototype, nodeError = new Error( 'Passed arguments must be of Node' ), NL, div, prop;
 	function flatten( arr, owner ) {
 		var elms = [], i = 0, l = arr.length, i2, l2, el;
 		for( ; i < l; i++ ) {
 			el = arr[ i ];
 			if( el instanceof Node || el == null ) {
-				elms.push( el );
+				if( elms.indexOf( el ) < 0 ) elms.push( el );
 			} else if( el instanceof window.NodeList || el instanceof NodeList || el instanceof HTMLCollection || el instanceof Array ) {
-				for( i2 = 0, l2 = el.length; i2 < l2; i2++ ) elms.push( el[i2] );
+				for( i2 = 0, l2 = el.length; i2 < l2; i2++ ) {
+					if( elms.indexOf( el[i2] ) < 0 ) elms.push( el[i2] );
+				}
 			} else {
 				arr.get = NL.get; arr.set = NL.set; arr.call = NL.call; arr.owner = owner;
 				return arr;
@@ -15,7 +17,6 @@
 		}
 		return new NodeList( [ elms, owner ] );
 	}
-
 	function NodeList( args ) {
 		var i = 0, l, nodes = args;
 		if( typeof args[0] === 'string' ) {
@@ -26,17 +27,14 @@
 		}
 		for( l = this.length = nodes.length; i < l; i++ ) this[ i ] = nodes[ i ];
 	}
-
 	NL = NodeList.prototype = {
 		includes: ArrayProto.includes || function includes( element, index ) {
 			return this.indexOf( element, index ) > -1;
 		},
-
 		forEach: function forEach() {
 			ArrayProto.forEach.apply( this, arguments );
 			return this;
 		},
-
 		push: function push() {
 			var push = ArrayProto.push.bind( this ), i = 0, l = arguments.length, arg;
 			for( ; i < l; i++ ) {
@@ -46,14 +44,12 @@
 			}
 			return this;
 		},
-
 		pop: function pop( amount ) {
 			if( typeof amount !== "number" ) amount = 1;
 			var nodes = [], pop = ArrayProto.pop.bind( this ), i;
 			for( i = 0; i < amount; i++ ) nodes.push( pop() );
 			return new NodeList( [nodes, this] );
 		},
-
 		unshift: function unshift() {
 			var unshift = ArrayProto.unshift.bind( this ), i = 0, l = arguments.length, arg;
 			for( ; i < l; i++ ) {
@@ -63,33 +59,27 @@
 			}
 			return this;
 		},
-
 		shift: function shift( amount ) {
 			if( typeof amount !== "number" ) amount = 1;
 			var nodes = [], shift = ArrayProto.shift.bind( this ), i;
 			for( i = 0; i < amount; i++ ) nodes.push( shift() );
 			return new NodeList( [ nodes, this ] );
 		},
-
 		splice: function splice() {
 			for( var i = 2, l = arguments.length; i < l; i++ ) {
 				if( !( arguments[ i ] instanceof Node ) ) throw nodeError;
 			}
 			return new NodeList( [ ArrayProto.splice.apply( this, arguments ), this ] );
 		},
-
 		slice: function slice() {
 			return new NodeList( [ ArrayProto.slice.apply( this, arguments ), this ] );
 		},
-
 		filter: function filter() {
 			return new NodeList( [ ArrayProto.filter.apply( this, arguments ), this ] );
 		},
-
 		map: function map() {
 			return flatten( ArrayProto.map.apply( this, arguments ), this );
 		},
-
 		concat: function concat() {
 			var nodes = ArrayProto.slice.call(this), i = 0, l = arguments.length, arg;
 			function flatten( arr ) {
@@ -101,12 +91,11 @@
 					}
 				}
 			}
-
 			for( ; i < l; i++ ) {
 				arg = arguments[i];
 				if( arg instanceof Node ) {
 					if( nodes.indexOf( arg ) < 0 ) nodes.push( arg );
-				} else if( arg instanceof window.NodeList || arg instanceof HTMLCollection || arg instanceof Array || arg instanceof NodeList ) {
+				} else if( arg instanceof window.NodeList || arg instanceof NodeList || arg instanceof HTMLCollection || arg instanceof Array ) {
 					flatten( arg );
 				} else {
 					throw Error( 'Concat arguments must be of a Node, NodeList, HTMLCollection, or Array of (Node, NodeList, HTMLCollection, Array)' );
@@ -114,20 +103,15 @@
 			}
 			return new NodeList( [ nodes, this ] );
 		},
-
 		get: function get( prop ) {
 			var arr = [], i = 0, l = this.length, el;
 			for( ; i < l; i++ ) {
 				el = this[ i ];
-				if( el != null ) {
-					el = el[prop];
-					if( el instanceof Node && arr.indexOf( el ) > -1 ) continue;
-				}
+				if( el != null ) el = el[prop];
 				arr.push( el );
 			}
 			return flatten( arr, this );
 		},
-
 		set: function set( prop, value ) {
 			var i = 0, l = this.length, el, key;
 			if( prop.constructor === Object ) {
@@ -147,7 +131,6 @@
 			}
 			return this;
 		},
-
 		call: function call() {
 			var arr = [], method = ArrayProto.shift.call( arguments ), returnThis = true, i = 0, l = this.length, el;
 			for( ; i < l; i++ ) {
@@ -157,29 +140,24 @@
 					arr.push( el );
 					if( returnThis && el !== undefined ) returnThis = false;
 				} else {
-					arr.push( el );
+					arr.push( undefined );
 				}
 			}
 			return returnThis ? this : flatten( arr, this );
 		},
-
 		item: function( index ) {
 			return new NodeList( [ [ this[ index ] ], this ] );
 		},
-
 		get asArray() {
 			return ArrayProto.slice.call( this );
 		}
 	}
-
 	Object.getOwnPropertyNames( ArrayProto ).forEach( function( key ) {
 		if( key !== 'join' && key !== 'copyWithin' && key !== 'fill' && NL[ key ] === undefined ) {
 			NL[ key ] = ArrayProto[ key ];
 		}
 	});
-
 	if( Symbol && Symbol.iterator ) NL[ Symbol.iterator ] = NL.values = ArrayProto[ Symbol.iterator ];
-
 	function setterGetter( prop ) {
 		if( div[ prop ] instanceof Function ) {
 			NL[ prop ] = function() {
@@ -191,7 +169,7 @@
 						arr.push( el );
 						if( returnThis && el !== undefined ) returnThis = false;
 					} else {
-						arr.push( el );
+						arr.push( undefined );
 					}
 				}
 				return returnThis ? this : flatten( arr, this );
@@ -202,10 +180,7 @@
 					var arr = [], i = 0, l = this.length, el;
 					for( ; i < l; i++ ) {
 						el = this[ i ];
-						if( el != null ) {
-							el = el[prop];
-							if( el instanceof Node && arr.indexOf( el ) > -1 ) continue;
-						}
+						if( el != null ) el = el[prop];
 						arr.push( el );
 					}
 					return flatten( arr, this );
@@ -219,13 +194,11 @@
 			});
 		}
 	}
-
 	div = document.createElement( 'div' );
 	for( prop in div ) setterGetter( prop );
 	div = prop = null;
-
 	window.$$ = function NodeListJS() {
 		return new NodeList( arguments );
 	}
 	window.$$.NL = NL;
-})( undefined );
+})();
