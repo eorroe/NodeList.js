@@ -7,9 +7,7 @@
 			if( el instanceof Node || el == null ) {
 				if( elms.indexOf( el ) < 0 ) elms.push( el );
 			} else if( el instanceof window.NodeList || el instanceof NodeList || el instanceof HTMLCollection || el instanceof Array ) {
-				for( i2 = 0, l2 = el.length; i2 < l2; i2++ ) {
-					if( elms.indexOf( el[i2] ) < 0 ) elms.push( el[i2] );
-				}
+				for( i2 = 0, l2 = el.length; i2 < l2; i2++ ) elms.push( el[i2] );
 			} else {
 				arr.get = NL.get; arr.set = NL.set; arr.call = NL.call; arr.owner = owner;
 				return arr;
