@@ -155,7 +155,7 @@
 			NL[ key ] = ArrayProto[ key ];
 		}
 	});
-	if( Symbol && Symbol.iterator ) NL[ Symbol.iterator ] = NL.values = ArrayProto[ Symbol.iterator ];
+	if( window.Symbol && Symbol.iterator ) NL[ Symbol.iterator ] = NL.values = ArrayProto[ Symbol.iterator ];
 	function setterGetter( prop ) {
 		if( div[ prop ] instanceof Function ) {
 			NL[ prop ] = function() {
