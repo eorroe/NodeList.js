@@ -1,0 +1,20 @@
+{
+  "name": "NodeList.js",
+  "version": "1.0.0",
+  "description": "`NodeList.js` makes using the **Native DOM APIs** on an `Array` of `Nodes` as easy as `jQuery` with the benefits of it being extremely small at around **4k minified**, and the browser as a dependency **(That's the most interesting part)**.",
+  "main": "NodeList.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/eorroe/NodeList.js.git"
+  },
+  "keywords": [],
+  "author": "",
+  "license": "ISC",
+  "bugs": {
+    "url": "https://github.com/eorroe/NodeList.js/issues"
+  },
+  "homepage": "https://github.com/eorroe/NodeList.js#readme"
+}
